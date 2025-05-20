@@ -1,0 +1,73 @@
+name: ulala_now2
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+environment:
+  sdk: ^3.7.2
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+  flutter_launcher_icons: ^0.14.3
+  google_sign_in: ^6.3.0
+  firebase_auth: ^5.5.3
+  firebase_core: ^3.13.0
+  shared_preferences: ^2.5.3
+  flutter_signin_button: ^2.0.0
+  logger: ^2.5.0
+  dio: ^5.8.0+1
+  image_picker: ^1.1.2
+  firebase_storage: ^12.4.5
+  firebase_vertexai: ^1.5.0
+  cached_network_image: ^3.4.1
+  crypto: ^3.0.3
+  cloud_firestore: ^5.6.6
+  flutter_web_frame: ^1.0.0
+  intl: ^0.20.2
+  pull_to_refresh_flutter3: ^2.0.2
+  firebase_messaging: ^15.2.5
+  permission_handler: ^12.0.0+1
+  flutter_local_notifications: ^19.1.0
+  flutter_linkify: ^6.0.0
+  url_launcher: ^6.3.1
+  just_audio: ^0.9.36
+  shorebird_code_push: ^2.0.3
+  rename: ^3.0.2
+  lottie: ^3.3.1
+  youtube_player_iframe: ^5.2.0
+  uuid: ^4.5.1
+  html_unescape: ^2.0.0
+  getwidget: ^6.0.0
+  get: ^4.7.2
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.15
+  freezed: ^3.0.6
+  json_serializable: ^6.9.5
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/
+    - assets/icon/
+    - assets/images/
+    - assets/fonts/
+    - assets/animations/
+#    - shorebird.yaml
+  fonts:
+    - family: MapoGoldenPier
+      fonts:
+        - asset: assets/fonts/MapoGoldenPier.ttf
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_background: "#FFFFFF"
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#FFFFFF"
+    theme_color: "#FFFFFF"
