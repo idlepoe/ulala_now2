@@ -47,9 +47,10 @@ class SessionController extends GetxController {
     if (raw != null) {
       final cachedMap = json.decode(raw) as Map<String, dynamic>;
       if (cachedMap.containsKey(trimmed)) {
-        final cachedList = (cachedMap[trimmed] as List)
-            .map((e) => SessionTrack.fromJson(e))
-            .toList();
+        final cachedList =
+            (cachedMap[trimmed] as List)
+                .map((e) => SessionTrack.fromJson(e))
+                .toList();
         youtubeSearchResults.value = cachedList;
         return;
       }
@@ -64,8 +65,7 @@ class SessionController extends GetxController {
     if (results.isNotEmpty) {
       youtubeSearchResults.value = results;
 
-      final Map<String, dynamic> newMap =
-      raw != null ? json.decode(raw) : {};
+      final Map<String, dynamic> newMap = raw != null ? json.decode(raw) : {};
 
       newMap[trimmed] = results.map((e) => e.toJson()).toList();
       prefs.setString(_cacheKey, json.encode(newMap));
@@ -74,9 +74,50 @@ class SessionController extends GetxController {
     }
   }
 
-  attachDuration(SessionTrack track) {}
+  static const _durationCacheKey = 'youtube_duration_cache';
 
-  addTrack(fullTrack) {}
+  Future<void> attachDurationAndAddTrack(SessionTrack track) async {
+    if (track.duration > 0) {
+      await addTrack(track);
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_durationCacheKey);
+    final Map<String, dynamic> cache = raw != null ? json.decode(raw) : {};
+
+    int? duration = cache[track.videoId];
+
+    if (duration == null) {
+      // 📡 YouTube API 호출
+      duration = await ApiService.getYoutubeLength(videoId: track.videoId);
+
+      if (duration == null) {
+        Get.snackbar('오류', '영상 길이 조회에 실패했습니다.');
+        return;
+      }
+
+      // 🧠 SharedPreferences에 저장
+      cache[track.videoId] = duration;
+      await prefs.setString(_durationCacheKey, json.encode(cache));
+    }
+
+    final fullTrack = track.copyWith(duration: duration);
+    await addTrack(fullTrack);
+  }
+
+  Future<void> addTrack(SessionTrack track) async {
+    final response = await ApiService.addTrack(
+      sessionId: session.value!.id,
+      track: track,
+    );
+
+    if (response != null) {
+      Get.snackbar('트랙 추가', '${track.title}이(가) 추가되었습니다.');
+    } else {
+      Get.snackbar('오류', '트랙 추가에 실패했습니다.');
+    }
+  }
 
   static const String _favoriteKey = 'favorite_tracks';
 
@@ -92,7 +133,7 @@ class SessionController extends GetxController {
     final Map<String, dynamic> map = json.decode(raw);
     favorites.value = {
       for (var entry in map.entries)
-        entry.key: SessionTrack.fromJson(json.decode(entry.value))
+        entry.key: SessionTrack.fromJson(json.decode(entry.value)),
     };
   }
 
@@ -112,7 +153,7 @@ class SessionController extends GetxController {
     // 저장
     final encoded = {
       for (var entry in updated.entries)
-        entry.key: json.encode(entry.value.toJson())
+        entry.key: json.encode(entry.value.toJson()),
     };
     await prefs.setString(_favoriteKey, json.encode(encoded));
     favorites.value = updated;
@@ -120,5 +161,4 @@ class SessionController extends GetxController {
 
   /// 즐겨찾기 여부 확인
   bool isFavorite(String videoId) => favorites.containsKey(videoId);
-
 }

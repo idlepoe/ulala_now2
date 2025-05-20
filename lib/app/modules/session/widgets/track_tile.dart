@@ -1,0 +1,65 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:getwidget/components/list_tile/gf_list_tile.dart';
+import 'package:getwidget/types/gf_button_type.dart';
+import 'package:ulala_now2/app/data/models/session_track.dart';
+
+class TrackTile extends StatelessWidget {
+  final SessionTrack track;
+  final VoidCallback? onAdd;
+  final VoidCallback? onFavorite;
+  final bool isFavorite;
+  final bool showFavorite;
+
+  const TrackTile({
+    super.key,
+    required this.track,
+    this.onAdd,
+    this.onFavorite,
+    this.isFavorite = false,
+    this.showFavorite = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GFListTile(
+      avatar: CachedNetworkImage(
+        imageUrl: track.thumbnail,
+        width: 60,
+        height: 40,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => const SizedBox(
+          width: 60,
+          height: 40,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+        errorWidget: (context, url, error) => const SizedBox(
+          width: 60,
+          height: 40,
+          child: Center(child: Icon(Icons.broken_image)),
+        ),
+      ),
+      titleText: track.title,
+      subTitleText: track.description,
+      icon: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GFIconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : null,
+            ),
+            onPressed: onFavorite,
+            type: GFButtonType.transparent,
+          ),
+          GFIconButton(
+            icon: const Icon(Icons.add),
+            onPressed: onAdd,
+            type: GFButtonType.transparent,
+          ),
+        ],
+      ),
+    );
+  }
+}

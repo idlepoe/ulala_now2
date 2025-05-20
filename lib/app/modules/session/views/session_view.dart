@@ -1,7 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/components/appbar/gf_appbar.dart';
+import 'package:getwidget/components/avatar/gf_avatar.dart';
+import 'package:getwidget/components/button/gf_button.dart';
+import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:getwidget/shape/gf_avatar_shape.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
+import '../widgets/track_search_bottom_sheet.dart';
 import '../widgets/track_tile.dart';
 
 class SessionView extends GetView<SessionController> {
@@ -17,10 +24,10 @@ class SessionView extends GetView<SessionController> {
       }
 
       return Scaffold(
-        appBar: AppBar(
+        appBar: GFAppBar(
           title: Text(session.name),
           actions: [
-            IconButton(
+            GFIconButton(
               icon: const Icon(Icons.add),
               onPressed: () => _openTrackSearchSheet(context),
               tooltip: "트랙 추가",
@@ -33,9 +40,9 @@ class SessionView extends GetView<SessionController> {
             if (session.trackList.isEmpty)
               Expanded(
                 child: Center(
-                  child: ElevatedButton.icon(
+                  child: GFButton(
                     icon: const Icon(Icons.add),
-                    label: const Text("재생할 음악 트랙 추가하기"),
+                    text: "재생할 음악 트랙 추가하기",
                     onPressed: () => _openTrackSearchSheet(context),
                   ),
                 ),
@@ -50,15 +57,8 @@ class SessionView extends GetView<SessionController> {
                       track: track,
                       isFavorite: controller.isFavorite(track.videoId),
                       onFavorite: () => controller.toggleFavorite(track),
-                      onAdd: () async {
-                        final fullTrack = await controller.attachDuration(
-                          track,
-                        );
-                        if (fullTrack != null) {
-                          await controller.addTrack(fullTrack);
-                          Get.back();
-                        }
-                      },
+                      onAdd: () => controller.attachDurationAndAddTrack(track),
+
                     );
                   },
                 ),
@@ -68,15 +68,32 @@ class SessionView extends GetView<SessionController> {
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
                 spacing: 8,
-                children:
-                    session.participants.map((p) {
-                      return Chip(
-                        avatar: CircleAvatar(
-                          backgroundImage: NetworkImage(p.avatarUrl),
+                runSpacing: 8,
+                children: session.participants.map((p) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Colors.grey.shade400),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GFAvatar(
+                          size: 24,
+                          backgroundImage: CachedNetworkImageProvider(p.avatarUrl),
+                          shape: GFAvatarShape.circle,
                         ),
-                        label: Text(p.nickname),
-                      );
-                    }).toList(),
+                        const SizedBox(width: 6),
+                        Text(
+                          p.nickname,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
             ),
           ],
@@ -86,82 +103,6 @@ class SessionView extends GetView<SessionController> {
   }
 
   void _openTrackSearchSheet(BuildContext context) {
-    final searchController = TextEditingController();
-
-    Get.bottomSheet(
-      Container(
-        padding: const EdgeInsets.all(16),
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            const Text("YouTube에서 트랙 검색", style: TextStyle(fontSize: 18)),
-            const SizedBox(height: 12),
-            TextField(
-              controller: searchController,
-              decoration: InputDecoration(
-                hintText: "노래 제목 또는 아티스트 입력",
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    final keyword = searchController.text.trim();
-                    if (keyword.isNotEmpty) {
-                      controller.searchYoutube(keyword);
-                    }
-                  },
-                ),
-              ),
-              onSubmitted: (value) {
-                if (value.trim().isNotEmpty) {
-                  controller.searchYoutube(value.trim());
-                }
-              },
-            ),
-            const SizedBox(height: 12),
-            Obx(() {
-              if (controller.isSearching.value) {
-                return const Expanded(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              final results = controller.youtubeSearchResults;
-              if (results.isEmpty) {
-                return const Expanded(
-                  child: Center(child: Text("검색 결과가 없습니다.")),
-                );
-              }
-
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: results.length,
-                  itemBuilder: (context, index) {
-                    final track = results[index];
-                    return TrackTile(
-                      track: track,
-                      isFavorite: controller.isFavorite(track.videoId),
-                      onFavorite: () => controller.toggleFavorite(track),
-                      onAdd: () async {
-                        final fullTrack = await controller.attachDuration(
-                          track,
-                        );
-                        if (fullTrack != null) {
-                          await controller.addTrack(fullTrack);
-                          Get.back();
-                        }
-                      },
-                    );
-                  },
-                ),
-              );
-            }),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-    );
+    Get.bottomSheet(const TrackSearchBottomSheet(), isScrollControlled: true);
   }
 }
