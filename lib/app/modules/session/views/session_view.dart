@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/session_controller.dart';
+import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
+
+import '../widgets/track_tile.dart';
 
 class SessionView extends GetView<SessionController> {
   const SessionView({super.key});
@@ -20,15 +22,15 @@ class SessionView extends GetView<SessionController> {
           actions: [
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: "트랙 추가",
               onPressed: () => _openTrackSearchSheet(context),
+              tooltip: "트랙 추가",
             ),
           ],
         ),
         body: Column(
           children: [
             const SizedBox(height: 8),
-            if (session.trackList.isEmpty) ...[
+            if (session.trackList.isEmpty)
               Expanded(
                 child: Center(
                   child: ElevatedButton.icon(
@@ -37,22 +39,30 @@ class SessionView extends GetView<SessionController> {
                     onPressed: () => _openTrackSearchSheet(context),
                   ),
                 ),
-              ),
-            ] else ...[
+              )
+            else
               Expanded(
                 child: ListView.builder(
                   itemCount: session.trackList.length,
                   itemBuilder: (context, index) {
                     final track = session.trackList[index];
-                    return ListTile(
-                      leading: Image.network(track.thumbnail, width: 50),
-                      title: Text(track.title),
-                      subtitle: Text("추가한 사람: ${track.addedBy.nickname}"),
+                    return TrackTile(
+                      track: track,
+                      isFavorite: controller.isFavorite(track.videoId),
+                      onFavorite: () => controller.toggleFavorite(track),
+                      onAdd: () async {
+                        final fullTrack = await controller.attachDuration(
+                          track,
+                        );
+                        if (fullTrack != null) {
+                          await controller.addTrack(fullTrack);
+                          Get.back();
+                        }
+                      },
                     );
                   },
                 ),
               ),
-            ],
             const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -76,7 +86,6 @@ class SessionView extends GetView<SessionController> {
   }
 
   void _openTrackSearchSheet(BuildContext context) {
-    final controller = Get.find<SessionController>();
     final searchController = TextEditingController();
 
     Get.bottomSheet(
@@ -130,24 +139,19 @@ class SessionView extends GetView<SessionController> {
                 child: ListView.builder(
                   itemCount: results.length,
                   itemBuilder: (context, index) {
-                    final item = results[index];
-                    return ListTile(
-                      leading: Image.network(
-                        item.snippet.thumbnails.medium.url,
-                        width: 60,
-                        height: 40,
-                        fit: BoxFit.cover,
-                      ),
-                      title: Text(
-                        item.snippet.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: Text(item.snippet.description),
-                      onTap: () {
-                        // 여기에 track 추가 처리 (예: addTrack API 호출)
-                        // 예: controller.addTrackFromYoutubeItem(item);
-                        Get.back(); // 닫기
+                    final track = results[index];
+                    return TrackTile(
+                      track: track,
+                      isFavorite: controller.isFavorite(track.videoId),
+                      onFavorite: () => controller.toggleFavorite(track),
+                      onAdd: () async {
+                        final fullTrack = await controller.attachDuration(
+                          track,
+                        );
+                        if (fullTrack != null) {
+                          await controller.addTrack(fullTrack);
+                          Get.back();
+                        }
                       },
                     );
                   },

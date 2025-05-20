@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/api_constants.dart';
+import '../models/added_by.dart';
 import '../models/session.dart';
 import '../models/session_track.dart';
 import '../models/youtube/youtube_item.dart';
@@ -35,29 +36,54 @@ class ApiService {
     return result;
   }
 
-  static Future<List<YoutubeItem>?> youtubeSearch({
+  static Future<List<SessionTrack>> youtubeSearch({
     required String search,
   }) async {
     try {
       if (search.trim().isEmpty) {
         throw Exception('검색어를 입력해주세요.');
       }
+
       final response = await Dio().get(
         'https://www.googleapis.com/youtube/v3/search',
         queryParameters: {
           "q": search,
           "part": "snippet",
-          "chart": "mostPopular",
           "maxResults": "50",
           "key": "AIzaSyCcg9OqAlSvJBBMLbodE1guFSzex51aRzI",
           "order": "relevance",
         },
       );
 
-      final List<YoutubeItem> results = [];
+      final user = FirebaseAuth.instance.currentUser;
+      final now = DateTime.now();
+
+      final List<SessionTrack> results = [];
+
       for (final item in response.data["items"]) {
-        if (item["id"]?["videoId"] != null) {
-          results.add(YoutubeItem.fromJson(item));
+        final videoId = item["id"]?["videoId"];
+        final snippet = item["snippet"];
+
+        if (videoId != null && snippet != null) {
+          results.add(
+            SessionTrack(
+              id: videoId,
+              videoId: videoId,
+              title: snippet["title"] ?? '',
+              description: snippet["description"] ?? '',
+              thumbnail: snippet["thumbnails"]?["medium"]?["url"] ?? '',
+              duration: 0,
+              // ▶️ 추후 getYoutubeLength로 갱신
+              startAt: now,
+              endAt: now,
+              addedAt: now,
+              addedBy: AddedBy(
+                uid: user?.uid ?? '',
+                nickname: user?.displayName ?? '익명',
+                avatarUrl: user?.photoURL ?? '',
+              ),
+            ),
+          );
         }
       }
 
@@ -70,10 +96,8 @@ class ApiService {
         logger.e('Status Code: $statusCode');
         logger.e('Response Data: $data');
 
-        // 기본 메시지
         String message = '알 수 없는 오류가 발생했습니다.';
 
-        // YouTube API 쿼터 초과 감지
         final errorReason = data?['error']?['errors']?[0]?['reason'];
         if (errorReason == 'quotaExceeded') {
           message = 'YouTube API 사용 한도를 초과했습니다.\n잠시 후 다시 시도해주세요.';
@@ -83,15 +107,14 @@ class ApiService {
 
         Get.snackbar('오류', message);
       } else {
-        // 서버 응답이 아예 없는 경우
         Get.snackbar('오류', '네트워크 오류 또는 서버에 연결할 수 없습니다.');
       }
     } catch (e) {
       logger.e(e);
       Get.snackbar('오류', e.toString());
-      return null;
     }
-    return null;
+
+    return [];
   }
 
   static const _key = 'favorite_youtube_ids';
