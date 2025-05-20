@@ -1,15 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
-import 'package:getwidget/components/avatar/gf_avatar.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:getwidget/shape/gf_avatar_shape.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
+import '../widgets/build_avatar.dart';
+import '../widgets/session_player_view.dart';
 import '../widgets/track_search_bottom_sheet.dart';
-import '../widgets/track_tile.dart';
 
 class SessionView extends GetView<SessionController> {
   const SessionView({super.key});
@@ -22,6 +20,7 @@ class SessionView extends GetView<SessionController> {
       if (session == null) {
         return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
+      final tracks = controller.prevTracks;
 
       return Scaffold(
         appBar: GFAppBar(
@@ -37,7 +36,7 @@ class SessionView extends GetView<SessionController> {
         body: Column(
           children: [
             const SizedBox(height: 8),
-            if (session.trackList.isEmpty)
+            if (tracks.isEmpty)
               Expanded(
                 child: Center(
                   child: GFButton(
@@ -48,52 +47,42 @@ class SessionView extends GetView<SessionController> {
                 ),
               )
             else
-              Expanded(
-                child: ListView.builder(
-                  itemCount: session.trackList.length,
-                  itemBuilder: (context, index) {
-                    final track = session.trackList[index];
-                    return TrackTile(
-                      track: track,
-                      isFavorite: controller.isFavorite(track.videoId),
-                      onFavorite: () => controller.toggleFavorite(track),
-                      onAdd: () => controller.attachDurationAndAddTrack(track),
-
-                    );
-                  },
-                ),
-              ),
+              const Expanded(child: SessionPlayerView()),
             const Divider(),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: session.participants.map((p) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.all(color: Colors.grey.shade400),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        GFAvatar(
-                          size: 24,
-                          backgroundImage: CachedNetworkImageProvider(p.avatarUrl),
-                          shape: GFAvatarShape.circle,
+                children:
+                    session.participants.map((p) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          p.nickname,
-                          style: const TextStyle(fontSize: 14),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.grey.shade400),
                         ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            buildAvatar(
+                              url: p.avatarUrl,
+                              nickname: p.nickname,
+                              size: 32,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              p.nickname,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
               ),
             ),
           ],

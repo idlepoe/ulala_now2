@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ulala_now2/app/data/models/session_track.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 import 'package:ulala_now2/app/modules/session/widgets/track_tile.dart';
 
@@ -61,11 +60,13 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 itemCount: results.length,
                 itemBuilder: (context, index) {
                   final track = results[index];
-                  return TrackTile(
-                    track: track,
-                    isFavorite: controller.isFavorite(track.videoId),
-                    onFavorite: () => controller.toggleFavorite(track),
-                    onAdd: () => controller.attachDurationAndAddTrack(track),
+                  return Obx(
+                    () => TrackTile(
+                      track: track,
+                      isFavorite: controller.isFavorite(track.videoId),
+                      onFavorite: () => controller.toggleFavorite(track),
+                      onAdd: () => controller.attachDurationAndAddTrack(track),
+                    ),
                   );
                 },
               ),

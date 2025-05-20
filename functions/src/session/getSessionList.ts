@@ -13,20 +13,32 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
   try {
     await verifyAuth(req);
 
+    const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+
     const snapshot = await db.collection("sessions")
-      .orderBy("createdAt", "desc")
+      .where("updatedAt", ">=", threeDaysAgo) // ✅ 3일 이내만
+      .orderBy("updatedAt", "desc")
       .limit(50)
       .get();
+
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     const list = await Promise.all(snapshot.docs.map(async (doc) => {
       const data = doc.data();
 
       const participantsSnap = await doc.ref.collection("participants").get();
-      const participants = participantsSnap.docs.map((d) => d.data());
+      const allParticipants = participantsSnap.docs.map((d) => d.data());
+
+      const activeParticipants = allParticipants.filter((p) => {
+        const updatedAt = p.updatedAt?.toDate?.();
+        return updatedAt && updatedAt >= yesterday;
+      });
 
       return {
         ...data,
-        participants,
+        participants: allParticipants, // 전체 참가자 리스트
+        participantCount: activeParticipants.length, // ✅ 최근 24시간 내 활동자 수
       };
     }));
 

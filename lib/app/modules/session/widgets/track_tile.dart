@@ -26,22 +26,28 @@ class TrackTile extends StatelessWidget {
     return GFListTile(
       avatar: CachedNetworkImage(
         imageUrl: track.thumbnail,
-        width: 60,
-        height: 40,
+        width: 160,
+        height: 60,
         fit: BoxFit.cover,
-        placeholder: (context, url) => const SizedBox(
-          width: 60,
-          height: 40,
-          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-        ),
-        errorWidget: (context, url, error) => const SizedBox(
-          width: 60,
-          height: 40,
-          child: Center(child: Icon(Icons.broken_image)),
-        ),
+        placeholder:
+            (context, url) => const SizedBox(
+              width: 60,
+              height: 40,
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            ),
+        errorWidget:
+            (context, url, error) => const SizedBox(
+              width: 60,
+              height: 40,
+              child: Center(child: Icon(Icons.broken_image)),
+            ),
       ),
-      titleText: track.title,
-      subTitleText: track.description,
+      title: Text(track.title, maxLines: 1),
+      subTitle: Text(
+        track.description,
+        maxLines: 2,
+        style: TextStyle(color: Colors.grey),
+      ),
       icon: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

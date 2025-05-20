@@ -79,7 +79,7 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
     const reordered = futureSnap.docs
       .map((doc) => ({id: doc.id, data: doc.data()}))
       .sort((a, b) =>
-        a.data.addedAt.toDate().getTime() - b.data.addedAt.toDate().getTime(),
+        a.data.createdAt.toDate().getTime() - b.data.createdAt.toDate().getTime(),
       );
 
     let currentStart = new Date(endAt.getTime());

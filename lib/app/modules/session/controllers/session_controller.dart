@@ -1,16 +1,25 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../data/models/session.dart';
 import '../../../data/models/session_track.dart';
 import '../../../data/models/youtube/youtube_item.dart';
 import '../../../data/utils/api_service.dart';
+import '../../../routes/app_pages.dart';
 
 class SessionController extends GetxController {
   final session = Rxn<Session>();
   late final String sessionId;
+
+  late YoutubePlayerController youtubeController;
+  StreamSubscription? _trackSub;
+  final prevTracks = <SessionTrack>[].obs;
+  final currentPlayerState = Rx<PlayerState>(PlayerState.unknown);
 
   @override
   void onInit() {
@@ -18,6 +27,21 @@ class SessionController extends GetxController {
     sessionId = Get.arguments as String;
     fetchSession();
     loadFavorites();
+
+    youtubeController = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: false,
+      ),
+    );
+
+    // 1초마다 상태 체크
+    Timer.periodic(const Duration(seconds: 1), (_) async {
+      final state = await youtubeController.playerState;
+      currentPlayerState.value = state;
+    });
+
+    _subscribeToTracks();
   }
 
   Future<void> fetchSession() async {
@@ -25,8 +49,13 @@ class SessionController extends GetxController {
     if (data != null) {
       session.value = data;
     } else {
+      // 🔸 세션 ID 제거
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove("sessionId");
+
+      // 🔔 사용자에게 알림 후 홈으로 이동
       Get.snackbar("오류", "세션 정보를 불러올 수 없습니다.");
-      Get.offAllNamed("/home");
+      Get.offAllNamed(Routes.SPLASH);
     }
   }
 
@@ -114,6 +143,7 @@ class SessionController extends GetxController {
 
     if (response != null) {
       Get.snackbar('트랙 추가', '${track.title}이(가) 추가되었습니다.');
+      Get.back();
     } else {
       Get.snackbar('오류', '트랙 추가에 실패했습니다.');
     }
@@ -161,4 +191,92 @@ class SessionController extends GetxController {
 
   /// 즐겨찾기 여부 확인
   bool isFavorite(String videoId) => favorites.containsKey(videoId);
+
+  void _subscribeToTracks() {
+    _trackSub?.cancel();
+
+    _trackSub = FirebaseFirestore.instance
+        .collection('sessions')
+        .doc(sessionId)
+        .collection('tracks')
+        .orderBy('addedAt', descending: false)
+        .snapshots()
+        .listen((snapshot) {
+          final newTracks =
+              snapshot.docs
+                  .map((e) => SessionTrack.fromJson(e.data()))
+                  .toList();
+
+          if (_areTracksEqual(prevTracks, newTracks)) return;
+
+          prevTracks.assignAll(newTracks);
+          session.value = session.value?.copyWith(trackList: newTracks);
+          _syncWithYoutubePlayer(newTracks);
+        });
+  }
+
+  bool _areTracksEqual(List<SessionTrack> a, List<SessionTrack> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id ||
+          a[i].startAt != b[i].startAt ||
+          a[i].endAt != b[i].endAt) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> _syncWithYoutubePlayer(List<SessionTrack> tracks) async {
+    final now = DateTime.now();
+    final current = tracks.firstWhereOrNull((track) {
+      final end = track.startAt.add(Duration(seconds: track.duration));
+      return now.isAfter(track.startAt) && now.isBefore(end);
+    });
+
+    if (current == null) return;
+
+    final offset =
+        now
+            .difference(current.startAt)
+            .inSeconds
+            .clamp(0, current.duration)
+            .toDouble();
+
+    final upcoming =
+        tracks.where((t) => t.endAt.isAfter(now)).toList()
+          ..sort((a, b) => a.startAt.compareTo(b.startAt));
+
+    if (upcoming.length == 1) {
+      await youtubeController.loadVideoById(
+        videoId: current.videoId,
+        startSeconds: offset,
+      );
+    } else {
+      final ids = upcoming.map((e) => e.videoId).toList();
+      final index = upcoming.indexOf(current);
+
+      await youtubeController.loadPlaylist(
+        list: ids,
+        listType: ListType.playlist,
+        index: index,
+        startSeconds: offset,
+      );
+    }
+
+    // 플레이 강제 재생
+    Future.delayed(const Duration(seconds: 1), () async {
+      final state = await youtubeController.playerState;
+      if (state != PlayerState.playing) {
+        youtubeController.playVideo();
+      }
+    });
+  }
+
+  @override
+  void onClose() {
+    _trackSub?.cancel();
+    youtubeController.close();
+    super.onClose();
+  }
 }
