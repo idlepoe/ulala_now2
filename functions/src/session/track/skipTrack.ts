@@ -5,21 +5,20 @@ import {db} from "../../firebase";
 
 export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
   if (req.method !== "POST") {
-    return res.status(405).json({
+    return res.status(200).json({
       success: false,
-      message: "Method Not Allowed",
+      message: "허용되지 않은 요청 방식입니다.",
     });
   }
 
   try {
-    const decoded = await verifyAuth(req);
-    const uid = decoded.uid;
+    await verifyAuth(req);
     const {sessionId, trackId} = req.body;
 
     if (!sessionId || !trackId) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
-        message: "sessionId, trackId는 필수입니다.",
+        message: "sessionId와 trackId는 필수입니다.",
       });
     }
 
@@ -32,26 +31,17 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
     ]);
 
     if (!sessionSnap.exists || !trackSnap.exists) {
-      return res.status(404).json({
+      return res.status(200).json({
         success: false,
         message: "세션 또는 트랙이 존재하지 않습니다.",
       });
     }
 
-    const userRef = db.collection("users").doc(uid);
-    const userSnap = await userRef.get();
-    if (!userSnap.exists) {
-      return res.status(404).json({
-        success: false,
-        message: "사용자 정보를 찾을 수 없습니다.",
-      });
-    }
     // 🗑️ 트랙 삭제
     await trackRef.delete();
 
-    // 🔁 현재 시간 기준으로 이후 트랙 재정렬
+    // 🔁 이후 트랙 재정렬
     const now = new Date();
-
     const remainingTracksSnap = await sessionRef.collection("tracks")
       .where("startAt", ">=", admin.firestore.Timestamp.fromDate(now))
       .orderBy("startAt")
@@ -78,7 +68,7 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
 
     return res.status(200).json({
       success: true,
-      message: "트랙이 삭제되었고 이후 트랙의 시간이 현재 시간 기준으로 재정렬되었습니다.",
+      message: "트랙이 삭제되었으며, 이후 트랙들이 현재 시간 기준으로 재정렬되었습니다.",
       data: {
         trackId,
         deleted: true,
@@ -88,7 +78,8 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
     console.error("❌ 트랙 스킵 처리 실패:", error);
     return res.status(500).json({
       success: false,
-      message: "서버 오류로 스킵 처리에 실패했습니다.",
+      message: "서버 오류로 인해 트랙을 건너뛰는 데 실패했습니다.",
     });
   }
 });
+

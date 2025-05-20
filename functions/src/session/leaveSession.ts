@@ -5,9 +5,9 @@ import * as admin from "firebase-admin";
 
 export const leaveSession = onRequest({cors: true}, async (req, res: any) => {
   if (req.method !== "POST") {
-    return res.status(405).json({
+    return res.status(200).json({
       success: false,
-      message: "Method Not Allowed",
+      message: "허용되지 않은 요청 방식입니다.",
     });
   }
 
@@ -16,8 +16,8 @@ export const leaveSession = onRequest({cors: true}, async (req, res: any) => {
     const uid = decoded.uid;
     const {sessionId} = req.body;
 
-    if (!sessionId) {
-      return res.status(400).json({
+    if (!sessionId || typeof sessionId !== "string") {
+      return res.status(200).json({
         success: false,
         message: "sessionId는 필수입니다.",
       });
@@ -27,17 +27,17 @@ export const leaveSession = onRequest({cors: true}, async (req, res: any) => {
     const sessionSnap = await sessionRef.get();
 
     if (!sessionSnap.exists) {
-      return res.status(404).json({success: false, message: "세션이 존재하지 않습니다."});
+      return res.status(200).json({
+        success: false,
+        message: "세션이 존재하지 않습니다.",
+      });
     }
 
     const participantRef = sessionRef.collection("participants").doc(uid);
     const participantSnap = await participantRef.get();
 
-    // 참가자 문서가 있으면 삭제
     if (participantSnap.exists) {
       await participantRef.delete();
-
-      // ✅ participantCount 감소
       await sessionRef.update({
         participantCount: admin.firestore.FieldValue.increment(-1),
       });
@@ -45,13 +45,13 @@ export const leaveSession = onRequest({cors: true}, async (req, res: any) => {
 
     return res.status(200).json({
       success: true,
-      message: "세션 나가기 완료",
+      message: "세션에서 성공적으로 나갔습니다.",
     });
   } catch (error) {
     console.error("❌ 세션 나가기 실패:", error);
-    return res.status(401).json({
+    return res.status(500).json({
       success: false,
-      message: error instanceof Error ? error.message : "Unauthorized",
+      message: "세션 나가기 중 오류가 발생했습니다.",
     });
   }
 });

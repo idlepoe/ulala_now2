@@ -5,9 +5,9 @@ import {db} from "../../firebase";
 
 export const addTrack = onRequest({cors: true}, async (req, res: any) => {
   if (req.method !== "POST") {
-    return res.status(405).json({
+    return res.status(200).json({
       success: false,
-      message: "Method Not Allowed",
+      message: "허용되지 않은 요청 방식입니다.",
     });
   }
 
@@ -17,64 +17,85 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
     const {sessionId, track} = req.body;
 
     if (!sessionId || !track) {
-      return res.status(400).json({
+      return res.status(200).json({
         success: false,
         message: "sessionId와 track 정보는 필수입니다.",
       });
     }
 
-    const userRef = db.collection("users").doc(uid);
-    const userSnap = await userRef.get();
-
-    if (!userSnap.exists) {
-      return res.status(400).json({
-        success: false,
-        message: "사용자 정보를 찾을 수 없습니다.",
-      });
-    }
-
-    const userData: any = userSnap.data();
-    const nickname = userData.nickname || "알 수 없음";
-
     const sessionRef = db.collection("sessions").doc(sessionId);
     const tracksCol = sessionRef.collection("tracks");
 
-    // ✅ 스킵되지 않은 트랙 중 가장 마지막 트랙을 기준으로 시간 계산
-    const latestNonSkippedSnap = await tracksCol
-      .orderBy("endAt", "desc")
-      .limit(1)
+    // 현재 시간 기준
+    const now = new Date();
+
+    // 미래에 예약된 트랙들 가져오기
+    const futureSnap = await tracksCol
+      .where("startAt", ">", admin.firestore.Timestamp.fromDate(now))
+      .orderBy("startAt", "asc")
       .get();
 
-    const now = new Date();
-    let startAt = now;
-
-    if (!latestNonSkippedSnap.empty) {
-      const lastTrack = latestNonSkippedSnap.docs[0].data();
+    // 마지막 트랙의 endAt을 기준으로 시작 시간 계산
+    let baseTime = now;
+    if (!futureSnap.empty) {
+      const lastTrack = futureSnap.docs[futureSnap.docs.length - 1].data();
       const lastEnd = lastTrack.endAt.toDate();
-      if (lastEnd > now) {
-        startAt = lastEnd;
+      baseTime = lastEnd > baseTime ? lastEnd : baseTime;
+    } else {
+      const latestSnap = await tracksCol
+        .orderBy("endAt", "desc")
+        .limit(1)
+        .get();
+
+      if (!latestSnap.empty) {
+        const last = latestSnap.docs[0].data();
+        const lastEnd = last.endAt.toDate();
+        baseTime = lastEnd > baseTime ? lastEnd : baseTime;
       }
     }
 
+    const startAt = baseTime;
     const endAt = new Date(startAt.getTime() + track.duration * 1000);
+
+    // 사용자 정보는 클라이언트에서 함께 전송한다고 가정
+    const addedBy = {
+      uid,
+      nickname: track.addedBy?.nickname || "알 수 없음",
+      avatarUrl: track.addedBy?.avatarUrl || "",
+    };
 
     const trackToAdd = {
       ...track,
       startAt: admin.firestore.Timestamp.fromDate(startAt),
       endAt: admin.firestore.Timestamp.fromDate(endAt),
-      addedBy: {
-        uid: uid,
-        nickname: nickname,
-      },
-      addedAt: admin.firestore.Timestamp.now(),
-      votes: {
-        like: [],
-        dislike: [],
-      },
+      addedBy,
+      createdAt: admin.firestore.Timestamp.now(),
     };
 
-    const trackDocRef = tracksCol.doc(track.id);
-    await trackDocRef.set(trackToAdd);
+    // 트랙 저장
+    await tracksCol.doc(track.id).set(trackToAdd);
+
+    // ⏰ 미래 트랙들 정렬 후 재계산
+    const reordered = futureSnap.docs
+      .map((doc) => ({id: doc.id, data: doc.data()}))
+      .sort((a, b) =>
+        a.data.addedAt.toDate().getTime() - b.data.addedAt.toDate().getTime(),
+      );
+
+    let currentStart = new Date(endAt.getTime());
+
+    for (const doc of reordered) {
+      const duration = doc.data.duration;
+      const start = new Date(currentStart.getTime());
+      const end = new Date(start.getTime() + duration * 1000);
+
+      await tracksCol.doc(doc.id).update({
+        startAt: admin.firestore.Timestamp.fromDate(start),
+        endAt: admin.firestore.Timestamp.fromDate(end),
+      });
+
+      currentStart = end;
+    }
 
     return res.status(200).json({
       success: true,
@@ -89,4 +110,3 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
     });
   }
 });
-

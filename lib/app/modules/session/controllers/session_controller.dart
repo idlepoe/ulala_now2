@@ -1,23 +1,39 @@
 import 'package:get/get.dart';
 
-class SessionController extends GetxController {
-  //TODO: Implement SessionController
+import '../../../data/models/session.dart';
+import '../../../data/models/youtube/youtube_item.dart';
+import '../../../data/utils/api_service.dart';
 
-  final count = 0.obs;
+class SessionController extends GetxController {
+  final session = Rxn<Session>();
+
+  late final String sessionId;
+
   @override
   void onInit() {
     super.onInit();
+    sessionId = Get.arguments as String;
+    fetchSession();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  Future<void> fetchSession() async {
+    final data = await ApiService.getSessionById(sessionId);
+    if (data != null) {
+      session.value = data;
+    } else {
+      Get.snackbar("오류", "세션 정보를 불러올 수 없습니다.");
+      Get.offAllNamed("/home");
+    }
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  final youtubeSearchResults = <YoutubeItem>[].obs;
+  final isSearching = false.obs;
+
+  Future<void> searchYoutube(String keyword) async {
+    isSearching.value = true;
+    final result = await ApiService.youtubeSearch(search: keyword);
+    youtubeSearchResults.value = result ?? [];
+    isSearching.value = false;
   }
 
-  void increment() => count.value++;
 }
