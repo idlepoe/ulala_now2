@@ -1,19 +1,18 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import {setGlobalOptions} from "firebase-functions";
+import {initializeApp} from "firebase-admin/app";
 
-import {onRequest} from "firebase-functions/v2/https";
-import * as logger from "firebase-functions/logger";
+initializeApp();
+setGlobalOptions({region: "asia-northeast3"});
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+// 세션
+export {createSession} from "./session/createSession";
+export {getSessionList} from "./session/getSessionList";
+export {leaveSession} from "./session/leaveSession";
+export {joinSession} from "./session/joinSession";
+export {getSessionById} from "./session/getSessionById";
 
-export const helloWorld = onRequest((request, response) => {
-  logger.info("Hello logs!", {structuredData: true});
-  response.send("Hello from Firebase!");
-});
+// 트랙
+export {addTrack} from "./session/track/addTrack";
+export {skipTrack} from "./session/track/skipTrack";
+export {voteTrack} from "./session/track/voteTrack";
+
