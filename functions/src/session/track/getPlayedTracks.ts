@@ -1,7 +1,7 @@
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import {onRequest} from "firebase-functions/https";
 
-export const getPlayedTracks = functions.https.onRequest(async (req, res: any) => {
+export const getPlayedTracks = onRequest({cors: true}, async (req, res: any) => {
   try {
     const sessionId = req.query.sessionId as string;
     const limit = parseInt(req.query.limit as string) || 20;

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/appbar/gf_appbar.dart';
-import 'package:getwidget/components/button/gf_button.dart';
-import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:ulala_now2/app/modules/session/controllers/chat_controller.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
+import '../widgets/chat_and_participants_bar.dart';
 import '../widgets/chat_bottom_sheet.dart';
 import '../widgets/participant_chip.dart';
 import '../widgets/played_track_bottom_sheet.dart';
+import '../widgets/session_floating_menu.dart';
+import '../widgets/session_loading_view.dart';
 import 'session_app_bar.dart';
 import 'session_player_view.dart';
 
@@ -23,7 +23,7 @@ class SessionView extends GetView<SessionController> {
       final session = controller.session.value;
 
       if (session == null) {
-        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        return SessionLoadingView();
       }
       final tracks = controller.currentTracks;
 
@@ -53,92 +53,25 @@ class SessionView extends GetView<SessionController> {
             else
               const Expanded(child: SessionPlayerView()),
             const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  // 채팅 버튼 + 뱃지
-                  Obx(() {
-                    final chatController = Get.find<ChatController>();
-                    final count = chatController.unreadCount.value;
-                    return Badge(
-                      label: Text('$count'),
-                      isLabelVisible: count > 1,
-                      child: IconButton(
-                        icon: Icon(Icons.chat_bubble),
-                        onPressed: () {
-                          chatController.markAllAsRead();
-                          Get.bottomSheet(ChatBottomSheet());
-                        },
-                      ),
-                    );
-                  }),
-
-                  const SizedBox(width: 8),
-
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      physics: BouncingScrollPhysics(),
-                      child: Row(
-                        spacing: 8,
-                        children:
-                            session.participants.map((p) {
-                              return ParticipantChip(participant: p, size: 20);
-                            }).toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            ChatAndParticipantsBar(participants: session.participants),
           ],
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 80),
-          child: SpeedDial(
-            icon: Icons.menu,
-            activeIcon: Icons.close,
-            backgroundColor: Colors.blueAccent,
-            foregroundColor: Colors.white,
-            overlayOpacity: 0.1,
-            spacing: 10,
-            spaceBetweenChildren: 8,
-            children: [
-              SpeedDialChild(
-                child: const Icon(Icons.playlist_add),
-                backgroundColor: Colors.green,
-                label: '트랙 추가',
-                onTap: () => controller.openTrackSearchSheet(),
+        floatingActionButton: SessionFloatingMenu(
+          onAddTrack: controller.openTrackSearchSheet,
+          onShowHistory: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               ),
-              SpeedDialChild(
-                child: const Icon(Icons.history),
-                backgroundColor: Colors.orange,
-                label: '트랙 이력',
-                onTap: () {
-                  showModalBottomSheet(
-                    context: Get.context!,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder:
-                        (_) => PlayedTrackBottomSheet(
-                          sessionId: controller.session.value!.id,
-                        ),
-                  );
-                },
-              ),
-              SpeedDialChild(
-                child: const Icon(Icons.share),
-                backgroundColor: Colors.indigo,
-                label: '세션 공유',
-                onTap: _shareSessionLink,
-              ),
-            ],
-          ),
+              builder:
+                  (_) => PlayedTrackBottomSheet(
+                    sessionId: controller.session.value!.id,
+                  ),
+            );
+          },
+          onShare: _shareSessionLink,
         ),
       );
     });

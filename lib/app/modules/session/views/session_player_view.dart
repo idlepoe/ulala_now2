@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/components/button/gf_button.dart';
 import 'package:ulala_now2/app/data/models/session_track.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
@@ -21,10 +21,13 @@ class SessionPlayerView extends GetView<SessionController> {
           children: [
             // ▶️ 상단 YouTube 플레이어
             Obx(() {
-              final _ = controller.playerRefreshTrigger.value; // ✅ trigger 감시
+              final _ = controller.playerRefreshTrigger.value;
+              final isWeb = kIsWeb;
+              final isBottomSheetOpen = Get.isBottomSheetOpen ?? false;
+
               return YoutubePlayer(
                 controller: controller.youtubeController,
-                aspectRatio: 16 / 9,
+                aspectRatio: 16 / (isWeb && isBottomSheetOpen ? 3 : 9),
               );
             }),
             const SizedBox(height: 12),
