@@ -57,7 +57,7 @@ abstract class SessionTrack with _$SessionTrack {
     @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required DateTime endAt,
     required int duration, // ✅ 새로 추가됨 (초 단위)
     @JsonKey(fromJson: _addedByFromJson) required AddedBy addedBy, // ✅ 구조화된 객체 사용
-    @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required DateTime addedAt,
+    @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required DateTime createdAt,
   }) = _SessionTrack;
 
   factory SessionTrack.fromJson(Map<String, dynamic> json) =>

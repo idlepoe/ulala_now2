@@ -76,7 +76,7 @@ class ApiService {
               // ▶️ 추후 getYoutubeLength로 갱신
               startAt: now,
               endAt: now,
-              addedAt: now,
+              createdAt: now,
               addedBy: AddedBy(
                 uid: user?.uid ?? '',
                 nickname: user?.displayName ?? '익명',

@@ -7,6 +7,8 @@ import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  // Flutter 내부 디버그 로그 차단
+  debugPrint = (String? message, {int? wrapWidth}) {};
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(

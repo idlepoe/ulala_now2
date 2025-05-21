@@ -10,14 +10,14 @@ _SessionTrack _$SessionTrackFromJson(Map<String, dynamic> json) =>
     _SessionTrack(
       id: json['id'] as String,
       videoId: json['videoId'] as String,
-      title: json['title'] as String,
-      description: json['description'] as String,
+      title: _toString(json['title']),
+      description: _toString(json['description']),
       thumbnail: json['thumbnail'] as String,
       startAt: _toDateTime(json['startAt']),
       endAt: _toDateTime(json['endAt']),
       duration: (json['duration'] as num).toInt(),
       addedBy: _addedByFromJson(json['addedBy']),
-      addedAt: _toDateTime(json['addedAt']),
+      createdAt: _toDateTime(json['createdAt']),
     );
 
 Map<String, dynamic> _$SessionTrackToJson(_SessionTrack instance) =>
@@ -31,5 +31,5 @@ Map<String, dynamic> _$SessionTrackToJson(_SessionTrack instance) =>
       'endAt': _fromDateTime(instance.endAt),
       'duration': instance.duration,
       'addedBy': instance.addedBy,
-      'addedAt': _fromDateTime(instance.addedAt),
+      'createdAt': _fromDateTime(instance.createdAt),
     };

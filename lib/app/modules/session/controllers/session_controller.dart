@@ -10,6 +10,7 @@ import '../../../data/models/session.dart';
 import '../../../data/models/session_track.dart';
 import '../../../data/models/youtube/youtube_item.dart';
 import '../../../data/utils/api_service.dart';
+import '../../../data/utils/logger.dart';
 import '../../../routes/app_pages.dart';
 
 class SessionController extends GetxController {
@@ -18,8 +19,10 @@ class SessionController extends GetxController {
 
   late YoutubePlayerController youtubeController;
   StreamSubscription? _trackSub;
-  final prevTracks = <SessionTrack>[].obs;
+  final currentTracks = <SessionTrack>[].obs;
   final currentPlayerState = Rx<PlayerState>(PlayerState.unknown);
+
+  final currentTime = DateTime.now().obs;
 
   @override
   void onInit() {
@@ -39,6 +42,7 @@ class SessionController extends GetxController {
     Timer.periodic(const Duration(seconds: 1), (_) async {
       final state = await youtubeController.playerState;
       currentPlayerState.value = state;
+      currentTime.value = DateTime.now(); // 매초 갱신
     });
 
     _subscribeToTracks();
@@ -74,14 +78,27 @@ class SessionController extends GetxController {
 
     // ✅ 로컬 캐시 확인
     if (raw != null) {
+      final prefs = await SharedPreferences.getInstance();
       final cachedMap = json.decode(raw) as Map<String, dynamic>;
+
       if (cachedMap.containsKey(trimmed)) {
-        final cachedList =
-            (cachedMap[trimmed] as List)
-                .map((e) => SessionTrack.fromJson(e))
-                .toList();
-        youtubeSearchResults.value = cachedList;
-        return;
+        try {
+          final cachedList =
+              (cachedMap[trimmed] as List)
+                  .map((e) => SessionTrack.fromJson(e))
+                  .toList();
+
+          youtubeSearchResults.value = cachedList;
+          return;
+        } catch (e) {
+          logger.e("❌ 캐시 파싱 오류: $e");
+
+          // 🔥 해당 키 삭제 후 캐시 저장
+          cachedMap.remove(trimmed);
+          await prefs.setString(_cacheKey, json.encode(cachedMap));
+
+          logger.w("⚠️ 오류 발생한 키 [$trimmed] 캐시에서 제거함");
+        }
       }
     }
 
@@ -140,10 +157,11 @@ class SessionController extends GetxController {
       sessionId: session.value!.id,
       track: track,
     );
+    logger.w(response);
 
     if (response != null) {
-      Get.snackbar('트랙 추가', '${track.title}이(가) 추가되었습니다.');
-      Get.back();
+      // 0.5초 후에 BottomSheet 닫기
+      Get.back(result: true);
     } else {
       Get.snackbar('오류', '트랙 추가에 실패했습니다.');
     }
@@ -174,10 +192,10 @@ class SessionController extends GetxController {
     final updated = Map<String, SessionTrack>.from(favorites);
     if (updated.containsKey(track.videoId)) {
       updated.remove(track.videoId);
-      Get.snackbar('즐겨찾기', '즐겨찾기에서 제거됨');
+      if (!Get.isSnackbarOpen) Get.snackbar('즐겨찾기', '즐겨찾기에서 제거됨');
     } else {
       updated[track.videoId] = track;
-      Get.snackbar('즐겨찾기', '즐겨찾기에 추가됨');
+      if (!Get.isSnackbarOpen) Get.snackbar('즐겨찾기', '즐겨찾기에 추가됨');
     }
 
     // 저장
@@ -199,7 +217,7 @@ class SessionController extends GetxController {
         .collection('sessions')
         .doc(sessionId)
         .collection('tracks')
-        .orderBy('addedAt', descending: false)
+        .orderBy('startAt', descending: false)
         .snapshots()
         .listen((snapshot) {
           final newTracks =
@@ -207,9 +225,9 @@ class SessionController extends GetxController {
                   .map((e) => SessionTrack.fromJson(e.data()))
                   .toList();
 
-          if (_areTracksEqual(prevTracks, newTracks)) return;
+          if (_areTracksEqual(currentTracks, newTracks)) return;
 
-          prevTracks.assignAll(newTracks);
+          currentTracks.assignAll(newTracks);
           session.value = session.value?.copyWith(trackList: newTracks);
           _syncWithYoutubePlayer(newTracks);
         });
@@ -228,6 +246,7 @@ class SessionController extends GetxController {
   }
 
   Future<void> _syncWithYoutubePlayer(List<SessionTrack> tracks) async {
+    logger.i("_syncWithYoutubePlayer");
     final now = DateTime.now();
     final current = tracks.firstWhereOrNull((track) {
       final end = track.startAt.add(Duration(seconds: track.duration));
@@ -278,5 +297,35 @@ class SessionController extends GetxController {
     _trackSub?.cancel();
     youtubeController.close();
     super.onClose();
+  }
+
+  Future<void> sync() async {
+    // youtubeController = YoutubePlayerController(
+    //   params: const YoutubePlayerParams(
+    //     showControls: true,
+    //     showFullscreenButton: false,
+    //   ),
+    // );
+    // var result =
+    //     await FirebaseFirestore.instance
+    //         .collection('sessions')
+    //         .doc(sessionId)
+    //         .collection('tracks')
+    //         .orderBy('startAt', descending: false)
+    //         .get();
+    // logger.d(result);
+    // youtubeController.close();
+    // triggerPlayerRefresh(); // ✅ 리렌더링 유도
+    _subscribeToTracks();
+    // _syncWithYoutubePlayer(currentTracks);
+    // logger.d(currentTracks);
+    // logger.d(await youtubeController.playerState);
+    // youtubeController.playVideo();
+  }
+
+  final playerRefreshTrigger = 0.obs;
+
+  void triggerPlayerRefresh() {
+    playerRefreshTrigger.value++; // 값 변경 시 Obx 감지
   }
 }

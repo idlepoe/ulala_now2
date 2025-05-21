@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionParticipant {
 
- String get uid; String get nickname; String get avatarUrl;
+ String get uid; String get nickname; String get avatarUrl;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get createdAt;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get updatedAt;
 /// Create a copy of SessionParticipant
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $SessionParticipantCopyWith<SessionParticipant> get copyWith => _$SessionPartici
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionParticipant&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionParticipant&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,nickname,avatarUrl);
+int get hashCode => Object.hash(runtimeType,uid,nickname,avatarUrl,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'SessionParticipant(uid: $uid, nickname: $nickname, avatarUrl: $avatarUrl)';
+  return 'SessionParticipant(uid: $uid, nickname: $nickname, avatarUrl: $avatarUrl, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $SessionParticipantCopyWith<$Res>  {
   factory $SessionParticipantCopyWith(SessionParticipant value, $Res Function(SessionParticipant) _then) = _$SessionParticipantCopyWithImpl;
 @useResult
 $Res call({
- String uid, String nickname, String avatarUrl
+ String uid, String nickname, String avatarUrl,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime updatedAt
 });
 
 
@@ -66,12 +66,14 @@ class _$SessionParticipantCopyWithImpl<$Res>
 
 /// Create a copy of SessionParticipant
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? nickname = null,Object? avatarUrl = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? nickname = null,Object? avatarUrl = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_self.copyWith(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,nickname: null == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
   ));
 }
 
@@ -82,12 +84,14 @@ as String,
 @JsonSerializable()
 
 class _SessionParticipant implements SessionParticipant {
-  const _SessionParticipant({required this.uid, required this.nickname, required this.avatarUrl});
+  const _SessionParticipant({required this.uid, required this.nickname, required this.avatarUrl, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.createdAt, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.updatedAt});
   factory _SessionParticipant.fromJson(Map<String, dynamic> json) => _$SessionParticipantFromJson(json);
 
 @override final  String uid;
 @override final  String nickname;
 @override final  String avatarUrl;
+@override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime createdAt;
+@override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime updatedAt;
 
 /// Create a copy of SessionParticipant
 /// with the given fields replaced by the non-null parameter values.
@@ -102,16 +106,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionParticipant&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionParticipant&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.nickname, nickname) || other.nickname == nickname)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,nickname,avatarUrl);
+int get hashCode => Object.hash(runtimeType,uid,nickname,avatarUrl,createdAt,updatedAt);
 
 @override
 String toString() {
-  return 'SessionParticipant(uid: $uid, nickname: $nickname, avatarUrl: $avatarUrl)';
+  return 'SessionParticipant(uid: $uid, nickname: $nickname, avatarUrl: $avatarUrl, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -122,7 +126,7 @@ abstract mixin class _$SessionParticipantCopyWith<$Res> implements $SessionParti
   factory _$SessionParticipantCopyWith(_SessionParticipant value, $Res Function(_SessionParticipant) _then) = __$SessionParticipantCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String nickname, String avatarUrl
+ String uid, String nickname, String avatarUrl,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime updatedAt
 });
 
 
@@ -139,12 +143,14 @@ class __$SessionParticipantCopyWithImpl<$Res>
 
 /// Create a copy of SessionParticipant
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? nickname = null,Object? avatarUrl = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? nickname = null,Object? avatarUrl = null,Object? createdAt = null,Object? updatedAt = null,}) {
   return _then(_SessionParticipant(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,nickname: null == nickname ? _self.nickname : nickname // ignore: cast_nullable_to_non_nullable
 as String,avatarUrl: null == avatarUrl ? _self.avatarUrl : avatarUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime,
   ));
 }
 

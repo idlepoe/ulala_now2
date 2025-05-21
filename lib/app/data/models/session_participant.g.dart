@@ -11,6 +11,8 @@ _SessionParticipant _$SessionParticipantFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String,
       nickname: json['nickname'] as String,
       avatarUrl: json['avatarUrl'] as String,
+      createdAt: _toDateTime(json['createdAt']),
+      updatedAt: _toDateTime(json['updatedAt']),
     );
 
 Map<String, dynamic> _$SessionParticipantToJson(_SessionParticipant instance) =>
@@ -18,4 +20,6 @@ Map<String, dynamic> _$SessionParticipantToJson(_SessionParticipant instance) =>
       'uid': instance.uid,
       'nickname': instance.nickname,
       'avatarUrl': instance.avatarUrl,
+      'createdAt': _fromDateTime(instance.createdAt),
+      'updatedAt': _fromDateTime(instance.updatedAt),
     };

@@ -16,9 +16,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SessionTrack {
 
- String get id; String get videoId; String get title; String get description; String get thumbnail;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get startAt;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get endAt; int get duration;// ✅ 새로 추가됨 (초 단위)
+ String get id; String get videoId;@JsonKey(fromJson: _toString) String get title;@JsonKey(fromJson: _toString) String get description; String get thumbnail;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get startAt;@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get endAt; int get duration;// ✅ 새로 추가됨 (초 단위)
 @JsonKey(fromJson: _addedByFromJson) AddedBy get addedBy;// ✅ 구조화된 객체 사용
-@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get addedAt;
+@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime get createdAt;
 /// Create a copy of SessionTrack
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,16 +31,16 @@ $SessionTrackCopyWith<SessionTrack> get copyWith => _$SessionTrackCopyWithImpl<S
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionTrack&&(identical(other.id, id) || other.id == id)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionTrack&&(identical(other.id, id) || other.id == id)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,videoId,title,description,thumbnail,startAt,endAt,duration,addedBy,addedAt);
+int get hashCode => Object.hash(runtimeType,id,videoId,title,description,thumbnail,startAt,endAt,duration,addedBy,createdAt);
 
 @override
 String toString() {
-  return 'SessionTrack(id: $id, videoId: $videoId, title: $title, description: $description, thumbnail: $thumbnail, startAt: $startAt, endAt: $endAt, duration: $duration, addedBy: $addedBy, addedAt: $addedAt)';
+  return 'SessionTrack(id: $id, videoId: $videoId, title: $title, description: $description, thumbnail: $thumbnail, startAt: $startAt, endAt: $endAt, duration: $duration, addedBy: $addedBy, createdAt: $createdAt)';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $SessionTrackCopyWith<$Res>  {
   factory $SessionTrackCopyWith(SessionTrack value, $Res Function(SessionTrack) _then) = _$SessionTrackCopyWithImpl;
 @useResult
 $Res call({
- String id, String videoId, String title, String description, String thumbnail,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime startAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime endAt, int duration,@JsonKey(fromJson: _addedByFromJson) AddedBy addedBy,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime addedAt
+ String id, String videoId,@JsonKey(fromJson: _toString) String title,@JsonKey(fromJson: _toString) String description, String thumbnail,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime startAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime endAt, int duration,@JsonKey(fromJson: _addedByFromJson) AddedBy addedBy,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime createdAt
 });
 
 
@@ -68,7 +68,7 @@ class _$SessionTrackCopyWithImpl<$Res>
 
 /// Create a copy of SessionTrack
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? videoId = null,Object? title = null,Object? description = null,Object? thumbnail = null,Object? startAt = null,Object? endAt = null,Object? duration = null,Object? addedBy = null,Object? addedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? videoId = null,Object? title = null,Object? description = null,Object? thumbnail = null,Object? startAt = null,Object? endAt = null,Object? duration = null,Object? addedBy = null,Object? createdAt = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,videoId: null == videoId ? _self.videoId : videoId // ignore: cast_nullable_to_non_nullable
@@ -79,7 +79,7 @@ as String,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nul
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as int,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
-as AddedBy,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as AddedBy,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
@@ -100,13 +100,13 @@ $AddedByCopyWith<$Res> get addedBy {
 @JsonSerializable()
 
 class _SessionTrack implements SessionTrack {
-  const _SessionTrack({required this.id, required this.videoId, required this.title, required this.description, required this.thumbnail, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.startAt, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.endAt, required this.duration, @JsonKey(fromJson: _addedByFromJson) required this.addedBy, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.addedAt});
+  const _SessionTrack({required this.id, required this.videoId, @JsonKey(fromJson: _toString) required this.title, @JsonKey(fromJson: _toString) required this.description, required this.thumbnail, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.startAt, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.endAt, required this.duration, @JsonKey(fromJson: _addedByFromJson) required this.addedBy, @JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) required this.createdAt});
   factory _SessionTrack.fromJson(Map<String, dynamic> json) => _$SessionTrackFromJson(json);
 
 @override final  String id;
 @override final  String videoId;
-@override final  String title;
-@override final  String description;
+@override@JsonKey(fromJson: _toString) final  String title;
+@override@JsonKey(fromJson: _toString) final  String description;
 @override final  String thumbnail;
 @override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime startAt;
 @override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime endAt;
@@ -114,7 +114,7 @@ class _SessionTrack implements SessionTrack {
 // ✅ 새로 추가됨 (초 단위)
 @override@JsonKey(fromJson: _addedByFromJson) final  AddedBy addedBy;
 // ✅ 구조화된 객체 사용
-@override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime addedAt;
+@override@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) final  DateTime createdAt;
 
 /// Create a copy of SessionTrack
 /// with the given fields replaced by the non-null parameter values.
@@ -129,16 +129,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionTrack&&(identical(other.id, id) || other.id == id)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.addedAt, addedAt) || other.addedAt == addedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionTrack&&(identical(other.id, id) || other.id == id)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&(identical(other.thumbnail, thumbnail) || other.thumbnail == thumbnail)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.duration, duration) || other.duration == duration)&&(identical(other.addedBy, addedBy) || other.addedBy == addedBy)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,videoId,title,description,thumbnail,startAt,endAt,duration,addedBy,addedAt);
+int get hashCode => Object.hash(runtimeType,id,videoId,title,description,thumbnail,startAt,endAt,duration,addedBy,createdAt);
 
 @override
 String toString() {
-  return 'SessionTrack(id: $id, videoId: $videoId, title: $title, description: $description, thumbnail: $thumbnail, startAt: $startAt, endAt: $endAt, duration: $duration, addedBy: $addedBy, addedAt: $addedAt)';
+  return 'SessionTrack(id: $id, videoId: $videoId, title: $title, description: $description, thumbnail: $thumbnail, startAt: $startAt, endAt: $endAt, duration: $duration, addedBy: $addedBy, createdAt: $createdAt)';
 }
 
 
@@ -149,7 +149,7 @@ abstract mixin class _$SessionTrackCopyWith<$Res> implements $SessionTrackCopyWi
   factory _$SessionTrackCopyWith(_SessionTrack value, $Res Function(_SessionTrack) _then) = __$SessionTrackCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String videoId, String title, String description, String thumbnail,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime startAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime endAt, int duration,@JsonKey(fromJson: _addedByFromJson) AddedBy addedBy,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime addedAt
+ String id, String videoId,@JsonKey(fromJson: _toString) String title,@JsonKey(fromJson: _toString) String description, String thumbnail,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime startAt,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime endAt, int duration,@JsonKey(fromJson: _addedByFromJson) AddedBy addedBy,@JsonKey(fromJson: _toDateTime, toJson: _fromDateTime) DateTime createdAt
 });
 
 
@@ -166,7 +166,7 @@ class __$SessionTrackCopyWithImpl<$Res>
 
 /// Create a copy of SessionTrack
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? videoId = null,Object? title = null,Object? description = null,Object? thumbnail = null,Object? startAt = null,Object? endAt = null,Object? duration = null,Object? addedBy = null,Object? addedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? videoId = null,Object? title = null,Object? description = null,Object? thumbnail = null,Object? startAt = null,Object? endAt = null,Object? duration = null,Object? addedBy = null,Object? createdAt = null,}) {
   return _then(_SessionTrack(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,videoId: null == videoId ? _self.videoId : videoId // ignore: cast_nullable_to_non_nullable
@@ -177,7 +177,7 @@ as String,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nul
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,duration: null == duration ? _self.duration : duration // ignore: cast_nullable_to_non_nullable
 as int,addedBy: null == addedBy ? _self.addedBy : addedBy // ignore: cast_nullable_to_non_nullable
-as AddedBy,addedAt: null == addedAt ? _self.addedAt : addedAt // ignore: cast_nullable_to_non_nullable
+as AddedBy,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
 }
