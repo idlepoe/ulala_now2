@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:ulala_now2/app/modules/session/controllers/chat_controller.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
-import '../widgets/build_avatar.dart';
+import '../widgets/chat_bottom_sheet.dart';
 import '../widgets/participant_chip.dart';
 import 'session_player_view.dart';
-import '../widgets/track_search_bottom_sheet.dart';
 
 class SessionView extends GetView<SessionController> {
   const SessionView({super.key});
@@ -65,15 +65,41 @@ class SessionView extends GetView<SessionController> {
             const Divider(height: 1),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Row(
-                  spacing: 8,
-                  children:
-                      session.participants.map((p) {
-                        return ParticipantChip(participant: p, size: 20);
-                      }).toList(),
-                ),
+              child: Row(
+                children: [
+                  // 채팅 버튼 + 뱃지
+                  Obx(() {
+                    final chatController = Get.find<ChatController>();
+                    final count = chatController.unreadCount.value;
+                    return Badge(
+                      label: Text('$count'),
+                      isLabelVisible: count > 1,
+                      child: IconButton(
+                        icon: Icon(Icons.chat_bubble),
+                        onPressed: () {
+                          chatController.markAllAsRead();
+                          Get.bottomSheet(ChatBottomSheet());
+                        },
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(width: 8),
+
+                  Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      child: Row(
+                        spacing: 8,
+                        children:
+                            session.participants.map((p) {
+                              return ParticipantChip(participant: p, size: 20);
+                            }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

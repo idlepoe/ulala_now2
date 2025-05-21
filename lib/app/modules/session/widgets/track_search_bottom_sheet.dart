@@ -42,7 +42,45 @@ class TrackSearchBottomSheet extends StatelessWidget {
               }
             },
           ),
-          const SizedBox(height: 12),
+
+          // 최근 검색어 목록
+          Obx(() {
+            final keywords = controller.recentKeywords;
+            if (keywords.isEmpty) return const SizedBox.shrink();
+
+            return Column(
+              children: [
+                SizedBox(height: 5),
+                Row(
+                  children: [
+                    Text(
+                      "최근 검색어",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Row(
+                          spacing: 8,
+                          children:
+                              keywords.map((keyword) {
+                                return ActionChip(
+                                  label: Text(keyword),
+                                  onPressed: () {
+                                    searchController.text = keyword;
+                                    controller.searchYoutube(keyword);
+                                  },
+                                );
+                              }).toList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          }),
+
           Obx(() {
             if (controller.isSearching.value) {
               return const Expanded(
@@ -66,6 +104,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
                       isFavorite: controller.isFavorite(track.videoId),
                       onFavorite: () => controller.toggleFavorite(track),
                       onAdd: () => controller.attachDurationAndAddTrack(track),
+                      isDisabled: controller.isSearching.value,
                     ),
                   );
                 },

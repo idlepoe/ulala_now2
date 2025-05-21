@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import '../../../data/models/chat_message.dart';
 import '../../../data/models/session.dart';
 import '../../../data/models/session_track.dart';
 import '../../../data/models/youtube/youtube_item.dart';
@@ -13,6 +14,7 @@ import '../../../data/utils/api_service.dart';
 import '../../../data/utils/logger.dart';
 import '../../../routes/app_pages.dart';
 import '../widgets/track_search_bottom_sheet.dart';
+import 'chat_controller.dart';
 
 class SessionController extends GetxController {
   final session = Rxn<Session>();
@@ -25,12 +27,18 @@ class SessionController extends GetxController {
 
   final currentTime = DateTime.now().obs;
 
+  void onSessionLoaded() {
+    Get.find<ChatController>().startListening(sessionId);
+  }
+
   @override
   void onInit() {
     super.onInit();
     sessionId = Get.arguments as String;
     fetchSession();
     loadFavorites();
+    onSessionLoaded();
+    _loadRecentKeywords();
 
     youtubeController = YoutubePlayerController(
       params: const YoutubePlayerParams(
@@ -69,10 +77,24 @@ class SessionController extends GetxController {
 
   static const String _cacheKey = 'youtube_search_cache';
 
+  static const _prefsKey = 'recent_search_keywords';
+  final RxList<String> recentKeywords = <String>[].obs;
+
   /// 유튜브 검색 → SessionTrack으로 관리 + 캐시 활용
   Future<void> searchYoutube(String keyword) async {
     final trimmed = keyword.trim();
-    if (trimmed.isEmpty) return;
+    if (trimmed.isEmpty || isSearching.value) return;
+
+    // 중복 제거 후 추가
+    recentKeywords.remove(keyword);
+    recentKeywords.insert(0, keyword);
+
+    // 최대 10개 유지
+    if (recentKeywords.length > 10) {
+      recentKeywords.removeRange(10, recentKeywords.length);
+    }
+
+    _saveRecentKeywords(); // 저장
 
     final prefs = await SharedPreferences.getInstance();
     final raw = prefs.getString(_cacheKey);
@@ -119,6 +141,17 @@ class SessionController extends GetxController {
     } else {
       youtubeSearchResults.clear();
     }
+  }
+
+  Future<void> _loadRecentKeywords() async {
+    final prefs = await SharedPreferences.getInstance();
+    final keywords = prefs.getStringList(_prefsKey) ?? [];
+    recentKeywords.assignAll(keywords);
+  }
+
+  Future<void> _saveRecentKeywords() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_prefsKey, recentKeywords);
   }
 
   static const _durationCacheKey = 'youtube_duration_cache';

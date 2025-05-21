@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../controllers/chat_controller.dart';
 import '../controllers/session_controller.dart';
 
 class SessionBinding extends Bindings {
@@ -8,5 +9,6 @@ class SessionBinding extends Bindings {
     Get.lazyPut<SessionController>(
       () => SessionController(),
     );
+    Get.put(ChatController());
   }
 }

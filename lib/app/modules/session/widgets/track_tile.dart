@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:getwidget/components/list_tile/gf_list_tile.dart';
 import 'package:getwidget/types/gf_button_type.dart';
@@ -11,6 +12,7 @@ class TrackTile extends StatelessWidget {
   final VoidCallback? onFavorite;
   final bool isFavorite;
   final bool showFavorite;
+  final bool isDisabled;
 
   const TrackTile({
     super.key,
@@ -19,6 +21,7 @@ class TrackTile extends StatelessWidget {
     this.onFavorite,
     this.isFavorite = false,
     this.showFavorite = true,
+    this.isDisabled = false,
   });
 
   @override
@@ -54,14 +57,15 @@ class TrackTile extends StatelessWidget {
           GFIconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
-              color: isFavorite ? Colors.red : null,
+              color:
+                  isDisabled ? Colors.grey : (isFavorite ? Colors.red : null),
             ),
-            onPressed: onFavorite,
+            onPressed: isDisabled ? null : onFavorite,
             type: GFButtonType.transparent,
           ),
           GFIconButton(
-            icon: const Icon(Icons.add),
-            onPressed: onAdd,
+            icon: Icon(Icons.add, color: isDisabled ? Colors.grey : null),
+            onPressed: isDisabled ? null : onAdd,
             type: GFButtonType.transparent,
           ),
         ],
