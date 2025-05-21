@@ -234,7 +234,7 @@ class ApiService {
   static Future<Session?> getSessionById(String sessionId) async {
     try {
       final response = await dio.get(
-        "${ApiConstants.baseUrl}${ApiConstants.getSessionById}",
+        ApiConstants.getSessionById,
         queryParameters: {"sessionId": sessionId},
       );
 

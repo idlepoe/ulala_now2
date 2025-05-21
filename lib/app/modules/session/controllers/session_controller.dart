@@ -73,19 +73,19 @@ class SessionController extends GetxController {
   }
 
   Future<void> fetchSession() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      await FirebaseAuth.instance.signInAnonymously();
+    }
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
 
     final data = await ApiService.getSessionById(sessionId);
 
     if (data != null) {
-      final alreadyJoined = data.participants.any((p) => p.uid == user.uid);
+      final alreadyJoined = data.participants.any((p) => p.uid == user!.uid);
 
       // ✅ 아직 참여하지 않은 경우 자동 참가 처리
       if (!alreadyJoined) {
-        await ApiService.joinSession(
-          sessionId,
-        );
+        await ApiService.joinSession(sessionId);
 
         // 참가 이후 정보 다시 불러오기
         final updated = await ApiService.getSessionById(sessionId);
@@ -97,7 +97,6 @@ class SessionController extends GetxController {
       _handleInvalidSession();
     }
   }
-
 
   final youtubeSearchResults = <SessionTrack>[].obs;
   final isSearching = false.obs;
@@ -505,5 +504,4 @@ class SessionController extends GetxController {
     "은하수에 음악이 비었어요. 첫 곡을 채워주세요 ⭐",
     "지금은 정적 타임... 음악 한 곡 어때요?",
   ];
-
 }

@@ -26,13 +26,26 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
     const sessionRef = db.collection("sessions").doc(sessionId);
 
     // 유저 활동 시간 갱신 START
-    const participantRef = sessionRef.collection("participants")
-      .doc(uid);
+    const participantRef = sessionRef.collection("participants").doc(uid);
 
-    await participantRef.update({
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    const participantSnap = await participantRef.get();
+
+    if (participantSnap.exists) {
+      await participantRef.update({
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      // 문서가 없는 경우, createdAt과 함께 새로 생성
+      await participantRef.set({
+        uid: uid,
+        nickname: decoded.name || "",         // 예: decoded에 사용자 이름이 있을 경우
+        avatarUrl: decoded.picture || "",      // 예: decoded에 프로필 이미지가 있을 경우
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      }, {merge: true}); // 다른 필드가 있다면 보존
+    }
     // 유저 활동 시간 갱신 END
+
 
     const sessionSnap = await sessionRef.get();
 
