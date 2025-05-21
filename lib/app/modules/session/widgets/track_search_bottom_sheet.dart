@@ -54,9 +54,10 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 controller.recordSearchTime();
                 controller.checkSearchCooldown();
               },
-              cooldownMessage: controller.isSearchCooldown.value
-                  ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
-                  : null,
+              cooldownMessage:
+                  controller.isSearchCooldown.value
+                      ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
+                      : null,
             ),
           ),
 
@@ -120,12 +121,15 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final track = results[index];
                   return Obx(
-                    () => TrackTile(
-                      track: track,
-                      isFavorite: controller.isFavorite(track.videoId),
-                      onFavorite: () => controller.toggleFavorite(track),
-                      onAdd: () => controller.attachDurationAndAddTrack(track),
-                      isDisabled: controller.isSearching.value,
+                    () => Container(
+                      child: TrackTile(
+                        track: track,
+                        isFavorite: controller.isFavorite(track.videoId),
+                        onFavorite: () => controller.toggleFavorite(track),
+                        onAdd:
+                            () => controller.attachDurationAndAddTrack(track),
+                        isDisabled: controller.isSearching.value,
+                      ),
                     ),
                   );
                 },

@@ -95,9 +95,8 @@ class PlayedTrackBottomSheet extends StatelessWidget {
                                       track,
                                     ),
                                 isDisabled: controller.isSearching.value,
-                                bottomText: DateFormat(
-                                  'HH:mm',
-                                ).format(track.startAt), // ✅ 여기에 표시
+                                bottomText: _buildTrackInfoText(track),
+
                               ),
                             ),
                           ),
@@ -122,5 +121,16 @@ class PlayedTrackBottomSheet extends StatelessWidget {
     if (dateKey == today) return '오늘';
     if (dateKey == yesterday) return '어제';
     return dateKey;
+  }
+
+  String _buildTrackInfoText(SessionTrack track) {
+    final playedAt = DateFormat('HH:mm').format(track.startAt);
+    final duration = track.endAt.difference(track.startAt);
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+
+    final formattedDuration = '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+
+    return '재생 시간: $playedAt · 길이: $formattedDuration';
   }
 }

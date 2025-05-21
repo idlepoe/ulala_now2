@@ -43,6 +43,7 @@ class CurrentTrackCard extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
+                  maxLines: 2,
                 ),
               ),
               IconButton(
@@ -77,10 +78,7 @@ class CurrentTrackCard extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: Text(
               '종료 예정: $endTimeFormatted',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
           ),
         ],

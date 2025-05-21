@@ -135,7 +135,6 @@ class SessionController extends GetxController {
     // 🌐 API 호출
     isSearching.value = true;
     final results = await ApiService.youtubeSearch(search: trimmed);
-    recordSearchTime();
     isSearching.value = false;
 
     // ✅ 결과 저장 및 표시
@@ -146,6 +145,7 @@ class SessionController extends GetxController {
 
       newMap[trimmed] = results.map((e) => e.toJson()).toList();
       prefs.setString(_cacheKey, json.encode(newMap));
+      recordSearchTime();
     } else {
       youtubeSearchResults.clear();
     }

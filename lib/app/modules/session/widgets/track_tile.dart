@@ -1,9 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:getwidget/components/list_tile/gf_list_tile.dart';
-import 'package:getwidget/types/gf_button_type.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:ulala_now2/app/data/models/session_track.dart';
 
 class TrackTile extends StatelessWidget {
@@ -28,25 +26,29 @@ class TrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final imageWidth = Get.width / 5;
     return ListTile(
+      contentPadding: EdgeInsets.zero,
       leading: ClipRRect(
-        borderRadius: BorderRadius.circular(8), // 원하는 라운드 값
+        borderRadius: BorderRadius.circular(8),
         child: CachedNetworkImage(
           imageUrl: track.thumbnail,
-          width: 160,
+          width: imageWidth,
           height: 60,
           fit: BoxFit.cover,
           placeholder:
-              (context, url) => const SizedBox(
-                width: 60,
+              (context, url) => SizedBox(
+                width: imageWidth,
                 height: 40,
-                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                child: const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
               ),
           errorWidget:
-              (context, url, error) => const SizedBox(
-                width: 60,
+              (context, url, error) => SizedBox(
+                width: imageWidth,
                 height: 40,
-                child: Center(child: Icon(Icons.broken_image)),
+                child: const Center(child: Icon(Icons.broken_image)),
               ),
         ),
       ),
