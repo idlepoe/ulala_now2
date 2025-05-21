@@ -7,12 +7,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../routes/app_pages.dart';
 
 class SplashController extends GetxController {
-  final _auth = FirebaseAuth.instance;
-
+  final RxString message = ''.obs;
+  final messages = [
+    '세션에 몰래 들어가는 중...',
+    '참가자 수를 세고 있어요...',
+    'DJ가 준비 중입니다...',
+    '음악 케이블을 꽂는 중...',
+    '좋은 곡을 탐색 중...',
+    '리듬을 타고 있어요...',
+    '서버를 깨우는 중...',
+  ];
   @override
   void onInit() {
     super.onInit();
-    _initApp();
+    message.value = (messages..shuffle()).first;
+    // _initApp();
   }
 
   Future<void> _initApp() async {
@@ -37,7 +46,7 @@ class SplashController extends GetxController {
 
       // 라우팅
       if (sessionId != null) {
-        Get.offAllNamed(Routes.SESSION, arguments: sessionId);
+        Get.offAllNamed(Routes.SESSION + '/$sessionId');
       } else {
         Get.offAllNamed(Routes.HOME);
       }

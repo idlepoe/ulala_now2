@@ -46,7 +46,10 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
     const sessionData = sessionSnap.data();
 
     // 🔽 participants 서브컬렉션 읽기
-    const participantsSnap = await sessionRef.collection("participants").get();
+    const participantsSnap = await sessionRef
+      .collection("participants")
+      .orderBy("updatedAt", "desc")
+      .get();
     sessionData!.participants = participantsSnap.docs.map((doc) => doc.data());
 
     return res.status(200).json({

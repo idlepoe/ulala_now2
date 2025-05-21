@@ -25,8 +25,13 @@ class AppPages {
       page: () => const SplashView(),
       binding: SplashBinding(),
     ),
+    // GetPage(
+    //   name: _Paths.SESSION,
+    //   page: () => const SessionView(),
+    //   binding: SessionBinding(),
+    // ),
     GetPage(
-      name: _Paths.SESSION,
+      name: _Paths.SESSION + '/:sessionId',
       page: () => const SessionView(),
       binding: SessionBinding(),
     ),

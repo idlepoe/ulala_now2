@@ -34,7 +34,12 @@ class SessionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    sessionId = Get.arguments as String;
+    sessionId = Get.parameters['sessionId']!;
+    if (sessionId.isEmpty) {
+      _handleInvalidSession();
+      return;
+    }
+
     fetchSession();
     loadFavorites();
     onSessionLoaded();
@@ -57,18 +62,19 @@ class SessionController extends GetxController {
     _subscribeToTracks();
   }
 
+  void _handleInvalidSession() async {
+    Get.snackbar("오류", "세션 정보를 불러올 수 없습니다.");
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('sessionId');
+    Get.offAllNamed(Routes.SPLASH);
+  }
+
   Future<void> fetchSession() async {
     final data = await ApiService.getSessionById(sessionId);
     if (data != null) {
       session.value = data;
     } else {
-      // 🔸 세션 ID 제거
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove("sessionId");
-
-      // 🔔 사용자에게 알림 후 홈으로 이동
-      Get.snackbar("오류", "세션 정보를 불러올 수 없습니다.");
-      Get.offAllNamed(Routes.SPLASH);
+      _handleInvalidSession();
     }
   }
 
@@ -350,6 +356,7 @@ class SessionController extends GetxController {
     // logger.d(result);
     // youtubeController.close();
     // currentTracks.clear();
+    fetchSession();
     _syncWithYoutubePlayer(currentTracks);
     triggerPlayerRefresh(); // ✅ 리렌더링 유도
     // _syncWithYoutubePlayer(currentTracks);
