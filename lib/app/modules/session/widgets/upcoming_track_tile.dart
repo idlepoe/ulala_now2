@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../../data/models/session_track.dart';
 import 'build_avatar.dart';
@@ -32,15 +34,19 @@ class UpcomingTrackTile extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 6,
+          ),
           leading: CachedNetworkImage(
             imageUrl: track.thumbnail,
-            width: 120,
+            width: Get.width / 5,
             fit: BoxFit.cover,
           ),
           title: Text(
             track.title,
             maxLines: 1,
+            style: TextStyle(fontSize: 12),
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Column(
@@ -50,6 +56,7 @@ class UpcomingTrackTile extends StatelessWidget {
                 isCurrent
                     ? "지금 재생 중"
                     : "예정: ${start.toLocal().toString().substring(11, 16)}",
+                style: TextStyle(fontSize: 12),
               ),
               const SizedBox(height: 4),
               Row(

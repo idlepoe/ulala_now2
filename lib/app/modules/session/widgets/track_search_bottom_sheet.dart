@@ -125,9 +125,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
                       }, childCount: results.length),
                     );
                   }),
-                  SliverToBoxAdapter(
-                    child: SizedBox(height: 12),
-                  ),
+                  SliverToBoxAdapter(child: SizedBox(height: 12)),
                 ],
               ),
             ),
@@ -170,7 +168,9 @@ class TrackSearchBottomSheet extends StatelessWidget {
           Obx(
             () => YoutubeSearchInput(
               controller: searchController,
-              enabled: !controller.isSearchCooldown.value,
+              enabled:
+                  (!controller.isSearchCooldown.value &&
+                      !controller.isSearching.value),
               onSearch: (keyword) => controller.searchYoutube(keyword),
               cooldownMessage:
                   controller.isSearchCooldown.value

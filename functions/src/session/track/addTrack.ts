@@ -5,11 +5,14 @@ import {db} from "../../firebase";
 
 export const addTrack = onRequest({cors: true}, async (req, res: any) => {
   if (req.method !== "POST") {
-    return res.status(200).json({success: false, message: "허용되지 않은 요청 방식입니다."});
+    return res.status(200).json({
+      success: false,
+      message: "허용되지 않은 요청 방식입니다.",
+    });
   }
 
   try {
-    const decoded = await verifyAuth(req);
+    const decoded = await verifyAuth(req); // 🔐 인증 유효성 검사
     const uid = decoded.uid;
     const {sessionId, track} = req.body;
 
@@ -21,15 +24,12 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
+    const participantRef = sessionRef.collection("participants").doc(uid);
 
-    // 유저 활동 시간 갱신 START
-    const participantRef = sessionRef.collection("participants")
-      .doc(uid);
-
+    // ✅ 참여자 활동 시간 갱신
     await participantRef.update({
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
-    // 유저 활동 시간 갱신 END
 
     const tracksCol = sessionRef.collection("tracks");
     const now = new Date();
@@ -41,25 +41,29 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
       .limit(1)
       .get();
 
-    let currentTrack: any = null;
     let baseTime = now;
+    let currentTrackId: string | null = null;
 
     if (!currentSnap.empty) {
       const doc = currentSnap.docs[0];
-      currentTrack = {id: doc.id, data: doc.data()};
-      baseTime = currentTrack.data.endAt.toDate(); // 기준: 현재 재생 중 끝나는 시간
+      baseTime = doc.data().endAt.toDate();
+      currentTrackId = doc.id;
     }
 
-    // ✅ baseTime 이후의 트랙 가져오기
+    // ✅ baseTime 이후 트랙 목록
     const afterSnap = await tracksCol
       .where("startAt", ">=", admin.firestore.Timestamp.fromDate(baseTime))
       .get();
 
     const futureTracks = afterSnap.docs
-      .filter(doc => !currentTrack || doc.id !== currentTrack.id) // 현재 트랙은 제외
-      .map(doc => ({id: doc.id, data: doc.data()}));
+      .filter(doc => doc.id !== currentTrackId)
+      .map(doc => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
 
-    // ✅ 클라이언트에서 전송한 새 트랙
+    // ✅ 새 트랙 ID 및 정보 구성
+    const newTrackId = `${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
     const addedBy = {
       uid,
       nickname: track.addedBy?.nickname ?? "알 수 없음",
@@ -68,17 +72,18 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
 
     const newTrack = {
       ...track,
+      id: newTrackId, // ✅ 응답에 포함되도록 ID 명시
       addedBy,
       createdAt: admin.firestore.Timestamp.now(),
-      __isNew: true,
     };
 
-    const reorderList = [...futureTracks, {id: track.id, data: newTrack}]
+    const reorderList = [...futureTracks, {id: newTrackId, data: newTrack}]
       .sort((a, b) =>
-        a.data.createdAt.toDate().getTime() - b.data.createdAt.toDate().getTime(),
+        a.data.createdAt.toDate().getTime() -
+        b.data.createdAt.toDate().getTime(),
       );
 
-    // ✅ 재정렬 후 startAt, endAt 재계산
+    // ✅ 재정렬 및 저장
     const batch = db.batch();
     let cursor = baseTime;
 
@@ -94,12 +99,8 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
         endAt: admin.firestore.Timestamp.fromDate(end),
       };
 
-      if (t.data.__isNew) {
-        batch.set(ref, data);
-      } else {
-        batch.update(ref, data);
-      }
-
+      delete data.__isNew;
+      batch.set(ref, data); // 항상 set 사용 (중복 허용)
       cursor = end;
     }
 

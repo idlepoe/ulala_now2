@@ -151,14 +151,22 @@ class ApiService {
   }
 
   /// ✅ 세션 생성
-  static Future<Session> createSession(String name) async {
+  static Future<Session> createSession(
+    String name, {
+    required bool isPrivate,
+  }) async {
     final user = FirebaseAuth.instance.currentUser;
     final nickname = user?.displayName ?? "익명";
     final avatarUrl = user?.photoURL ?? "";
 
     final response = await dio.post(
-      "${ApiConstants.baseUrl}${ApiConstants.createSession}",
-      data: {"name": name, "nickname": nickname, "avatarUrl": avatarUrl},
+      ApiConstants.createSession,
+      data: {
+        "name": name,
+        "nickname": nickname,
+        "avatarUrl": avatarUrl,
+        "isPrivate": isPrivate,
+      },
     );
 
     final data = response.data;

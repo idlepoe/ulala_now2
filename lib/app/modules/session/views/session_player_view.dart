@@ -47,17 +47,23 @@ class SessionPlayerView extends GetView<SessionController> {
                         const SizedBox(width: 12),
                         Expanded(
                           flex: 3,
-                          child: Obx(
-                            () => CurrentTrackCard(
-                              track: current!,
+                          child: Obx(() {
+                            final current = _getCurrentTrack(
+                              controller.currentTracks,
+                            );
+                            if (current == null)
+                              return Center(child: Text("현재 재생 중인 트랙이 없습니다."));
+
+                            return CurrentTrackCard(
+                              track: current,
                               isFavorite: controller.isFavorite(
-                                current!.videoId,
+                                current.videoId,
                               ),
                               onFavoriteToggle:
                                   () => controller.toggleFavorite(current),
                               now: controller.currentTime.value,
-                            ),
-                          ),
+                            );
+                          }),
                         ),
                       ],
                     ),

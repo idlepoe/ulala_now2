@@ -15,7 +15,7 @@ export const createSession = onRequest({cors: true}, async (req, res: any) => {
     const decoded = await verifyAuth(req);
     const uid = decoded.uid;
 
-    const {name, nickname, avatarUrl} = req.body;
+    const {name, nickname, avatarUrl, isPrivate} = req.body;
 
     // 유효성 검사
     if (!name || typeof name !== "string") {
@@ -39,6 +39,7 @@ export const createSession = onRequest({cors: true}, async (req, res: any) => {
     const sessionData = {
       id: sessionId,
       name,
+      isPrivate,
       createdBy: uid,
       createdAt: now,
       updatedAt: now,

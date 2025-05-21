@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/models/session.dart';
 import '../../../data/utils/api_service.dart';
+import '../../../data/utils/logger.dart';
 import '../../../routes/app_pages.dart';
 
 class HomeController extends GetxController {
@@ -60,6 +61,7 @@ class HomeController extends GetxController {
     final defaultName = "$name $number";
 
     final controller = TextEditingController(text: defaultName);
+    final RxBool isPrivate = false.obs;
 
     Get.bottomSheet(
       Container(
@@ -81,16 +83,46 @@ class HomeController extends GetxController {
               ),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: () async {
-                final name = controller.text.trim();
-                if (name.isEmpty) return;
+            Row(
+              children: [
+                // 체크박스 + 텍스트
+                Expanded(
+                  child: Obx(
+                    () => CheckboxListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: const Text('비공개 세션'),
+                      value: isPrivate.value,
+                      onChanged: (val) {
+                        if (val != null) isPrivate.value = val;
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                  ),
+                ),
 
-                Get.back();
-                final session = await ApiService.createSession(name);
-                joinSession(session.id);
-              },
-              child: const Text('세션 만들기'),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      final name = controller.text.trim();
+                      if (name.isEmpty) return;
+                      isLoading.value = true;
+                      Get.back();
+
+                      final session = await ApiService.createSession(
+                        name,
+                        isPrivate: isPrivate.value,
+                      );
+
+                      joinSession(session.id);
+                    } catch (e) {
+                      logger.e(e);
+                    } finally {
+                      isLoading.value = false;
+                    }
+                  },
+                  child: const Text('세션 만들기'),
+                ),
+              ],
             ),
           ],
         ),

@@ -5,8 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
+import '../../../data/utils/api_service.dart';
+import '../../../routes/app_pages.dart';
 import '../widgets/profile_edit_dialog.dart';
 
 class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -75,6 +78,18 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              trailing: IconButton(
+                icon: Image.asset(
+                  'assets/images/google_logo.webp',
+                  width: 24,
+                  height: 24,
+                ),
+                tooltip: "Google 계정 연동",
+                onPressed: () {
+                  // TODO: 구글 계정 연동 처리
+                  // onLinkGoogleAccount();
+                },
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.person),
@@ -107,6 +122,16 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onShare();
               },
             ),
+
+            // ❌ 세션 나가기
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text('세션 나가기', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pop(context);
+                onLeaveSession();
+              },
+            ),
           ],
         );
       },
@@ -115,4 +140,8 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  Future<void> onLeaveSession() async {
+    Get.find<SessionController>().leaveSession();
+  }
 }

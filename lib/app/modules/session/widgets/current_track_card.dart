@@ -41,9 +41,10 @@ class CurrentTrackCard extends StatelessWidget {
                 child: Text(
                   track.title,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
+                  overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
               ),
@@ -61,7 +62,7 @@ class CurrentTrackCard extends StatelessWidget {
           // 설명
           Text(
             track.description,
-            style: const TextStyle(color: Colors.black54),
+            style: const TextStyle(color: Colors.black54, fontSize: 12),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -72,6 +73,7 @@ class CurrentTrackCard extends StatelessWidget {
             minHeight: 6,
             backgroundColor: Colors.grey.shade200,
             color: Colors.blueAccent,
+            borderRadius: BorderRadius.circular(15),
           ),
           const SizedBox(height: 4),
           // 종료 시간 텍스트

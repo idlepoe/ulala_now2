@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
@@ -33,7 +34,7 @@ class SessionController extends GetxController {
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     sessionId = Get.parameters['sessionId']!;
     if (sessionId.isEmpty) {
@@ -41,7 +42,7 @@ class SessionController extends GetxController {
       return;
     }
 
-    fetchSession();
+    await fetchSession();
     loadFavorites();
     onSessionLoaded();
     _loadRecentKeywords();
@@ -72,13 +73,31 @@ class SessionController extends GetxController {
   }
 
   Future<void> fetchSession() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     final data = await ApiService.getSessionById(sessionId);
+
     if (data != null) {
-      session.value = data;
+      final alreadyJoined = data.participants.any((p) => p.uid == user.uid);
+
+      // ✅ 아직 참여하지 않은 경우 자동 참가 처리
+      if (!alreadyJoined) {
+        await ApiService.joinSession(
+          sessionId,
+        );
+
+        // 참가 이후 정보 다시 불러오기
+        final updated = await ApiService.getSessionById(sessionId);
+        session.value = updated;
+      } else {
+        session.value = data;
+      }
     } else {
       _handleInvalidSession();
     }
   }
+
 
   final youtubeSearchResults = <SessionTrack>[].obs;
   final isSearching = false.obs;
@@ -442,5 +461,39 @@ class SessionController extends GetxController {
       _searchCooldownKeyPrefix,
       DateTime.now().toIso8601String(),
     );
+  }
+
+  Future<void> leaveSession() async {
+    final confirm = await showDialog<bool>(
+      context: Get.context!,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('세션 나가기'),
+            content: const Text('정말로 이 세션에서 나가시겠습니까?'),
+            actions: [
+              TextButton(
+                child: const Text('취소'),
+                onPressed: () => Navigator.pop(context, false),
+              ),
+              TextButton(
+                child: const Text('나가기', style: TextStyle(color: Colors.red)),
+                onPressed: () => Navigator.pop(context, true),
+              ),
+            ],
+          ),
+    );
+
+    if (confirm != true) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('sessionId');
+
+      await ApiService.leaveSession(sessionId);
+
+      Get.offAllNamed(Routes.SPLASH);
+    } catch (e) {
+      Get.snackbar('오류', '세션 나가기 중 문제가 발생했습니다.');
+    }
   }
 }

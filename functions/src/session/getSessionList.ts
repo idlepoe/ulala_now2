@@ -16,8 +16,10 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
     const snapshot = await db.collection("sessions")
-      .where("updatedAt", ">=", threeDaysAgo) // ✅ 3일 이내만
-      .orderBy("updatedAt", "desc")
+      .where("isPrivate", "!=", true)                  // 🔸 비공개 세션 제외
+      .where("participantsCount", ">", 0)              // 🔸 참여자 없는 세션 제외
+      .where("updatedAt", ">=", threeDaysAgo)                // 🔸 최근 3일
+      .orderBy("updatedAt", "desc")                      // 🔸 최신순
       .limit(50)
       .get();
 
@@ -35,7 +37,7 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
         if (!raw) return false;
 
         const updatedAt: Date =
-          typeof raw.toDate === 'function' ? raw.toDate() : new Date(raw);
+          typeof raw.toDate === "function" ? raw.toDate() : new Date(raw);
 
         return updatedAt >= twelveHoursAgo;
       });
