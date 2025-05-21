@@ -15,7 +15,7 @@ class FavoriteTrackCarousel extends StatelessWidget {
     final controller = Get.find<SessionController>();
 
     return Obx(() {
-      final favs = controller.favorites.values.toList();
+      final favs = controller.favorites.values.toList().reversed.toList();
       if (favs.isEmpty) return const SizedBox.shrink();
 
       return Column(
