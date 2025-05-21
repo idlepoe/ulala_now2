@@ -39,6 +39,7 @@ class UpcomingTrackList extends GetView<SessionController> {
 
       // logger.w("render");
       return ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: upcoming.length,
         itemBuilder: (context, index) {
           final track = upcoming[index];

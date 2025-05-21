@@ -31,6 +31,7 @@ class CurrentTrackCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           // 제목 + 즐겨찾기 버튼
           Row(

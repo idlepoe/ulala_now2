@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:ulala_now2/app/modules/session/controllers/chat_controller.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../widgets/chat_and_participants_bar.dart';
-import '../widgets/chat_bottom_sheet.dart';
-import '../widgets/participant_chip.dart';
 import '../widgets/played_track_bottom_sheet.dart';
 import '../widgets/session_floating_menu.dart';
 import '../widgets/session_loading_view.dart';
