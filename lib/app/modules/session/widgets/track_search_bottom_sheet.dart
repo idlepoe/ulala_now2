@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 import 'package:ulala_now2/app/modules/session/widgets/track_tile.dart';
+
+import 'favorite_track_carousel.dart';
 
 class TrackSearchBottomSheet extends StatelessWidget {
   const TrackSearchBottomSheet({super.key});
@@ -54,7 +57,10 @@ class TrackSearchBottomSheet extends StatelessWidget {
                   }
                 },
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: const BorderSide(color: Colors.grey),
@@ -73,8 +79,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 controller.searchYoutube(value.trim());
               }
             },
-          )
-          ,
+          ),
 
           // 🕓 최근 검색어
           Obx(() {
@@ -93,22 +98,28 @@ class TrackSearchBottomSheet extends StatelessWidget {
                   const SizedBox(height: 6),
                   Wrap(
                     spacing: 8,
-                    children: keywords.map((keyword) {
-                      return ActionChip(
-                        label: Text(keyword),
-                        onPressed: () {
-                          searchController.text = keyword;
-                          controller.searchYoutube(keyword);
-                        },
-                      );
-                    }).toList(),
+                    children:
+                        keywords.map((keyword) {
+                          return ActionChip(
+                            label: Text(keyword),
+                            onPressed: () {
+                              searchController.text = keyword;
+                              controller.searchYoutube(keyword);
+                            },
+                          );
+                        }).toList(),
                   ),
                 ],
               ),
             );
           }),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          // ⭐ 즐겨찾기 트랙 목록
+          FavoriteTrackCarousel(),
+          const SizedBox(height: 8),
+
+          const Text("검색결과", style: TextStyle(fontWeight: FontWeight.bold)),
 
           // 🔽 검색 결과 리스트
           Obx(() {
@@ -120,9 +131,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
 
             final results = controller.youtubeSearchResults;
             if (results.isEmpty) {
-              return const Expanded(
-                child: Center(child: Text("검색 결과가 없습니다.")),
-              );
+              return const Expanded(child: Center(child: Text("검색 결과가 없습니다.")));
             }
 
             return Expanded(
@@ -130,13 +139,15 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 itemCount: results.length,
                 itemBuilder: (context, index) {
                   final track = results[index];
-                  return Obx(() => TrackTile(
-                    track: track,
-                    isFavorite: controller.isFavorite(track.videoId),
-                    onFavorite: () => controller.toggleFavorite(track),
-                    onAdd: () => controller.attachDurationAndAddTrack(track),
-                    isDisabled: controller.isSearching.value,
-                  ));
+                  return Obx(
+                    () => TrackTile(
+                      track: track,
+                      isFavorite: controller.isFavorite(track.videoId),
+                      onFavorite: () => controller.toggleFavorite(track),
+                      onAdd: () => controller.attachDurationAndAddTrack(track),
+                      isDisabled: controller.isSearching.value,
+                    ),
+                  );
                 },
               ),
             );

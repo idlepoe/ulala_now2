@@ -380,4 +380,11 @@ class SessionController extends GetxController {
       sync(); // ✅ 성공한 경우만 새로고침
     }
   }
+
+  final selectedFavoriteId = RxnString(); // Rx<String?>
+  void toggleSelectedFavorite(String videoId) {
+    logger.i("toggleSelectedFavorite");
+    selectedFavoriteId.value =
+        selectedFavoriteId.value == videoId ? null : videoId;
+  }
 }
