@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 import 'package:ulala_now2/app/modules/session/widgets/track_tile.dart';
+import 'package:ulala_now2/app/modules/session/widgets/youtube_search_input.dart';
 
 import 'favorite_track_carousel.dart';
 
@@ -44,41 +45,19 @@ class TrackSearchBottomSheet extends StatelessWidget {
           const SizedBox(height: 12),
 
           // 🔍 검색 입력창
-          TextField(
-            controller: searchController,
-            decoration: InputDecoration(
-              hintText: "노래 제목 또는 아티스트 입력",
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () {
-                  final keyword = searchController.text.trim();
-                  if (keyword.isNotEmpty) {
-                    controller.searchYoutube(keyword);
-                  }
-                },
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.grey),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.grey),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Colors.blue, width: 2),
-              ),
+          Obx(
+            () => YoutubeSearchInput(
+              controller: searchController,
+              enabled: !controller.isSearchCooldown.value,
+              onSearch: (keyword) {
+                controller.searchYoutube(keyword);
+                controller.recordSearchTime();
+                controller.checkSearchCooldown();
+              },
+              cooldownMessage: controller.isSearchCooldown.value
+                  ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
+                  : null,
             ),
-            onSubmitted: (value) {
-              if (value.trim().isNotEmpty) {
-                controller.searchYoutube(value.trim());
-              }
-            },
           ),
 
           // 🕓 최근 검색어
@@ -136,6 +115,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
 
             return Expanded(
               child: ListView.builder(
+                physics: BouncingScrollPhysics(),
                 itemCount: results.length,
                 itemBuilder: (context, index) {
                   final track = results[index];
@@ -155,5 +135,11 @@ class TrackSearchBottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatDuration(Duration duration) {
+    final minutes = duration.inMinutes;
+    final seconds = duration.inSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 }

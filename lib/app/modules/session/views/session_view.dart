@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/button/gf_button.dart';
@@ -92,6 +93,52 @@ class SessionView extends GetView<SessionController> {
               ),
             ),
           ],
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 80),
+          child: SpeedDial(
+            icon: Icons.menu,
+            activeIcon: Icons.close,
+            backgroundColor: Colors.blueAccent,
+            foregroundColor: Colors.white,
+            overlayOpacity: 0.1,
+            spacing: 10,
+            spaceBetweenChildren: 8,
+            children: [
+              SpeedDialChild(
+                child: const Icon(Icons.add),
+                backgroundColor: Colors.green,
+                label: '트랙 추가',
+                onTap: () => controller.openTrackSearchSheet(),
+              ),
+              SpeedDialChild(
+                child: const Icon(Icons.history),
+                backgroundColor: Colors.orange,
+                label: '트랙 이력',
+                onTap: () {
+                  showModalBottomSheet(
+                    context: Get.context!,
+                    isScrollControlled: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    builder:
+                        (_) => PlayedTrackBottomSheet(
+                          sessionId: controller.session.value!.id,
+                        ),
+                  );
+                },
+              ),
+              SpeedDialChild(
+                child: const Icon(Icons.share),
+                backgroundColor: Colors.indigo,
+                label: '세션 공유',
+                onTap: _shareSessionLink,
+              ),
+            ],
+          ),
         ),
       );
     });

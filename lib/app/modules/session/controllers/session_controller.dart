@@ -44,6 +44,7 @@ class SessionController extends GetxController {
     loadFavorites();
     onSessionLoaded();
     _loadRecentKeywords();
+    checkSearchCooldown();
 
     youtubeController = YoutubePlayerController(
       params: const YoutubePlayerParams(
@@ -134,6 +135,7 @@ class SessionController extends GetxController {
     // 🌐 API 호출
     isSearching.value = true;
     final results = await ApiService.youtubeSearch(search: trimmed);
+    recordSearchTime();
     isSearching.value = false;
 
     // ✅ 결과 저장 및 표시
@@ -386,5 +388,55 @@ class SessionController extends GetxController {
     logger.i("toggleSelectedFavorite");
     selectedFavoriteId.value =
         selectedFavoriteId.value == videoId ? null : videoId;
+  }
+
+  final _searchCooldownKeyPrefix = 'searchCooldown'; // + uid
+  final isSearchCooldown = false.obs;
+  final remainingCooldown = Duration.zero.obs;
+
+  Timer? _cooldownTimer;
+
+  Future<void> checkSearchCooldown() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = _searchCooldownKeyPrefix;
+    final savedTimeStr = prefs.getString(key);
+
+    if (savedTimeStr == null) {
+      isSearchCooldown.value = false;
+      return;
+    }
+
+    final savedTime = DateTime.tryParse(savedTimeStr);
+    if (savedTime == null) return;
+
+    final now = DateTime.now();
+    final diff = now.difference(savedTime);
+    if (diff < const Duration(minutes: 5)) {
+      final remaining = Duration(minutes: 5) - diff;
+      isSearchCooldown.value = true;
+      remainingCooldown.value = remaining;
+
+      _cooldownTimer?.cancel();
+      _cooldownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        final newRemaining = remaining - Duration(seconds: timer.tick);
+        if (newRemaining <= Duration.zero) {
+          timer.cancel();
+          isSearchCooldown.value = false;
+          remainingCooldown.value = Duration.zero;
+        } else {
+          remainingCooldown.value = newRemaining;
+        }
+      });
+    } else {
+      isSearchCooldown.value = false;
+    }
+  }
+
+  Future<void> recordSearchTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _searchCooldownKeyPrefix,
+      DateTime.now().toIso8601String(),
+    );
   }
 }
