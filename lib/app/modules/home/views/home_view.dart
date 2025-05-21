@@ -7,6 +7,7 @@ import '../../../data/utils/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../session/widgets/session_loading_view.dart';
+import '../widgets/AppInfoDialog.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -19,28 +20,16 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('울랄라'),
         actions: [
-          if (user?.photoURL != null)
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: CachedNetworkImage(
-                imageUrl: user!.photoURL!,
-                imageBuilder:
-                    (context, imageProvider) => CircleAvatar(
-                      radius: 16,
-                      backgroundImage: imageProvider,
-                    ),
-                placeholder:
-                    (_, __) => const CircleAvatar(
-                      radius: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                errorWidget:
-                    (_, __, ___) => const CircleAvatar(
-                      radius: 16,
-                      child: Icon(Icons.person),
-                    ),
-              ),
-            ),
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: '앱 소개',
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => const AppInfoDialog(),
+              );
+            },
+          ),
         ],
       ),
       body: Obx(() {

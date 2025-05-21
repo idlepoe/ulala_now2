@@ -43,7 +43,7 @@ export const createSession = onRequest({cors: true}, async (req, res: any) => {
       createdBy: uid,
       createdAt: now,
       updatedAt: now,
-      participantCount: 1,
+      participantCount: 0,
     };
 
     // 세션 문서 저장

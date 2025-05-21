@@ -35,13 +35,11 @@ class SessionPlayerView extends GetView<SessionController> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: Center(
-                            child: YoutubePlayer(
-                              key: const ValueKey('persistent-player'),
-                              // ✅ 고정된 key로 상태 유지
-                              controller: controller.youtubeController,
-                              aspectRatio: 1,
-                            ),
+                          child: YoutubePlayer(
+                            key: const ValueKey('persistent-player'),
+                            // ✅ 고정된 key로 상태 유지
+                            controller: controller.youtubeController,
+                            aspectRatio: 16 / 9,
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -51,8 +49,27 @@ class SessionPlayerView extends GetView<SessionController> {
                             final current = _getCurrentTrack(
                               controller.currentTracks,
                             );
-                            if (current == null)
-                              return Center(child: Text("현재 재생 중인 트랙이 없습니다."));
+                            if (current == null) {
+                              final message =
+                                  controller.noTrackMessages[DateTime.now()
+                                          .millisecond %
+                                      controller.noTrackMessages.length];
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
+                                  child: Text(
+                                    message,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
 
                             return CurrentTrackCard(
                               track: current,

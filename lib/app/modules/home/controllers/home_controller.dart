@@ -27,7 +27,7 @@ class HomeController extends GetxController {
     isLoading.value = false;
   }
 
-  void joinSession(String sessionId) async {
+  Future<void> joinSession(String sessionId) async {
     try {
       await ApiService.joinSession(sessionId);
 
@@ -45,16 +45,16 @@ class HomeController extends GetxController {
   void openCreateSessionSheet(BuildContext context) {
     final random = Random();
     final names = [
-      "소리의 정원",
-      "감성 창고",
-      "리듬의 거리",
-      "음악의 다락방",
-      "재즈 카페",
-      "사운드 라운지",
-      "밤의 옥상",
-      "쉼표 정류장",
-      "멜로디 서재",
-      "비트 극장",
+      "은하 라운지",
+      "코스믹 스테이션",
+      "별빛 오페라",
+      "달빛 극장",
+      "우주 주파수",
+      "타임캡슐 채널",
+      "별의 회랑",
+      "드림 오케스트라",
+      "성운 카페",
+      "미드나잇 리듬",
     ];
     final name = names[random.nextInt(names.length)];
     final number = 100 + random.nextInt(900); // 100~999
@@ -72,20 +72,45 @@ class HomeController extends GetxController {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('세션 이름 입력', style: TextStyle(fontSize: 18)),
+            const Text(
+              '세션 만들기',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
+
+            // 🔹 회색 안내 박스
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Text(
+                '세션은 친구들과 함께 음악을 공유하고 감상할 수 있는 공간입니다.\n'
+                '- 유튜브에서 노래를 검색하고 추가할 수 있어요\n'
+                '- 즐겨찾기나 재생 이력을 통해 트랙을 쉽게 다시 들을 수 있어요\n'
+                '- 세션은 URL로 간단히 공유할 수 있어 친구를 초대하기 좋아요',
+                style: TextStyle(fontSize: 13, color: Colors.black87),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            const Text('세션 이름', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             TextField(
               controller: controller,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: '세션 이름을 입력하세요',
+                hintText: '예: 별빛 오페라, 성운 라운지...',
               ),
             ),
+
             const SizedBox(height: 12),
             Row(
               children: [
-                // 체크박스 + 텍스트
                 Expanded(
                   child: Obx(
                     () => CheckboxListTile(
@@ -99,7 +124,6 @@ class HomeController extends GetxController {
                     ),
                   ),
                 ),
-
                 ElevatedButton(
                   onPressed: () async {
                     try {
@@ -113,7 +137,7 @@ class HomeController extends GetxController {
                         isPrivate: isPrivate.value,
                       );
 
-                      joinSession(session.id);
+                      await joinSession(session.id);
                     } catch (e) {
                       logger.e(e);
                     } finally {

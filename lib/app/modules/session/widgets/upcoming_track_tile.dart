@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -40,7 +41,7 @@ class UpcomingTrackTile extends StatelessWidget {
           ),
           leading: CachedNetworkImage(
             imageUrl: track.thumbnail,
-            width: Get.width / 5,
+            width: kIsWeb ? 95.0 : (Get.width / 5),
             fit: BoxFit.cover,
           ),
           title: Text(

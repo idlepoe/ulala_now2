@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -26,7 +27,7 @@ class TrackTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageWidth = Get.width / 5;
+    final imageWidth = kIsWeb ? 95.0 : (Get.width / 5);
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: ClipRRect(
@@ -72,7 +73,10 @@ class TrackTile extends StatelessWidget {
             onPressed: isDisabled ? null : onFavorite,
           ),
           IconButton(
-            icon: Icon(Icons.playlist_add, color: isDisabled ? Colors.grey : null),
+            icon: Icon(
+              Icons.playlist_add,
+              color: isDisabled ? Colors.grey : null,
+            ),
             onPressed: isDisabled ? null : onAdd,
           ),
         ],

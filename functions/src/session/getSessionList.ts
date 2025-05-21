@@ -17,7 +17,6 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
 
     const snapshot = await db.collection("sessions")
       .where("isPrivate", "!=", true)                  // 🔸 비공개 세션 제외
-      .where("participantsCount", ">", 0)              // 🔸 참여자 없는 세션 제외
       .where("updatedAt", ">=", threeDaysAgo)                // 🔸 최근 3일
       .orderBy("updatedAt", "desc")                      // 🔸 최신순
       .limit(50)
@@ -55,7 +54,7 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
     });
   } catch (error) {
     console.error("❌ 세션 리스트 조회 실패:", error);
-    return res.status(401).json({
+    return res.status(500).json({
       success: false,
       message: error ?? "Unauthorized",
     });

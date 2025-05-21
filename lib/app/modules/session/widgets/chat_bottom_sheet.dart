@@ -24,6 +24,11 @@ class ChatBottomSheet extends StatelessWidget {
         '알 수 없음';
 
     final sessionId = Get.find<SessionController>().sessionId;
+
+    // ✅ post-frame callback으로 포커스 지정
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      chatController.focusNode.requestFocus();
+    });
     return SafeArea(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.7,
@@ -49,6 +54,20 @@ class ChatBottomSheet extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   final messages = snapshot.data!;
+
+                  if (messages.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          '🪐 아직 아무도 말을 걸지 않았어요!\n\n첫 번째 메시지를 남겨보세요 🌟',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                      ),
+                    );
+                  }
+
                   return ListView.builder(
                     reverse: true,
                     itemCount: messages.length,
@@ -108,6 +127,7 @@ class ChatBottomSheet extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: chatController.inputController,
+                    focusNode: chatController.focusNode,
                     decoration: const InputDecoration(
                       hintText: "메시지를 입력하세요...",
                     ),

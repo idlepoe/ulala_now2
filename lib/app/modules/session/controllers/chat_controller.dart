@@ -8,6 +8,7 @@ import '../../../data/models/chat_message.dart';
 
 class ChatController extends GetxController {
   final inputController = TextEditingController();
+  final focusNode = FocusNode(); // ✅ 추가
 
   Stream<List<ChatMessage>> getChatStream(String sessionId) {
     return FirebaseFirestore.instance
@@ -17,6 +18,11 @@ class ChatController extends GetxController {
         .map((snapshot) => snapshot.docs
         .map((doc) => ChatMessage.fromJson(doc.data()))
         .toList());
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
   }
 
   Future<void> sendMessage(String sessionId, String senderName) async {
