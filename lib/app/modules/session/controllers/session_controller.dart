@@ -145,7 +145,10 @@ class SessionController extends GetxController {
 
       newMap[trimmed] = results.map((e) => e.toJson()).toList();
       prefs.setString(_cacheKey, json.encode(newMap));
+
+      // 검색 쿨타임 체크
       recordSearchTime();
+      checkSearchCooldown();
     } else {
       youtubeSearchResults.clear();
     }

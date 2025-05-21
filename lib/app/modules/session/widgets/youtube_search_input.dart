@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'info_button_youtube_quota.dart';
+
 class YoutubeSearchInput extends StatelessWidget {
   final TextEditingController controller;
   final void Function(String keyword) onSearch;
@@ -10,7 +12,8 @@ class YoutubeSearchInput extends StatelessWidget {
     super.key,
     required this.controller,
     required this.onSearch,
-    this.enabled = true, this.cooldownMessage,
+    this.enabled = true,
+    this.cooldownMessage,
   });
 
   @override
@@ -64,10 +67,20 @@ class YoutubeSearchInput extends StatelessWidget {
                 color: Colors.white.withOpacity(0.85),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                cooldownMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    cooldownMessage!,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  InfoButtonYoutubeQuota(),
+                ],
               ),
             ),
           ),

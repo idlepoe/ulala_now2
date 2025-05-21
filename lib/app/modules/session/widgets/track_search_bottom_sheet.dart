@@ -51,8 +51,6 @@ class TrackSearchBottomSheet extends StatelessWidget {
               enabled: !controller.isSearchCooldown.value,
               onSearch: (keyword) {
                 controller.searchYoutube(keyword);
-                controller.recordSearchTime();
-                controller.checkSearchCooldown();
               },
               cooldownMessage:
                   controller.isSearchCooldown.value
