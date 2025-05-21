@@ -12,4 +12,7 @@ class ApiConstants {
   static const String addTrack = "/addTrack";
   static const String skipTrack = "/skipTrack";
   static const String voteTrack = "/voteTrack";
+  static const String getPlayedTracks = "/getPlayedTracks";
+
+
 }

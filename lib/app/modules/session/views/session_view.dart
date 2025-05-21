@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:getwidget/components/appbar/gf_appbar.dart';
 import 'package:getwidget/components/button/gf_button.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:ulala_now2/app/modules/session/controllers/chat_controller.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../widgets/chat_bottom_sheet.dart';
 import '../widgets/participant_chip.dart';
+import '../widgets/played_track_bottom_sheet.dart';
+import '../widgets/session_app_bar.dart';
 import 'session_player_view.dart';
 
 class SessionView extends GetView<SessionController> {
@@ -24,26 +27,12 @@ class SessionView extends GetView<SessionController> {
       final tracks = controller.currentTracks;
 
       return Scaffold(
-        appBar: GFAppBar(
-          title: Text(session.name),
-          actions: [
-            GFButton(
-              icon: const Icon(Icons.refresh, color: Colors.white),
-              text: "싱크",
-              onPressed: () {
-                controller.sync();
-              },
-            ),
-            SizedBox(width: 10),
-            GFIconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                await controller.openTrackSearchSheet();
-              },
-              tooltip: "트랙 추가",
-            ),
-            SizedBox(width: 8),
-          ],
+        appBar: SessionAppBar(
+          title: controller.session.value?.name ?? '세션',
+          onSync: controller.sync,
+          onAddTrack: controller.openTrackSearchSheet,
+          onShowHistory: _onShowHistory,
+          onShare: _shareSessionLink,
         ),
         body: Column(
           children: [
@@ -51,9 +40,9 @@ class SessionView extends GetView<SessionController> {
             if (tracks.isEmpty)
               Expanded(
                 child: Center(
-                  child: GFButton(
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    text: "재생할 음악 트랙 추가하기",
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.add),
+                    label: Text("재생할 음악 트랙 추가하기"),
                     onPressed: () async {
                       await controller.openTrackSearchSheet();
                     },
@@ -104,6 +93,30 @@ class SessionView extends GetView<SessionController> {
             ),
           ],
         ),
+      );
+    });
+  }
+
+  void _shareSessionLink() {
+    final sessionId = controller.session.value?.id;
+    if (sessionId == null) return;
+
+    final url = 'https://myapp.page.link/session/$sessionId';
+    SharePlus.instance.share(ShareParams(uri: Uri.tryParse(url)));
+  }
+
+  void _onShowHistory() {
+    // 조금 기다렸다가 새로운 BottomSheet 열기
+    Future.delayed(const Duration(milliseconds: 200), () {
+      showModalBottomSheet(
+        context: Get.context!,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        builder:
+            (_) =>
+                PlayedTrackBottomSheet(sessionId: controller.session.value!.id),
       );
     });
   }

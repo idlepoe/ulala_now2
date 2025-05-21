@@ -43,14 +43,20 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
       });
     }
 
-    const sessionData = sessionSnap.data();
+    const now = new Date();
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
 
-    // 🔽 participants 서브컬렉션 읽기
+    // 세션 정보 불러오기
+    const sessionData: any = sessionSnap.data();
+
+    // 🔽 최근 12시간 내 활동한 참여자만 가져오기
     const participantsSnap = await sessionRef
       .collection("participants")
+      .where("updatedAt", ">=", twelveHoursAgo)
       .orderBy("updatedAt", "desc")
       .get();
-    sessionData!.participants = participantsSnap.docs.map((doc) => doc.data());
+
+    sessionData.participants = participantsSnap.docs.map((doc) => doc.data());
 
     return res.status(200).json({
       success: true,

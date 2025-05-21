@@ -21,7 +21,7 @@ class SplashController extends GetxController {
   void onInit() {
     super.onInit();
     message.value = (messages..shuffle()).first;
-    // _initApp();
+    _initApp();
   }
 
   Future<void> _initApp() async {

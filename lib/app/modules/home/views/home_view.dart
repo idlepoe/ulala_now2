@@ -11,7 +11,7 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('울랄라'),
+        title: Row(children: [const Text('울랄라')]),
         actions: [
           if (user != null)
             Row(
@@ -23,14 +23,42 @@ class HomeView extends GetView<HomeController> {
                     radius: 16,
                     backgroundImage: NetworkImage(user.photoURL!),
                   ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
               ],
             ),
+          IconButton(
+            onPressed: () {
+              controller.fetchSessionList();
+            },
+            icon: Icon(Icons.refresh),
+          ),
         ],
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/images/icon-removebg.png',
+                  width: 120,
+                  height: 120,
+                ),
+                const SizedBox(height: 32),
+
+                // 🔽 고정 안내 문구
+                const Text(
+                  '세션 상태를 확인하는 중...',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+
+                const SizedBox(height: 12),
+
+                const CircularProgressIndicator(),
+              ],
+            ),
+          );
         }
 
         final sessions = controller.sessionList;

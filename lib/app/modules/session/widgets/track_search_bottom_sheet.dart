@@ -19,9 +19,28 @@ class TrackSearchBottomSheet extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("YouTube에서 트랙 검색", style: TextStyle(fontSize: 18)),
+          // 🔼 타이틀 + 닫기 버튼
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  "YouTube에서 트랙 검색",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+          const Divider(height: 1),
+
           const SizedBox(height: 12),
+
+          // 🔍 검색 입력창
           TextField(
             controller: searchController,
             decoration: InputDecoration(
@@ -35,52 +54,63 @@ class TrackSearchBottomSheet extends StatelessWidget {
                   }
                 },
               ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.grey),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Colors.blue, width: 2),
+              ),
             ),
             onSubmitted: (value) {
               if (value.trim().isNotEmpty) {
                 controller.searchYoutube(value.trim());
               }
             },
-          ),
+          )
+          ,
 
-          // 최근 검색어 목록
+          // 🕓 최근 검색어
           Obx(() {
             final keywords = controller.recentKeywords;
             if (keywords.isEmpty) return const SizedBox.shrink();
 
-            return Column(
-              children: [
-                SizedBox(height: 5),
-                Row(
-                  children: [
-                    Text(
-                      "최근 검색어",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Row(
-                          spacing: 8,
-                          children:
-                              keywords.map((keyword) {
-                                return ActionChip(
-                                  label: Text(keyword),
-                                  onPressed: () {
-                                    searchController.text = keyword;
-                                    controller.searchYoutube(keyword);
-                                  },
-                                );
-                              }).toList(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "최근 검색어",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  Wrap(
+                    spacing: 8,
+                    children: keywords.map((keyword) {
+                      return ActionChip(
+                        label: Text(keyword),
+                        onPressed: () {
+                          searchController.text = keyword;
+                          controller.searchYoutube(keyword);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             );
           }),
 
+          const SizedBox(height: 12),
+
+          // 🔽 검색 결과 리스트
           Obx(() {
             if (controller.isSearching.value) {
               return const Expanded(
@@ -90,7 +120,9 @@ class TrackSearchBottomSheet extends StatelessWidget {
 
             final results = controller.youtubeSearchResults;
             if (results.isEmpty) {
-              return const Expanded(child: Center(child: Text("검색 결과가 없습니다.")));
+              return const Expanded(
+                child: Center(child: Text("검색 결과가 없습니다.")),
+              );
             }
 
             return Expanded(
@@ -98,15 +130,13 @@ class TrackSearchBottomSheet extends StatelessWidget {
                 itemCount: results.length,
                 itemBuilder: (context, index) {
                   final track = results[index];
-                  return Obx(
-                    () => TrackTile(
-                      track: track,
-                      isFavorite: controller.isFavorite(track.videoId),
-                      onFavorite: () => controller.toggleFavorite(track),
-                      onAdd: () => controller.attachDurationAndAddTrack(track),
-                      isDisabled: controller.isSearching.value,
-                    ),
-                  );
+                  return Obx(() => TrackTile(
+                    track: track,
+                    isFavorite: controller.isFavorite(track.videoId),
+                    onFavorite: () => controller.toggleFavorite(track),
+                    onAdd: () => controller.attachDurationAndAddTrack(track),
+                    isDisabled: controller.isSearching.value,
+                  ));
                 },
               ),
             );

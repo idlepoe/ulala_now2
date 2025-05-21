@@ -41,6 +41,7 @@ dependencies:
   html_unescape: ^2.0.0
   getwidget: ^6.0.0
   get: ^4.7.2
+  share_plus: ^11.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

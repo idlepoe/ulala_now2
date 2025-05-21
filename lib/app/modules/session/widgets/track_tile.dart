@@ -13,6 +13,7 @@ class TrackTile extends StatelessWidget {
   final bool isFavorite;
   final bool showFavorite;
   final bool isDisabled;
+  final String? bottomText; // ✅ 재생 시간 표시용 추가
 
   const TrackTile({
     super.key,
@@ -22,51 +23,55 @@ class TrackTile extends StatelessWidget {
     this.isFavorite = false,
     this.showFavorite = true,
     this.isDisabled = false,
+    this.bottomText,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GFListTile(
-      avatar: CachedNetworkImage(
-        imageUrl: track.thumbnail,
-        width: 160,
-        height: 60,
-        fit: BoxFit.cover,
-        placeholder:
-            (context, url) => const SizedBox(
-              width: 60,
-              height: 40,
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            ),
-        errorWidget:
-            (context, url, error) => const SizedBox(
-              width: 60,
-              height: 40,
-              child: Center(child: Icon(Icons.broken_image)),
-            ),
+    return ListTile(
+      leading: ClipRRect(
+        borderRadius: BorderRadius.circular(8), // 원하는 라운드 값
+        child: CachedNetworkImage(
+          imageUrl: track.thumbnail,
+          width: 160,
+          height: 60,
+          fit: BoxFit.cover,
+          placeholder:
+              (context, url) => const SizedBox(
+                width: 60,
+                height: 40,
+                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              ),
+          errorWidget:
+              (context, url, error) => const SizedBox(
+                width: 60,
+                height: 40,
+                child: Center(child: Icon(Icons.broken_image)),
+              ),
+        ),
       ),
-      title: Text(track.title, maxLines: 1),
-      subTitle: Text(
-        track.description,
-        maxLines: 2,
-        style: TextStyle(color: Colors.grey),
-      ),
-      icon: Row(
+      title: Text(track.title, maxLines: 2, style: TextStyle(fontSize: 14)),
+      subtitle:
+          bottomText != null
+              ? Text(
+                bottomText!,
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              )
+              : null,
+      trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          GFIconButton(
+          IconButton(
             icon: Icon(
               isFavorite ? Icons.favorite : Icons.favorite_border,
               color:
                   isDisabled ? Colors.grey : (isFavorite ? Colors.red : null),
             ),
             onPressed: isDisabled ? null : onFavorite,
-            type: GFButtonType.transparent,
           ),
-          GFIconButton(
+          IconButton(
             icon: Icon(Icons.add, color: isDisabled ? Colors.grey : null),
             onPressed: isDisabled ? null : onAdd,
-            type: GFButtonType.transparent,
           ),
         ],
       ),

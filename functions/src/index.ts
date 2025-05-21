@@ -16,3 +16,4 @@ export {addTrack} from "./session/track/addTrack";
 export {skipTrack} from "./session/track/skipTrack";
 export {voteTrack} from "./session/track/voteTrack";
 
+export {getPlayedTracks} from "./session/track/getPlayedTracks";

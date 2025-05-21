@@ -27,9 +27,9 @@ class UpcomingTrackList extends GetView<SessionController> {
 
       if (upcoming.isEmpty || upcoming.length == 1) {
         return Center(
-          child: GFButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            text: "${upcoming.length == 1 ? "다음 " : ""}재생할 음악 트랙 추가하기",
+          child: ElevatedButton.icon(
+            icon: const Icon(Icons.add),
+            label: Text("${upcoming.length == 1 ? "다음 " : ""}재생할 음악 트랙 추가하기"),
             onPressed: () async {
               await controller.openTrackSearchSheet();
             },

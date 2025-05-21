@@ -248,7 +248,7 @@ class ApiService {
   }) async {
     try {
       final response = await dio.post(
-        "${ApiConstants.baseUrl}${ApiConstants.addTrack}",
+        ApiConstants.addTrack,
         data: {"sessionId": sessionId, "track": track.toJson()},
       );
 
@@ -275,6 +275,33 @@ class ApiService {
       return data["success"] == true;
     } catch (_) {
       return false;
+    }
+  }
+
+  static Future<List<SessionTrack>> getPlayedTracks({
+    required String sessionId,
+    int limit = 20,
+    DateTime? lastEndAt,
+  }) async {
+    try {
+      final response = await dio.get(
+        ApiConstants.getPlayedTracks,
+        queryParameters: {
+          'sessionId': sessionId,
+          'limit': '$limit',
+          if (lastEndAt != null) 'lastEndAt': lastEndAt.toIso8601String(),
+        },
+      );
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        final List<dynamic> data = response.data['data'];
+        return data.map((e) => SessionTrack.fromJson(e)).toList();
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print('getPlayedTracks error: $e');
+      return [];
     }
   }
 }
