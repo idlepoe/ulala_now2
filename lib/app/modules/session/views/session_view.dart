@@ -11,7 +11,7 @@ import 'package:ulala_now2/app/modules/session/controllers/session_controller.da
 import '../widgets/chat_bottom_sheet.dart';
 import '../widgets/participant_chip.dart';
 import '../widgets/played_track_bottom_sheet.dart';
-import '../widgets/session_app_bar.dart';
+import 'session_app_bar.dart';
 import 'session_player_view.dart';
 
 class SessionView extends GetView<SessionController> {
@@ -42,7 +42,7 @@ class SessionView extends GetView<SessionController> {
               Expanded(
                 child: Center(
                   child: ElevatedButton.icon(
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.playlist_add),
                     label: Text("재생할 음악 트랙 추가하기"),
                     onPressed: () async {
                       await controller.openTrackSearchSheet();
@@ -106,7 +106,7 @@ class SessionView extends GetView<SessionController> {
             spaceBetweenChildren: 8,
             children: [
               SpeedDialChild(
-                child: const Icon(Icons.add),
+                child: const Icon(Icons.playlist_add),
                 backgroundColor: Colors.green,
                 label: '트랙 추가',
                 onTap: () => controller.openTrackSearchSheet(),

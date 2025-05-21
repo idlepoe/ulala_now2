@@ -1,7 +1,13 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
+
+import '../widgets/profile_edit_dialog.dart';
 
 class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -34,7 +40,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
           label: const Text("싱크"),
         ),
         IconButton(
-          icon: const Icon(Icons.add),
+          icon: const Icon(Icons.playlist_add),
           tooltip: "트랙 추가",
           onPressed: onAddTrack,
         ),
@@ -44,6 +50,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   void _openMenu(BuildContext context) {
+    var user = FirebaseAuth.instance.currentUser;
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -53,6 +60,37 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage:
+                    user?.photoURL != null
+                        ? NetworkImage(user!.photoURL!)
+                        : null,
+                child: user?.photoURL == null ? const Icon(Icons.person) : null,
+              ),
+              title: Text(
+                user?.displayName ?? '익명 사용자',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('프로필 변경'),
+              onTap: () async {
+                final result = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => const ProfileEditDialog(),
+                );
+
+                if (result == true) {
+                  // 프로필이 실제로 변경되었을 때만 처리
+                  Get.find<SessionController>().fetchSession();
+                }
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.history),
               title: const Text('재생된 트랙 목록'),

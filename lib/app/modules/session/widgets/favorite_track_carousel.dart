@@ -100,13 +100,13 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                       IconButton(
                                         icon: const Icon(Icons.favorite, color: Colors.red),
                                         onPressed: () => controller.toggleFavorite(track),
-                                        tooltip: "즐겨찾기 제거",
+                                        tooltip: "즐겨찾기",
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.add),
+                                        icon: const Icon(Icons.playlist_add),
                                         onPressed: () =>
                                             controller.attachDurationAndAddTrack(track),
-                                        tooltip: "세션에 추가",
+                                        tooltip: "세션추가",
                                       ),
                                     ],
                                   ),

@@ -72,7 +72,7 @@ class TrackTile extends StatelessWidget {
             onPressed: isDisabled ? null : onFavorite,
           ),
           IconButton(
-            icon: Icon(Icons.add, color: isDisabled ? Colors.grey : null),
+            icon: Icon(Icons.playlist_add, color: isDisabled ? Colors.grey : null),
             onPressed: isDisabled ? null : onAdd,
           ),
         ],
