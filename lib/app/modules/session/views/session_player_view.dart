@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_button.dart';
-import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 import 'package:ulala_now2/app/data/models/session_track.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
+import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../widgets/current_track_card.dart';
 
@@ -31,16 +30,19 @@ class SessionPlayerView extends GetView<SessionController> {
             const SizedBox(height: 12),
 
             // 🎵 현재 재생 중인 트랙 정보
-            if (current != null)
+            if (current != null) ...[
               CurrentTrackCard(
                 track: current,
                 isFavorite: controller.isFavorite(current.videoId),
                 onFavoriteToggle: () => controller.toggleFavorite(current),
                 now: controller.currentTime.value,
               ),
+            ] else ...[
+              // 현재 재생 중이 아닐 경우
+            ],
 
             const SizedBox(height: 12),
-            const Divider(),
+            if (current != null) const Divider(),
 
             // 🔜 앞으로 재생될 리스트
             Expanded(child: UpcomingTrackList()),
@@ -56,11 +58,5 @@ class SessionPlayerView extends GetView<SessionController> {
       final end = track.startAt.add(Duration(seconds: track.duration));
       return now.isAfter(track.startAt) && now.isBefore(end);
     });
-  }
-
-  List<SessionTrack> _getUpcomingTracks(List<SessionTrack> tracks) {
-    final now = DateTime.now();
-    return tracks.where((t) => t.startAt.isAfter(now)).toList()
-      ..sort((a, b) => a.startAt.compareTo(b.startAt));
   }
 }

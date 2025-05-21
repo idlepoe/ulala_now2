@@ -10,17 +10,18 @@ Widget buildAvatar({
   final hasImage = url.isNotEmpty;
 
   return GFAvatar(
-    size: size,
+    size: size * 0.8,
     backgroundImage: hasImage ? CachedNetworkImageProvider(url) : null,
-    child: hasImage
-        ? null
-        : Text(
-      nickname.isNotEmpty ? nickname[0] : '?',
-      style: TextStyle(
-        fontSize: size * 0.6,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
+    child:
+        hasImage
+            ? null
+            : Text(
+              nickname.isNotEmpty ? nickname[0] : '?',
+              style: TextStyle(
+                fontSize: size * 0.6,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
     shape: GFAvatarShape.circle,
   );
 }

@@ -5,13 +5,18 @@ import 'build_avatar.dart';
 
 class ParticipantChip extends StatelessWidget {
   final SessionParticipant participant;
+  final double size;
 
-  const ParticipantChip({super.key, required this.participant});
+  const ParticipantChip({
+    super.key,
+    required this.participant,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
@@ -30,7 +35,7 @@ class ParticipantChip extends StatelessWidget {
           buildAvatar(
             url: participant.avatarUrl,
             nickname: participant.nickname,
-            size: 36,
+            size: size,
           ),
           const SizedBox(width: 8),
           Column(
@@ -38,15 +43,15 @@ class ParticipantChip extends StatelessWidget {
             children: [
               Text(
                 participant.nickname,
-                style: const TextStyle(
-                  fontSize: 14,
+                style: TextStyle(
+                  fontSize: size * 0.6,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
                 _statusText(participant),
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: size * 0.4,
                   color: Colors.grey.shade600,
                 ),
               ),

@@ -1,5 +1,7 @@
 import {onRequest} from "firebase-functions/v2/https";
 import {db} from "../firebase";
+import * as admin from "firebase-admin";
+import {verifyAuth} from "../utils/auth";
 
 export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
   if (req.method !== "GET") {
@@ -10,6 +12,9 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
   }
 
   try {
+    const decoded = await verifyAuth(req);
+    const uid = decoded.uid;
+
     const sessionId = req.query.sessionId as string;
     if (!sessionId) {
       return res.status(400).json({
@@ -19,6 +24,16 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
+
+    // 유저 활동 시간 갱신 START
+    const participantRef = sessionRef.collection("participants")
+      .doc(uid);
+
+    await participantRef.update({
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    // 유저 활동 시간 갱신 END
+
     const sessionSnap = await sessionRef.get();
 
     if (!sessionSnap.exists) {

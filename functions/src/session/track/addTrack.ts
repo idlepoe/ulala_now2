@@ -21,6 +21,16 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
+
+    // 유저 활동 시간 갱신 START
+    const participantRef = sessionRef.collection("participants")
+      .doc(uid);
+
+    await participantRef.update({
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    // 유저 활동 시간 갱신 END
+
     const tracksCol = sessionRef.collection("tracks");
     const now = new Date();
 

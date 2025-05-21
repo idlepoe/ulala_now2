@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../data/models/session_track.dart';
 
+import 'package:intl/intl.dart'; // 시간 포맷용
+
 class CurrentTrackCard extends StatelessWidget {
   final SessionTrack track;
   final bool isFavorite;
@@ -22,6 +24,8 @@ class CurrentTrackCard extends StatelessWidget {
     final end = track.endAt;
     final total = end.difference(start).inSeconds;
     final elapsed = now.difference(start).inSeconds.clamp(0, total);
+
+    final endTimeFormatted = DateFormat.Hms().format(end); // 종료시간 포맷
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -66,6 +70,18 @@ class CurrentTrackCard extends StatelessWidget {
             minHeight: 6,
             backgroundColor: Colors.grey.shade200,
             color: Colors.blueAccent,
+          ),
+          const SizedBox(height: 4),
+          // 종료 시간 텍스트
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              '종료 예정: $endTimeFormatted',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
           ),
         ],
       ),

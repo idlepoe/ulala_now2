@@ -12,6 +12,7 @@ import '../../../data/models/youtube/youtube_item.dart';
 import '../../../data/utils/api_service.dart';
 import '../../../data/utils/logger.dart';
 import '../../../routes/app_pages.dart';
+import '../widgets/track_search_bottom_sheet.dart';
 
 class SessionController extends GetxController {
   final session = Rxn<Session>();
@@ -315,8 +316,9 @@ class SessionController extends GetxController {
     //         .get();
     // logger.d(result);
     // youtubeController.close();
-    // triggerPlayerRefresh(); // ✅ 리렌더링 유도
-    _subscribeToTracks();
+    // currentTracks.clear();
+    _syncWithYoutubePlayer(currentTracks);
+    triggerPlayerRefresh(); // ✅ 리렌더링 유도
     // _syncWithYoutubePlayer(currentTracks);
     // logger.d(currentTracks);
     // logger.d(await youtubeController.playerState);
@@ -327,5 +329,15 @@ class SessionController extends GetxController {
 
   void triggerPlayerRefresh() {
     playerRefreshTrigger.value++; // 값 변경 시 Obx 감지
+  }
+
+  Future<void> openTrackSearchSheet() async {
+    final result = await Get.bottomSheet(
+      const TrackSearchBottomSheet(),
+      isScrollControlled: true,
+    );
+    if (result == true) {
+      sync(); // ✅ 성공한 경우만 새로고침
+    }
   }
 }

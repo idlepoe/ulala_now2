@@ -12,7 +12,8 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
   }
 
   try {
-    await verifyAuth(req);
+    const decoded = await verifyAuth(req);
+    const uid = decoded.uid;
     const {sessionId, trackId} = req.body;
 
     if (!sessionId || !trackId) {
@@ -23,6 +24,16 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
+
+    // 유저 활동 시간 갱신 START
+    const participantRef = sessionRef.collection("participants")
+      .doc(uid);
+
+    await participantRef.update({
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    // 유저 활동 시간 갱신 END
+
     const trackRef = sessionRef.collection("tracks").doc(trackId);
 
     const [sessionSnap, trackSnap] = await Promise.all([
