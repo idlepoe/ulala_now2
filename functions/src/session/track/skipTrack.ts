@@ -24,73 +24,76 @@ export const skipTrack = onRequest({cors: true}, async (req, res: any) => {
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
+    const participantRef = sessionRef.collection("participants").doc(uid);
 
-    // 유저 활동 시간 갱신 START
-    const participantRef = sessionRef.collection("participants")
-      .doc(uid);
-
+    // ✅ 사용자 활동 시간 갱신
     await participantRef.update({
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
-    // 유저 활동 시간 갱신 END
 
-    const trackRef = sessionRef.collection("tracks").doc(trackId);
+    const tracksCol = sessionRef.collection("tracks");
+    const trackRef = tracksCol.doc(trackId);
+    const trackSnap = await trackRef.get();
 
-    const [sessionSnap, trackSnap] = await Promise.all([
-      sessionRef.get(),
-      trackRef.get(),
-    ]);
-
-    if (!sessionSnap.exists || !trackSnap.exists) {
+    if (!trackSnap.exists) {
       return res.status(200).json({
         success: false,
-        message: "세션 또는 트랙이 존재하지 않습니다.",
+        message: "해당 트랙이 존재하지 않습니다.",
       });
     }
 
-    // 🗑️ 트랙 삭제
+    const trackData = trackSnap.data();
+    const now = new Date();
+
+    const startAt = trackData?.startAt?.toDate?.();
+    const endAt = trackData?.endAt?.toDate?.();
+    const isCurrentlyPlaying =
+      startAt && endAt && now >= startAt && now < endAt;
+
+    // ✅ 트랙 삭제
     await trackRef.delete();
 
-    // 🔁 이후 트랙 재정렬
-    const now = new Date();
-    const remainingTracksSnap = await sessionRef.collection("tracks")
-      .where("startAt", ">=", admin.firestore.Timestamp.fromDate(now))
-      .orderBy("startAt")
-      .get();
+    // ✅ 이후 트랙 재정렬 (현재 재생 중 트랙일 경우)
+    if (isCurrentlyPlaying && endAt) {
+      const afterSnap = await tracksCol
+        .where("startAt", ">=", admin.firestore.Timestamp.fromDate(endAt))
+        .orderBy("startAt")
+        .get();
 
-    const batch = db.batch();
-    let newStart = now;
+      const batch = db.batch();
+      let cursor = now;
 
-    for (const doc of remainingTracksSnap.docs) {
-      const t = doc.data();
-      const docRef = doc.ref;
+      for (const doc of afterSnap.docs) {
+        const t = doc.data();
+        const duration = typeof t.duration === "number" ? t.duration : 0;
+        const newStart = new Date(cursor.getTime());
+        const newEnd = new Date(newStart.getTime() + duration * 1000);
 
-      const newEnd = new Date(newStart.getTime() + t.duration * 1000);
+        batch.update(doc.ref, {
+          startAt: admin.firestore.Timestamp.fromDate(newStart),
+          endAt: admin.firestore.Timestamp.fromDate(newEnd),
+        });
 
-      batch.update(docRef, {
-        startAt: admin.firestore.Timestamp.fromDate(newStart),
-        endAt: admin.firestore.Timestamp.fromDate(newEnd),
-      });
+        cursor = newEnd;
+      }
 
-      newStart = newEnd;
+      await batch.commit();
     }
-
-    await batch.commit();
 
     return res.status(200).json({
       success: true,
-      message: "트랙이 삭제되었으며, 이후 트랙들이 현재 시간 기준으로 재정렬되었습니다.",
+      message: isCurrentlyPlaying
+        ? "현재 재생 중인 트랙이 스킵되었으며 이후 트랙이 재정렬되었습니다."
+        : "트랙이 삭제되었습니다.",
       data: {
-        trackId,
-        deleted: true,
+        deletedTrackId: trackId,
       },
     });
   } catch (error) {
-    console.error("❌ 트랙 스킵 처리 실패:", error);
+    console.error("❌ 트랙 스킵 실패:", error);
     return res.status(500).json({
       success: false,
       message: "서버 오류로 인해 트랙을 건너뛰는 데 실패했습니다.",
     });
   }
 });
-

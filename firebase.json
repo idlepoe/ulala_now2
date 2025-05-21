@@ -45,7 +45,7 @@
     "rules": "storage.rules"
   },
   "hosting": {
-    "public": "bulid/web",
+    "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",

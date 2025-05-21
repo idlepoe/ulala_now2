@@ -275,7 +275,7 @@ class ApiService {
   }) async {
     try {
       final response = await dio.post(
-        "${ApiConstants.baseUrl}${ApiConstants.skipTrack}",
+        ApiConstants.skipTrack,
         data: {"sessionId": sessionId, "trackId": trackId},
       );
 

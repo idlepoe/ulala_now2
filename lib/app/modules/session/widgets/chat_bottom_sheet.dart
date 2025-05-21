@@ -131,8 +131,8 @@ class ChatBottomSheet extends StatelessWidget {
                     decoration: const InputDecoration(
                       hintText: "메시지를 입력하세요...",
                     ),
-                    onSubmitted: (value) {
-                      chatController.sendMessage(sessionId, nickname);
+                    onSubmitted: (value) async {
+                      await chatController.sendMessage(sessionId, nickname);
                     },
                   ),
                 ),

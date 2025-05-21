@@ -8,6 +8,7 @@ class CurrentTrackCard extends StatelessWidget {
   final SessionTrack track;
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
+  final VoidCallback onSkipTrack; // ✅ 스킵 콜백 추가
   final DateTime now;
 
   const CurrentTrackCard({
@@ -15,6 +16,7 @@ class CurrentTrackCard extends StatelessWidget {
     required this.track,
     required this.isFavorite,
     required this.onFavoriteToggle,
+    required this.onSkipTrack, // ✅ 필수
     required this.now,
   });
 
@@ -24,16 +26,14 @@ class CurrentTrackCard extends StatelessWidget {
     final end = track.endAt;
     final total = end.difference(start).inSeconds;
     final elapsed = now.difference(start).inSeconds.clamp(0, total);
-
-    final endTimeFormatted = DateFormat.Hms().format(end); // 종료시간 포맷
+    final endTimeFormatted = DateFormat.Hms().format(end);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          // 제목 + 즐겨찾기 버튼
+          // 🔼 제목 + 즐겨찾기 + 스킵
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -56,10 +56,16 @@ class CurrentTrackCard extends StatelessWidget {
                 onPressed: onFavoriteToggle,
                 tooltip: '즐겨찾기',
               ),
+              IconButton(
+                icon: const Icon(Icons.skip_next),
+                onPressed: onSkipTrack,
+                tooltip: '현재 트랙 스킵',
+              ),
             ],
           ),
           const SizedBox(height: 4),
-          // 설명
+
+          // 🔽 설명
           Text(
             track.description,
             style: const TextStyle(color: Colors.black54, fontSize: 12),
@@ -67,7 +73,8 @@ class CurrentTrackCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 8),
-          // 진행 바
+
+          // 🔵 진행 바
           LinearProgressIndicator(
             value: total > 0 ? elapsed / total : 0,
             minHeight: 6,
@@ -76,7 +83,8 @@ class CurrentTrackCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(15),
           ),
           const SizedBox(height: 4),
-          // 종료 시간 텍스트
+
+          // ⏰ 종료 시간
           Align(
             alignment: Alignment.centerRight,
             child: Text(

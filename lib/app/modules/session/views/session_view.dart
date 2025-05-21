@@ -77,7 +77,7 @@ class SessionView extends GetView<SessionController> {
     final sessionId = controller.session.value?.id;
     if (sessionId == null) return;
 
-    final url = 'https://myapp.page.link/session/$sessionId';
+    final url = 'https://ulala-now2.web.app/session/$sessionId';
     SharePlus.instance.share(ShareParams(uri: Uri.tryParse(url)));
   }
 

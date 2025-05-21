@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 import '../../../data/models/chat_message.dart';
+import '../../../data/utils/logger.dart';
 
 class ChatController extends GetxController {
   final inputController = TextEditingController();
@@ -15,9 +16,12 @@ class ChatController extends GetxController {
         .collection('sessions/$sessionId/chats')
         .orderBy('createdAt', descending: false)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => ChatMessage.fromJson(doc.data()))
-        .toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs
+                  .map((doc) => ChatMessage.fromJson(doc.data()))
+                  .toList(),
+        );
   }
 
   @override
@@ -42,8 +46,8 @@ class ChatController extends GetxController {
     await FirebaseFirestore.instance
         .collection('sessions/$sessionId/chats')
         .add(message);
+    focusNode.requestFocus();
   }
-
 
   final RxInt unreadCount = 0.obs;
   DateTime lastOpened = DateTime.now();
@@ -65,12 +69,15 @@ class ChatController extends GetxController {
         .orderBy('createdAt')
         .snapshots()
         .listen((snapshot) {
-      for (final change in snapshot.docChanges) {
-        if (change.type == DocumentChangeType.added) {
-          final msg = ChatMessage.fromJson(change.doc.data()!);
-          handleNewMessage(msg);
-        }
-      }
-    });
+          for (final change in snapshot.docChanges) {
+            if (change.type == DocumentChangeType.added) {
+              final data = change.doc.data();
+              if (data?['createdAt'] == null) return; // 이건 for loop만 break될 뿐
+
+              final msg = ChatMessage.fromJson(data!);
+              handleNewMessage(msg);
+            }
+          }
+        });
   }
 }

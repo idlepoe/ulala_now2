@@ -6,6 +6,7 @@ import 'package:ulala_now2/app/modules/session/controllers/session_controller.da
 import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import '../../../data/utils/api_service.dart';
 import '../widgets/current_track_card.dart';
 
 class SessionPlayerView extends GetView<SessionController> {
@@ -79,6 +80,11 @@ class SessionPlayerView extends GetView<SessionController> {
                               onFavoriteToggle:
                                   () => controller.toggleFavorite(current),
                               now: controller.currentTime.value,
+                              onSkipTrack: () async {
+                                await ApiService.skipTrack(sessionId: controller.sessionId, trackId: current.id);
+                                await Future.delayed(Duration(seconds: 2));
+                                controller.sync(); // 또는 fetchSession() 등 갱신 로직 호출
+                              },
                             );
                           }),
                         ),
