@@ -12,7 +12,7 @@ class TrackTile extends StatelessWidget {
   final bool isFavorite;
   final bool showFavorite;
   final bool isDisabled;
-  final String? bottomText; // ✅ 재생 시간 표시용 추가
+  final Widget? bottomWidget; // 기존 bottomText 제거 후 추가
 
   const TrackTile({
     super.key,
@@ -22,7 +22,7 @@ class TrackTile extends StatelessWidget {
     this.isFavorite = false,
     this.showFavorite = true,
     this.isDisabled = false,
-    this.bottomText,
+    this.bottomWidget,
   });
 
   @override
@@ -55,12 +55,7 @@ class TrackTile extends StatelessWidget {
       ),
       title: Text(track.title, maxLines: 2, style: TextStyle(fontSize: 14)),
       subtitle:
-          bottomText != null
-              ? Text(
-                bottomText!,
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              )
-              : null,
+      bottomWidget,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

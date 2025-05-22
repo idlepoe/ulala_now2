@@ -71,7 +71,7 @@ class CurrentTrackCard extends StatelessWidget {
           // 🔽 설명
           Text(
             track.description,
-            style: const TextStyle(color: Colors.black54, fontSize: 12),
+            style: const TextStyle(fontSize: 12),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

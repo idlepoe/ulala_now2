@@ -27,7 +27,7 @@ class TrackSearchBottomSheet extends StatelessWidget {
           // 나머지 콘텐츠 스크롤 영역
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               child: CustomScrollView(
                 physics: BouncingScrollPhysics(),
                 slivers: [
@@ -142,8 +142,8 @@ class TrackSearchBottomSheet extends StatelessWidget {
   ) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(

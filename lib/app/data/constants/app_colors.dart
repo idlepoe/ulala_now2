@@ -9,4 +9,11 @@ class AppColors {
   static const textSecondary = Color(0xFF666666);
   static const cardBackground = Color(0xFFFFFFFF); // 카드 배경 구분
   static const mascotHairColor = Color(0xFFD1B3FF); // 기존 유지
+
+  // 🌙 다크 전용
+  static const darkBackgroundColor = Color(0xFF121212);
+  static const darkCardBackground = Color(0xFF1E1E1E);
+  static const darkChipColor = Color(0xFF2A2A2A);
+  static const darkTextPrimary = Color(0xFFEDEDED);
+  static const darkTextSecondary = Color(0xFFAAAAAA);
 }

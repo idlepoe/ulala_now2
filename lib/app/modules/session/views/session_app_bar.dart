@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ulala_now2/app/data/controllers/theme_controller.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../../../data/constants/app_colors.dart';
@@ -96,18 +97,17 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              trailing: IconButton(
-                icon: Image.asset(
-                  'assets/images/google_logo.webp',
-                  width: 24,
-                  height: 24,
-                ),
-                tooltip: "Google 계정 연동",
-                onPressed: () {
-                  // TODO: 구글 계정 연동 처리
-                  // onLinkGoogleAccount();
-                },
-              ),
+              trailing: Obx(() {
+                return IconButton(
+                  icon: Icon(
+                    Get.find<ThemeController>().isDarkMode.value
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                  ),
+                  onPressed: Get.find<ThemeController>().toggleTheme,
+                  tooltip: '테마 전환',
+                );
+              }),
             ),
             ListTile(
               leading: const Icon(Icons.person),

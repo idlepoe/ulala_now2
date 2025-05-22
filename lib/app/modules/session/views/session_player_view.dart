@@ -30,7 +30,7 @@ class SessionPlayerView extends GetView<SessionController> {
                 maxExtent: 170,
                 builder: (context, shrinkOffset, overlapsContent) {
                   return Container(
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

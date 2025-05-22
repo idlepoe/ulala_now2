@@ -95,8 +95,7 @@ class PlayedTrackBottomSheet extends StatelessWidget {
                                       track,
                                     ),
                                 isDisabled: controller.isSearching.value,
-                                bottomText: _buildTrackInfoText(track),
-
+                                bottomWidget: _buildTrackInfoWidget(track),
                               ),
                             ),
                           ),
@@ -123,14 +122,38 @@ class PlayedTrackBottomSheet extends StatelessWidget {
     return dateKey;
   }
 
-  String _buildTrackInfoText(SessionTrack track) {
+  Widget _buildTrackInfoWidget(SessionTrack track) {
     final playedAt = DateFormat('HH:mm').format(track.startAt);
     final duration = track.endAt.difference(track.startAt);
-    final minutes = duration.inMinutes;
+
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
     final seconds = duration.inSeconds % 60;
 
-    final formattedDuration = '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    final parts = <String>[];
+    if (hours > 0) parts.add('$hours시간');
+    if (minutes > 0) parts.add('$minutes분');
+    if (seconds > 0 || parts.isEmpty) parts.add('$seconds초');
 
-    return '재생 시간: $playedAt · 길이: $formattedDuration';
+    final formattedDuration = parts.join(' ');
+
+    return Row(
+      children: [
+        const Icon(Icons.schedule, size: 14, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          playedAt,
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+        const SizedBox(width: 12),
+        const Icon(Icons.music_note, size: 14, color: Colors.grey),
+        const SizedBox(width: 4),
+        Text(
+          formattedDuration,
+          style: const TextStyle(fontSize: 12, color: Colors.grey),
+        ),
+      ],
+    );
   }
+
 }

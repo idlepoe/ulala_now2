@@ -18,10 +18,18 @@ class FavoriteTrackCarousel extends StatelessWidget {
       final favs = controller.favorites.values.toList().reversed.toList();
       if (favs.isEmpty) return const SizedBox.shrink();
 
+      final isDark = Theme.of(context).brightness == Brightness.dark;
+      final bgColor = isDark ? Colors.grey.shade800 : Colors.grey.shade100;
+      final labelColor = isDark ? Colors.white : Colors.black87;
+      final shadowColor =
+          isDark ? Colors.transparent : Colors.black.withOpacity(0.05);
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("⭐ 즐겨찾기 트랙", style: TextStyle(fontWeight: FontWeight.bold)),
+          const Text(
+            "⭐ 즐겨찾기 트랙",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 8),
           SizedBox(
             height: 80,
@@ -34,16 +42,20 @@ class FavoriteTrackCarousel extends StatelessWidget {
 
                 return GestureDetector(
                   onTap: () => controller.toggleSelectedFavorite(track.videoId),
-                  child: Obx(() =>  AnimatedContainer(
+                  child: Obx(
+                    () => AnimatedContainer(
                       duration: const Duration(milliseconds: 300),
-                      width: controller.selectedFavoriteId.value == track.videoId ? 200 : 100,
+                      width:
+                          controller.selectedFavoriteId.value == track.videoId
+                              ? 200
+                              : 100,
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
+                        color: bgColor,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: shadowColor,
                             blurRadius: 4,
                             offset: const Offset(2, 2),
                           ),
@@ -66,46 +78,59 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                 bottom: 4,
                                 left: 4,
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: Colors.black.withOpacity(0.6),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     _shortTitle(track.title),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
-                                      color: Colors.white,
+                                      color: Colors.white, // 어두운 배경에 고정
                                     ),
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          if (controller.selectedFavoriteId.value == track.videoId) ...[
+                          if (controller.selectedFavoriteId.value ==
+                              track.videoId) ...[
                             const SizedBox(width: 8),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Text(
-                                  //   track.title,
-                                  //   maxLines: 1,
-                                  //   overflow: TextOverflow.ellipsis,
-                                  //   style: const TextStyle(fontWeight: FontWeight.bold),
-                                  // ),
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: const Icon(Icons.favorite, color: Colors.red),
-                                        onPressed: () => controller.toggleFavorite(track),
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color:
+                                              isDark
+                                                  ? Colors.redAccent
+                                                  : Colors.red,
+                                        ),
+                                        onPressed:
+                                            () => controller.toggleFavorite(
+                                              track,
+                                            ),
                                         tooltip: "즐겨찾기",
                                       ),
                                       IconButton(
-                                        icon: const Icon(Icons.playlist_add),
-                                        onPressed: () =>
-                                            controller.attachDurationAndAddTrack(track),
+                                        icon: Icon(
+                                          Icons.playlist_add,
+                                          color: labelColor,
+                                        ),
+                                        onPressed:
+                                            () => controller
+                                                .attachDurationAndAddTrack(
+                                                  track,
+                                                ),
                                         tooltip: "세션추가",
                                       ),
                                     ],
@@ -113,7 +138,7 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                 ],
                               ),
                             ),
-                          ]
+                          ],
                         ],
                       ),
                     ),

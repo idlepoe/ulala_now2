@@ -15,6 +15,9 @@ class ChatBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     final chatController = Get.find<ChatController>();
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final nickname =
@@ -22,26 +25,27 @@ class ChatBottomSheet extends StatelessWidget {
             .firstWhereOrNull((p) => p.uid == userId)
             ?.nickname ??
         '알 수 없음';
-
     final sessionId = Get.find<SessionController>().sessionId;
 
-    // ✅ post-frame callback으로 포커스 지정
     WidgetsBinding.instance.addPostFrameCallback((_) {
       chatController.focusNode.requestFocus();
     });
+
     return SafeArea(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.7,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surface, // ✅ 테마 기반 배경색
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Column(
           children: [
-            const Text(
+            Text(
               '채팅',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
 
@@ -54,26 +58,35 @@ class ChatBottomSheet extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   }
                   final messages = snapshot.data!;
-
                   if (messages.isEmpty) {
-                    return const Center(
+                    return Center(
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
                           '🪐 아직 아무도 말을 걸지 않았어요!\n\n첫 번째 메시지를 남겨보세요 🌟',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.withOpacity(0.6),
+                          ),
                         ),
                       ),
                     );
                   }
 
                   return ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     reverse: true,
                     itemCount: messages.length,
                     itemBuilder: (_, index) {
                       final msg = messages[messages.length - 1 - index];
                       final isMine = msg.senderId == userId;
+
+                      final bubbleColor =
+                          isMine
+                              ? (isDark ? Colors.blue[300] : Colors.blue[100])
+                              : (isDark ? Colors.grey[700] : Colors.grey[200]);
+
                       return Align(
                         alignment:
                             isMine
@@ -86,7 +99,7 @@ class ChatBottomSheet extends StatelessWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: isMine ? Colors.blue[100] : Colors.grey[200],
+                            color: bubbleColor,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
@@ -95,18 +108,20 @@ class ChatBottomSheet extends StatelessWidget {
                               if (!isMine)
                                 Text(
                                   msg.senderName,
-                                  style: const TextStyle(
+                                  style: theme.textTheme.labelSmall?.copyWith(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 12,
                                   ),
                                 ),
-                              Text(msg.message),
+                              Text(
+                                msg.message,
+                                style: theme.textTheme.bodyMedium,
+                              ),
                               const SizedBox(height: 2),
                               Text(
                                 DateFormat.Hm().format(msg.createdAt),
-                                style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: theme.textTheme.labelSmall?.color
+                                      ?.withOpacity(0.6),
                                 ),
                               ),
                             ],
