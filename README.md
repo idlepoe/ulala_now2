@@ -24,6 +24,15 @@ Flutter + Firebase로 제작되었으며, 유튜브 트랙 추가, 실시간 재
 
 ---
 
+## 🛠️ 기술 스택
+
+- **Flutter** (Dart)
+- **Firebase** (Auth, Firestore, Functions, Storage)
+- [GetX](https://pub.dev/packages/get) – 경량 상태관리 및 라우팅
+- [Shorebird](https://pub.dev/packages/shorebird_code_push) – OTA(Over-the-air) 코드 푸시
+
+---
+
 ## 🧑‍💻 시작하기
 
 ```bash
