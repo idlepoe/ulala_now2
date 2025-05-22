@@ -53,6 +53,10 @@
     ],
     "rewrites": [
       {
+        "source": "/etc/**",
+        "destination": "/etc/policy.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
