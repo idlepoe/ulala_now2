@@ -26,7 +26,10 @@ class CurrentTrackCard extends StatelessWidget {
     final end = track.endAt;
     final total = end.difference(start).inSeconds;
     final elapsed = now.difference(start).inSeconds.clamp(0, total);
-    final endTimeFormatted = DateFormat.Hms().format(end);
+
+    // 종료 예정 시각 포맷 (오전/오후 포함)
+    final endTimeFormatted = DateFormat('a h:mm', 'ko').format(end);
+    final durationFormatted = getFormattedDuration(total);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -57,7 +60,7 @@ class CurrentTrackCard extends StatelessWidget {
                 tooltip: '즐겨찾기',
               ),
               IconButton(
-                icon: const Icon(Icons.skip_next),
+                icon: const Icon(Icons.skip_next, color: Colors.grey),
                 onPressed: onSkipTrack,
                 tooltip: '현재 트랙 스킵',
               ),
@@ -85,15 +88,44 @@ class CurrentTrackCard extends StatelessWidget {
           const SizedBox(height: 4),
 
           // ⏰ 종료 시간
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              '종료 예정: $endTimeFormatted',
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-            ),
+          Row(
+            children: [
+              const Icon(Icons.music_note, size: 14, color: Colors.grey),
+              const SizedBox(width: 4),
+              Text(
+                durationFormatted,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              const Icon(Icons.schedule, size: 14, color: Colors.grey),
+              const SizedBox(width: 4),
+              Text(
+                '종료 예정: $endTimeFormatted',
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
+}
+
+String getFormattedDuration(int seconds) {
+  final hours = seconds ~/ 3600;
+  final minutes = (seconds % 3600) ~/ 60;
+  final remainSeconds = seconds % 60;
+
+  final parts = <String>[];
+  if (hours > 0) parts.add("$hours시간");
+  if (minutes > 0) parts.add("$minutes분");
+  if (remainSeconds > 0 || parts.isEmpty) {
+    parts.add("$remainSeconds초");
+  }
+
+  return parts.join(' ');
 }

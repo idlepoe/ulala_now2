@@ -29,6 +29,7 @@ class HomeController extends GetxController {
 
   Future<void> joinSession(String sessionId) async {
     try {
+      isLoading.value = true;
       await ApiService.joinSession(sessionId);
 
       final prefs = await SharedPreferences.getInstance();
@@ -37,6 +38,8 @@ class HomeController extends GetxController {
       Get.offAllNamed(Routes.SPLASH);
     } catch (e) {
       Get.snackbar('오류', '세션 참가에 실패했습니다.');
+    } finally {
+      isLoading.value = false;
     }
   }
 

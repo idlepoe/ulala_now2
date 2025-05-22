@@ -6,62 +6,56 @@ class AppTheme {
   static ThemeData light() {
     return ThemeData(
       scaffoldBackgroundColor: AppColors.backgroundColor,
-      // ✅ 여기!
       fontFamily: 'MapoGoldenPier',
+      colorScheme: ColorScheme.light(
+        primary: AppColors.vividLavender,
+        secondary: AppColors.deepLavender,
+        surface: AppColors.cardBackground,
+        background: AppColors.backgroundColor,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+      ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.mascotHairColor, // ✅ AppBar 배경색
-        elevation: 1,
+        backgroundColor: AppColors.backgroundColor,
+        elevation: 0,
         titleTextStyle: TextStyle(
-          color: Colors.black,
+          color: AppColors.textPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
           fontFamily: 'MapoGoldenPier',
         ),
-        iconTheme: IconThemeData(color: Colors.black87),
+        iconTheme: const IconThemeData(color: Colors.black87),
       ),
-      sliderTheme: SliderThemeData(
-        activeTrackColor: AppColors.vividLavender,
-        inactiveTrackColor: AppColors.mascotHairColor.withOpacity(0.3),
-        thumbColor: AppColors.mascotHairColor,
-        overlayColor: AppColors.mascotHairColor.withOpacity(0.2),
-        trackHeight: 4,
-        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-        overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.softChipColor,
+        labelStyle: const TextStyle(fontSize: 12, color: Colors.black87),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        selectedColor: AppColors.vividLavender.withOpacity(0.8),
+        secondarySelectedColor: AppColors.vividLavender,
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
-        color: AppColors.vividLavender, // 원하는 색상
-        strokeCap: StrokeCap.round,
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.mascotHairColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          elevation: 0,
-          textStyle: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'MapoGoldenPier',
-            color: AppColors.deepLavender,
-          ),
-          foregroundColor: AppColors.deepLavender,
+      cardColor: AppColors.cardBackground,
+      cardTheme: const CardTheme(
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
       ),
-
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.mascotHairColor, // ✅ BottomNavigationBar 배경색
-        selectedItemColor: Colors.black,
-        unselectedItemColor: AppColors.vividLavender,
-        type: BottomNavigationBarType.fixed,
-      ),
-      cardColor: const Color(0xFFFFF7E6),
-      cardTheme: CardTheme(color: Color(0xFFFFF7E6)),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.mascotHairColor,
         foregroundColor: AppColors.deepLavender,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: AppColors.mascotHairColor,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: AppColors.vividLavender,
+        type: BottomNavigationBarType.fixed,
+      ),
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(fontSize: 16, color: AppColors.textPrimary),
+        bodyMedium: TextStyle(fontSize: 14, color: AppColors.textSecondary),
+        labelSmall: TextStyle(fontSize: 12, color: AppColors.textSecondary),
       ),
     );
   }

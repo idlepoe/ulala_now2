@@ -8,6 +8,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
+import '../../../data/constants/app_colors.dart';
 import '../../../data/utils/api_service.dart';
 import '../../../routes/app_pages.dart';
 import '../widgets/profile_edit_dialog.dart';
@@ -31,7 +32,24 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Text(title),
+      title: RichText(
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style, // 전체 기본 스타일
+          children: [
+            TextSpan(
+              text: title,
+              style: const TextStyle(
+                color: AppColors.deepLavender,
+                fontWeight: FontWeight.bold,
+              ), // '세션' 강조
+            ), // 기존 title
+            TextSpan(
+              text: ' 세션',
+              style: const TextStyle(), // '세션' 강조
+            ),
+          ],
+        ),
+      ),
       leading: IconButton(
         icon: const Icon(Icons.menu),
         onPressed: () => _openMenu(context),

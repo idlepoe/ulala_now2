@@ -38,7 +38,7 @@ export const getSessionById = onRequest({cors: true}, async (req, res: any) => {
       // 문서가 없는 경우, createdAt과 함께 새로 생성
       await participantRef.set({
         uid: uid,
-        nickname: decoded.name || "",         // 예: decoded에 사용자 이름이 있을 경우
+        nickname: decoded.name || "익명" + Math.random().toString(36).substr(2, 8),         // 예: decoded에 사용자 이름이 있을 경우
         avatarUrl: decoded.picture || "",      // 예: decoded에 프로필 이미지가 있을 경우
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
         createdAt: admin.firestore.FieldValue.serverTimestamp(),

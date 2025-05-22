@@ -75,9 +75,13 @@ class HomeView extends GetView<HomeController> {
             itemBuilder: (context, index) {
               final session = sessions[index];
               return ListTile(
-                title: Text(session.name),
+                title: Text(
+                  session.name,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
                 subtitle: Text('참여자 수: ${session.participantCount}'),
                 onTap: () => controller.joinSession(session.id),
+                trailing: Text('탭하여 참여하기'),
               );
             },
           ),

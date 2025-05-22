@@ -58,7 +58,7 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/animations/
-#    - shorebird.yaml
+    - shorebird.yaml
   fonts:
     - family: MapoGoldenPier
       fonts:

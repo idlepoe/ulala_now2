@@ -25,7 +25,7 @@ class SessionView extends GetView<SessionController> {
 
       return Scaffold(
         appBar: SessionAppBar(
-          title: controller.session.value?.name ?? '세션',
+          title: controller.session.value!.name,
           onSync: controller.sync,
           onAddTrack: controller.openTrackSearchSheet,
           onShowHistory: _onShowHistory,

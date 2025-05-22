@@ -26,8 +26,8 @@ class SessionPlayerView extends GetView<SessionController> {
             SliverPersistentHeader(
               pinned: true,
               delegate: _SliverPlayerDelegate(
-                minExtent: 160,
-                maxExtent: 160,
+                minExtent: 170,
+                maxExtent: 170,
                 builder: (context, shrinkOffset, overlapsContent) {
                   return Container(
                     color: Colors.white,
@@ -36,11 +36,16 @@ class SessionPlayerView extends GetView<SessionController> {
                       children: [
                         Expanded(
                           flex: 2,
-                          child: YoutubePlayer(
-                            key: const ValueKey('persistent-player'),
-                            // ✅ 고정된 key로 상태 유지
-                            controller: controller.youtubeController,
-                            aspectRatio: 16 / 9,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              YoutubePlayer(
+                                key: const ValueKey('persistent-player'),
+                                // ✅ 고정된 key로 상태 유지
+                                controller: controller.youtubeController,
+                                aspectRatio: 16 / 9,
+                              ),
+                            ],
                           ),
                         ),
                         const SizedBox(width: 12),
