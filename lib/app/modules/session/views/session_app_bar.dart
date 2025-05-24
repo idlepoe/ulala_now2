@@ -60,8 +60,15 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         TextButton.icon(
           onPressed: onSync,
-          icon: const Icon(Icons.refresh),
-          label: const Text("싱크"),
+          icon: Image.asset(
+            'assets/images/ic_fix.png',
+            width: 35,
+            height: 35,
+          ),
+          label: const Text(
+            "뚝딱 고치기",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         GetBuilder<SessionController>(
           builder: (controller) {

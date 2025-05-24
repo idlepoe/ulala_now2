@@ -24,11 +24,17 @@ class ChatAndParticipantsBar extends StatelessWidget {
           Obx(() {
             final chatController = Get.find<ChatController>();
             final count = chatController.unreadCount.value;
+
             return Badge(
               label: Text('$count'),
               isLabelVisible: count > 0,
               child: IconButton(
-                icon: const Icon(Icons.chat_bubble),
+                icon: Image.asset(
+                  'assets/images/ic_chat.png',
+                  width: 32,
+                  height: 32,
+                ),
+                tooltip: '채팅 열기',
                 onPressed: () {
                   chatController.markAllAsRead();
                   Get.bottomSheet(const ChatBottomSheet());
