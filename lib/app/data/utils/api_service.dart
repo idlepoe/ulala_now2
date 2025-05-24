@@ -161,7 +161,8 @@ class ApiService {
   static Future<Session> createSession(
     String name, {
     required bool isPrivate,
-  }) async {
+        required SessionMode mode, // ✅ 모드 추가
+      }) async {
     final user = FirebaseAuth.instance.currentUser;
     final nickname = user?.displayName ?? "익명";
     final avatarUrl = user?.photoURL ?? "";
@@ -173,6 +174,7 @@ class ApiService {
         "nickname": nickname,
         "avatarUrl": avatarUrl,
         "isPrivate": isPrivate,
+        "mode": mode.name, // ✅ 문자열로 전달
       },
     );
 

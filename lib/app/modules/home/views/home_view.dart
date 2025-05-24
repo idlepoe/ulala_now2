@@ -211,10 +211,39 @@ class HomeView extends GetView<HomeController> {
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => controller.openCreateSessionSheet(context),
-        child: const Icon(Icons.add),
-        tooltip: '세션 만들기',
+      floatingActionButton: Builder(
+        builder: (context) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final bgColor = isDark ? Colors.grey.shade800 : Colors.white;
+          final shadowColor = isDark ? Colors.black45 : Colors.black26;
+          return Material(
+            color: Colors.transparent,
+            elevation: 6,
+            shadowColor: shadowColor,
+            shape: const CircleBorder(),
+            child: InkWell(
+              onTap: () => controller.openCreateSessionSheet(context),
+              customBorder: const CircleBorder(),
+              child: Ink(
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  shape: BoxShape.circle,
+                ),
+                width: 56,
+                height: 56,
+                child: Center(
+                  child: Image.asset(
+                    'assets/images/ic_session_make.png',
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.contain,
+                    color: isDark ? Colors.white : null, // 필요 시 아이콘 색상 보정
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -242,8 +271,6 @@ class HomeView extends GetView<HomeController> {
         return '일반 모드';
       case SessionMode.dj:
         return 'DJ 모드';
-      case SessionMode.shuffle:
-        return '셔플 모드';
       default:
         return '';
     }

@@ -33,5 +33,4 @@ Map<String, dynamic> _$SessionToJson(_Session instance) => <String, dynamic>{
 const _$SessionModeEnumMap = {
   SessionMode.general: 'general',
   SessionMode.dj: 'dj',
-  SessionMode.shuffle: 'shuffle',
 };

@@ -38,8 +38,6 @@ class UpcomingTrackTile extends StatelessWidget {
     return parts.join(' ');
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     if (isCurrent) return const SizedBox.shrink();
@@ -91,6 +89,7 @@ class UpcomingTrackTile extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               track.title,

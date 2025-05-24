@@ -72,7 +72,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.playlist_add),
-                  tooltip: canControl ? "트랙 추가" : "DJ만 트랙을 추가할 수 있어요",
+                  tooltip: canControl ? "트랙 추가" : "DJ만",
                   onPressed: (!canControl) ? null : onAddTrack,
                   color: canControl ? null : Colors.grey,
                 ),

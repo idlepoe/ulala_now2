@@ -42,20 +42,41 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
         return updatedAt >= twelveHoursAgo;
       });
 
-      // latest track 1건
+      // 🔹 모든 트랙을 최신순으로 가져오기 (최대 10개)
       const tracksSnap = await doc.ref
         .collection("tracks")
         .orderBy("createdAt", "desc")
-        .limit(1)
+        .limit(10) // 성능상 안전한 범위
         .get();
 
-      const latestTrackDoc = tracksSnap.docs[0];
-      const latestTrack = latestTrackDoc ? [latestTrackDoc.data()] : [];
+      const now = new Date();
+      let selectedTrack = null;
+
+      for (const trackDoc of tracksSnap.docs) {
+        const track = trackDoc.data();
+        const startAt = track.startAt.toDate?.() ?? new Date(track.startAt);
+        const endAt = track.endAt.toDate?.() ?? new Date(track.endAt);
+
+        const isStream = track.duration === 0 && startAt.getTime() === endAt.getTime();
+
+        if (
+          (isStream && now > startAt) || // 스트리밍 트랙이 현재보다 과거에 시작됨
+          (now > startAt && now < endAt) // 일반 트랙이 현재 시간에 재생 중
+        ) {
+          selectedTrack = track;
+          break; // ✅ 현재 재생 중인 트랙이면 더 볼 필요 없음
+        }
+      }
+
+      // fallback: 가장 최근 트랙
+      if (!selectedTrack && tracksSnap.docs.length > 0) {
+        selectedTrack = tracksSnap.docs[0].data();
+      }
 
       return {
         ...data,
         participantCount: activeParticipants.length,
-        trackList: latestTrack, // ✅ 1건만 리스트로 포함
+        trackList: selectedTrack ? [selectedTrack] : [], // ✅ 1건만 리스트로 포함
       };
     }));
 

@@ -337,11 +337,9 @@ class SessionController extends GetxController {
             .clamp(0, current.duration)
             .toDouble();
 
-    final upcoming = tracks
-        .where((t) => t.endAt.isAfter(now) || t == current)
-        .toList()
-      ..sort((a, b) => a.startAt.compareTo(b.startAt));
-
+    final upcoming =
+        tracks.where((t) => t.endAt.isAfter(now) || t == current).toList()
+          ..sort((a, b) => a.startAt.compareTo(b.startAt));
 
     if (upcoming.length == 1) {
       logger.w("3333333");
@@ -526,15 +524,20 @@ class SessionController extends GetxController {
   String? getDjUid(List<SessionParticipant> participants) {
     if (participants.isEmpty) return null;
 
-    participants.sort((a, b) => a.createdAt.compareTo(b.createdAt));
-    return participants.first.uid;
+    final sorted =
+        participants.toList()
+          ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
+
+    return sorted.first.uid;
   }
 
-  bool canControlTrack() {
+  bool canControlTrack({SessionParticipant? participants}) {
     if (session.value!.mode != SessionMode.dj) return true;
 
     final djUid = getDjUid(session.value!.participants);
-    return djUid == FirebaseAuth.instance.currentUser!.uid;
+    return djUid ==
+        (participants == null
+            ? FirebaseAuth.instance.currentUser!.uid
+            : participants.uid);
   }
-
 }

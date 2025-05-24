@@ -55,8 +55,6 @@ enum SessionMode {
   general,
   @JsonValue('dj')
   dj,
-  @JsonValue('shuffle')
-  shuffle,
 }
 
 @freezed

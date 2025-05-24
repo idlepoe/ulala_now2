@@ -39,11 +39,24 @@ class SessionPlayerView extends GetView<SessionController> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              YoutubePlayer(
-                                key: const ValueKey('persistent-player'),
-                                // ✅ 고정된 key로 상태 유지
-                                controller: controller.youtubeController,
-                                aspectRatio: 16 / 9,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  // 원하는 R 값
+                                  child: Stack(
+                                    children: [
+                                      YoutubePlayer(
+                                        key: const ValueKey(
+                                          'persistent-player',
+                                        ),
+                                        controller:
+                                            controller.youtubeController,
+                                        aspectRatio: 16 / 9,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -86,9 +99,13 @@ class SessionPlayerView extends GetView<SessionController> {
                                   () => controller.toggleFavorite(current),
                               now: controller.currentTime.value,
                               onSkipTrack: () async {
-                                await ApiService.skipTrack(sessionId: controller.sessionId, trackId: current.id);
+                                await ApiService.skipTrack(
+                                  sessionId: controller.sessionId,
+                                  trackId: current.id,
+                                );
                                 await Future.delayed(Duration(seconds: 2));
-                                controller.sync(); // 또는 fetchSession() 등 갱신 로직 호출
+                                controller
+                                    .sync(); // 또는 fetchSession() 등 갱신 로직 호출
                               },
                             );
                           }),
@@ -125,7 +142,6 @@ class SessionPlayerView extends GetView<SessionController> {
       return now.isAfter(track.startAt) && now.isBefore(end);
     });
   }
-
 }
 
 class PlayerHeader extends StatelessWidget {

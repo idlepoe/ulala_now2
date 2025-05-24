@@ -114,10 +114,9 @@ class TrackSearchBottomSheet extends StatelessWidget {
                               isFavorite: controller.isFavorite(track.videoId),
                               onFavorite:
                                   () => controller.toggleFavorite(track),
-                              onAdd:
-                                  () => controller.attachDurationAndAddTrack(
-                                    track,
-                                  ),
+                              onAdd: () {
+                                controller.attachDurationAndAddTrack(track);
+                              },
                               isDisabled: controller.isSearching.value,
                             ),
                           ),

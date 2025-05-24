@@ -96,6 +96,7 @@ class HomeController extends GetxController {
                       final session = await ApiService.createSession(
                         name,
                         isPrivate: isPrivate.value,
+                        mode: selectedMode.value,
                       );
                       await joinSession(session.id);
                     } catch (e) {
@@ -227,8 +228,6 @@ class HomeController extends GetxController {
         return "🎵 일반 모드: 모두가 트랙을 추가하고 스킵할 수 있어요.";
       case SessionMode.dj:
         return "🎧 DJ 모드: 호스트만 트랙을 추가하고 조작할 수 있어요.";
-      case SessionMode.shuffle:
-        return "🔀 셔플 모드: 재생 순서가 무작위로 정해져요.";
     }
   }
 }
