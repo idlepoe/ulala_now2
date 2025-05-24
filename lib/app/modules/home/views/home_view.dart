@@ -222,7 +222,11 @@ class HomeView extends GetView<HomeController> {
             shadowColor: shadowColor,
             shape: const CircleBorder(),
             child: InkWell(
-              onTap: () => controller.openCreateSessionSheet(context),
+              onTap:
+                  () =>
+                      controller.isLoading.value
+                          ? null
+                          : controller.openCreateSessionSheet(context),
               customBorder: const CircleBorder(),
               child: Ink(
                 decoration: BoxDecoration(
@@ -237,7 +241,10 @@ class HomeView extends GetView<HomeController> {
                     width: 56,
                     height: 56,
                     fit: BoxFit.contain,
-                    color: isDark ? Colors.white : null, // 필요 시 아이콘 색상 보정
+                    color:
+                        controller.isLoading.value
+                            ? Colors.grey
+                            : null, // 필요 시 아이콘 색상 보정
                   ),
                 ),
               ),

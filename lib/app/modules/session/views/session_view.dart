@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
@@ -80,8 +82,65 @@ class SessionView extends GetView<SessionController> {
     if (sessionId == null) return;
 
     final url = 'https://ulala-now2.web.app/session/$sessionId';
-    SharePlus.instance.share(ShareParams(uri: Uri.tryParse(url)));
+    final context = Get.context!;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "세션 공유",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              QrImageView(
+                data: url,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+              const SizedBox(height: 16),
+              SelectableText(
+                url,
+                style: const TextStyle(fontSize: 14, color: Colors.blueAccent),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Share.share(url);
+                    },
+                    icon: const Icon(Icons.share),
+                    label: const Text("링크 공유"),
+                  ),
+                  const SizedBox(width: 12),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: url));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('링크가 복사되었습니다')),
+                      );
+                    },
+                    icon: const Icon(Icons.copy),
+                    label: const Text("복사"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
+
 
   void _onShowHistory() {
     // 조금 기다렸다가 새로운 BottomSheet 열기
