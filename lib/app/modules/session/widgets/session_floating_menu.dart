@@ -15,33 +15,40 @@ class SessionFloatingMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelColor =
+        Theme.of(context).textTheme.bodyMedium?.color ?? Colors.black;
+    final iconColor = isDark ? Colors.white : Colors.black;
     return Padding(
       padding: const EdgeInsets.only(bottom: 80),
       child: SpeedDial(
         icon: Icons.menu,
         activeIcon: Icons.close,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
         overlayOpacity: 0.1,
         spacing: 10,
         spaceBetweenChildren: 8,
         children: [
           SpeedDialChild(
-            child: const Icon(Icons.playlist_add),
-            backgroundColor: Colors.green,
+            child: Icon(Icons.playlist_add, color: iconColor),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             label: '트랙 추가',
+            labelStyle: TextStyle(color: labelColor),
             onTap: onAddTrack,
           ),
           SpeedDialChild(
-            child: const Icon(Icons.history),
-            backgroundColor: Colors.orange,
+            child: Icon(Icons.history, color: iconColor),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             label: '트랙 이력',
+            labelStyle: TextStyle(color: labelColor),
             onTap: onShowHistory,
           ),
           SpeedDialChild(
-            child: const Icon(Icons.share),
-            backgroundColor: Colors.indigo,
+            child: Icon(Icons.share, color: iconColor),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             label: '세션 공유',
+            labelStyle: TextStyle(color: labelColor),
             onTap: onShare,
           ),
         ],

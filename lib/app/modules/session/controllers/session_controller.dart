@@ -10,6 +10,7 @@ import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../data/models/chat_message.dart';
 import '../../../data/models/session.dart';
+import '../../../data/models/session_participant.dart';
 import '../../../data/models/session_track.dart';
 import '../../../data/models/youtube/youtube_item.dart';
 import '../../../data/utils/api_service.dart';
@@ -521,4 +522,19 @@ class SessionController extends GetxController {
     // "은하수에 음악이 비었어요. 첫 곡을 채워주세요 ⭐",
     // "지금은 정적 타임... 음악 한 곡 어때요?",
   ];
+
+  String? getDjUid(List<SessionParticipant> participants) {
+    if (participants.isEmpty) return null;
+
+    participants.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+    return participants.first.uid;
+  }
+
+  bool canControlTrack() {
+    if (session.value!.mode != SessionMode.dj) return true;
+
+    final djUid = getDjUid(session.value!.participants);
+    return djUid == FirebaseAuth.instance.currentUser!.uid;
+  }
+
 }

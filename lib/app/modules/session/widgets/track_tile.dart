@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:ulala_now2/app/data/models/session_track.dart';
 
+import '../controllers/session_controller.dart';
+
 class TrackTile extends StatelessWidget {
   final SessionTrack track;
   final VoidCallback? onAdd;
@@ -54,8 +56,7 @@ class TrackTile extends StatelessWidget {
         ),
       ),
       title: Text(track.title, maxLines: 2, style: TextStyle(fontSize: 14)),
-      subtitle:
-      bottomWidget,
+      subtitle: bottomWidget,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -67,12 +68,34 @@ class TrackTile extends StatelessWidget {
             ),
             onPressed: isDisabled ? null : onFavorite,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.playlist_add,
-              color: isDisabled ? Colors.grey : null,
-            ),
-            onPressed: isDisabled ? null : onAdd,
+          GetBuilder<SessionController>(
+            builder: (controller) {
+              final canControl = controller.canControlTrack();
+
+              return Stack(
+                alignment: Alignment.center,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.playlist_add),
+                    tooltip: canControl ? "트랙 추가" : "DJ만 트랙을 추가할 수 있어요",
+                    onPressed: (!canControl || isDisabled) ? null : onAdd,
+                    color: canControl ? null : Colors.grey,
+                  ),
+                  if (!canControl)
+                    const Positioned(
+                      bottom: 4,
+                      child: Text(
+                        'DJ만',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
         ],
       ),

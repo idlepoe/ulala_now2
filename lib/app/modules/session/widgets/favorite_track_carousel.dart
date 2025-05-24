@@ -121,17 +121,39 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                             ),
                                         tooltip: "즐겨찾기",
                                       ),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.playlist_add,
-                                          color: labelColor,
-                                        ),
-                                        onPressed:
-                                            () => controller
-                                                .attachDurationAndAddTrack(
-                                                  track,
+                                      Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.playlist_add,
+                                              color:
+                                                  controller.canControlTrack()
+                                                      ? labelColor
+                                                      : Colors.grey,
+                                            ),
+                                            onPressed:
+                                                !controller.canControlTrack()
+                                                    ? null
+                                                    : () => controller
+                                                        .attachDurationAndAddTrack(
+                                                          track,
+                                                        ),
+                                            tooltip: "세션추가",
+                                          ),
+                                          if (!controller.canControlTrack())
+                                            const Positioned(
+                                              bottom: 4,
+                                              child: Text(
+                                                'DJ만',
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                        tooltip: "세션추가",
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ],
                                   ),

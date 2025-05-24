@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_vertexai/firebase_vertexai.dart';
 import 'package:get/get.dart';
+import 'package:html_unescape/html_unescape.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -69,8 +70,14 @@ class ApiService {
             SessionTrack(
               id: videoId,
               videoId: videoId,
-              title: snippet["title"] ?? '',
-              description: snippet["description"] ?? '',
+              title:
+                  snippet["title"] == null
+                      ? ""
+                      : HtmlUnescape().convert(snippet["title"]),
+              description:
+                  snippet["description"] == null
+                      ? ""
+                      : HtmlUnescape().convert(snippet["description"]),
               thumbnail: snippet["thumbnails"]?["medium"]?["url"] ?? '',
               duration: 0,
               // ▶️ 추후 getYoutubeLength로 갱신

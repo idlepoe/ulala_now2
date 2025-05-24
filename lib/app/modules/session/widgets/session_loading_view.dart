@@ -24,7 +24,7 @@ class SessionLoadingView extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(strokeCap: StrokeCap.round),
           ],
         ),
       ),

@@ -10,7 +10,7 @@ import '../../../data/utils/logger.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../session/widgets/session_loading_view.dart';
-import '../widgets/AppInfoDialog.dart';
+import '../widgets/app_info_dialog.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -84,13 +84,41 @@ class HomeView extends GetView<HomeController> {
                     // 썸네일 이미지
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        session.trackList.isNotEmpty
-                            ? session.trackList.first.thumbnail
-                            : 'https://via.placeholder.com/55',
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            session.trackList.isNotEmpty
+                                ? session.trackList.first.thumbnail
+                                : 'https://via.placeholder.com/85',
                         width: 85,
                         height: 85,
                         fit: BoxFit.cover,
+                        placeholder:
+                            (context, url) => Container(
+                              width: 85,
+                              height: 85,
+                              color: Colors.grey.shade200,
+                              child: const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            ),
+                        errorWidget:
+                            (context, url, error) => Container(
+                              width: 85,
+                              height: 85,
+                              color: Colors.grey.shade300,
+                              child: Center(
+                                child: SizedBox(
+                                  width: 48,
+                                  height: 48,
+                                  child: Image.asset(
+                                    'assets/images/broken_image.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            ),
                       ),
                     ),
 
@@ -223,24 +251,34 @@ class HomeView extends GetView<HomeController> {
 
   String _getTrackStatus(SessionTrack track) {
     final now = DateTime.now();
-
     final isStream = track.startAt == track.endAt && track.duration == 0;
 
     if (isStream) {
       if (now.isAfter(track.startAt)) {
         return '🔴 스트리밍 중';
       } else {
-        return ''; // 아직 시작 전
+        return '';
       }
     }
 
     if (now.isAfter(track.startAt) && now.isBefore(track.endAt)) {
       return '🎶 재생 중';
     } else if (now.isAfter(track.endAt)) {
-      final endedAt = DateFormat('HH:mm').format(track.endAt);
-      return '🕒 종료됨: $endedAt';
-    } else {
-      return ''; // 예정 트랙은 표시하지 않음
+      final diff = now.difference(track.endAt).inDays;
+
+      if (diff == 0) {
+        final endedAt = DateFormat('HH:mm').format(track.endAt);
+        return '🕒 종료됨: $endedAt';
+      } else if (diff == 1) {
+        return '🕒 종료됨: 어제';
+      } else if (diff == 2) {
+        return '🕒 종료됨: 2일 전';
+      } else {
+        final formatted = DateFormat('M/d HH:mm').format(track.endAt);
+        return '🕒 종료됨: $formatted';
+      }
     }
+
+    return '';
   }
 }

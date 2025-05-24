@@ -27,12 +27,35 @@ class UpcomingTrackList extends GetView<SessionController> {
 
       if (upcoming.isEmpty || upcoming.length == 1) {
         return Center(
-          child: ElevatedButton.icon(
-            icon: const Icon(Icons.playlist_add),
-            label: Text("${upcoming.length == 1 ? "다음 " : ""}재생할 음악 트랙 추가하기"),
-            onPressed: () async {
-              await controller.openTrackSearchSheet();
-            },
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              ElevatedButton.icon(
+                icon: Icon(
+                  Icons.playlist_add,
+                  color: controller.canControlTrack() ? null : Colors.grey,
+                ),
+                label: Text("${upcoming.length == 1 ? "다음 " : ""}재생할 음악 트랙 추가하기"),
+                onPressed:
+                    !controller.canControlTrack()
+                        ? null
+                        : () async {
+                          await controller.openTrackSearchSheet();
+                        },
+              ),
+              if (!controller.canControlTrack())
+                const Positioned(
+                  bottom: 4,
+                  child: Text(
+                    'DJ만',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+            ],
           ),
         );
       }

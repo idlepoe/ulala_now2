@@ -35,7 +35,9 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: RichText(
         text: TextSpan(
-          style: DefaultTextStyle.of(context).style, // 전체 기본 스타일
+          style: DefaultTextStyle
+              .of(context)
+              .style, // 전체 기본 스타일
           children: [
             TextSpan(
               text: title,
@@ -61,10 +63,34 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
           icon: const Icon(Icons.refresh),
           label: const Text("싱크"),
         ),
-        IconButton(
-          icon: const Icon(Icons.playlist_add),
-          tooltip: "트랙 추가",
-          onPressed: onAddTrack,
+        GetBuilder<SessionController>(
+          builder: (controller) {
+            final canControl = controller.canControlTrack();
+
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.playlist_add),
+                  tooltip: canControl ? "트랙 추가" : "DJ만 트랙을 추가할 수 있어요",
+                  onPressed: (!canControl) ? null : onAddTrack,
+                  color: canControl ? null : Colors.grey,
+                ),
+                if (!canControl)
+                  const Positioned(
+                    bottom: 4,
+                    child: Text(
+                      'DJ만',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
         const SizedBox(width: 8),
       ],
@@ -85,9 +111,9 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
             ListTile(
               leading: CircleAvatar(
                 backgroundImage:
-                    user?.photoURL != null
-                        ? NetworkImage(user!.photoURL!)
-                        : null,
+                user?.photoURL != null
+                    ? NetworkImage(user!.photoURL!)
+                    : null,
                 child: user?.photoURL == null ? const Icon(Icons.person) : null,
               ),
               title: Text(
@@ -100,11 +126,16 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
               trailing: Obx(() {
                 return IconButton(
                   icon: Icon(
-                    Get.find<ThemeController>().isDarkMode.value
+                    Get
+                        .find<ThemeController>()
+                        .isDarkMode
+                        .value
                         ? Icons.dark_mode
                         : Icons.light_mode,
                   ),
-                  onPressed: Get.find<ThemeController>().toggleTheme,
+                  onPressed: Get
+                      .find<ThemeController>()
+                      .toggleTheme,
                   tooltip: '테마 전환',
                 );
               }),

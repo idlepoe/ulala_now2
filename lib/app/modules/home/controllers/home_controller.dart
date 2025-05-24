@@ -65,6 +65,7 @@ class HomeController extends GetxController {
 
     final controller = TextEditingController(text: defaultName);
     final RxBool isPrivate = false.obs;
+    final Rx<SessionMode> selectedMode = SessionMode.general.obs; // ✅ 모드 상태 추가
 
     Get.bottomSheet(
       Container(
@@ -136,8 +137,66 @@ class HomeController extends GetxController {
                 hintText: '예: 별빛 오페라, 성운 라운지...',
               ),
             ),
+            const SizedBox(height: 24),
+            const Text('세션 모드', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Obx(
+              () => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children:
+                    SessionMode.values.map((mode) {
+                      final isSelected = selectedMode.value == mode;
+                      return GestureDetector(
+                        onTap: () => selectedMode.value = mode,
+                        child: Container(
+                          width: 90,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected ? Colors.blue.shade50 : Colors.white,
+                            border: Border.all(
+                              color:
+                                  isSelected
+                                      ? Colors.blue
+                                      : Colors.grey.shade300,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Column(
+                            children: [
+                              Image.asset(
+                                'assets/images/mode_${mode.name}.png',
+                                width: 32,
+                                height: 32,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                mode.name.toUpperCase(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color:
+                                      isSelected ? Colors.blue : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
 
             const SizedBox(height: 12),
+            Obx(
+              () => Text(
+                getSessionModeLabel(selectedMode.value),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
+              ),
+            ),
+            const SizedBox(height: 24),
+
             Row(
               children: [
                 Expanded(
@@ -160,5 +219,16 @@ class HomeController extends GetxController {
       ),
       isScrollControlled: true,
     );
+  }
+
+  String getSessionModeLabel(SessionMode mode) {
+    switch (mode) {
+      case SessionMode.general:
+        return "🎵 일반 모드: 모두가 트랙을 추가하고 스킵할 수 있어요.";
+      case SessionMode.dj:
+        return "🎧 DJ 모드: 호스트만 트랙을 추가하고 조작할 수 있어요.";
+      case SessionMode.shuffle:
+        return "🔀 셔플 모드: 재생 순서가 무작위로 정해져요.";
+    }
   }
 }
