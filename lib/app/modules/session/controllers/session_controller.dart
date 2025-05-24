@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../data/models/chat_message.dart';
@@ -64,6 +65,63 @@ class SessionController extends GetxController {
     });
 
     _subscribeToTracks();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showFixTutorial();
+    });
+  }
+
+  void showFixTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    final hasShown = prefs.getBool('fix_tutorial_shown') ?? false;
+    if (hasShown) return;
+
+    final ctx = Get.overlayContext;
+    if (ctx != null) {
+      TutorialCoachMark(
+        targets: getFixTutorialTargets(),
+        textSkip: "건너뛰기",
+        onFinish: () => print("뚝딱 튜토리얼 종료"),
+      ).show(context: ctx);
+      await prefs.setBool('fix_tutorial_shown', true); // ✅ 플래그 저장
+    }
+  }
+
+  List<TargetFocus> getFixTutorialTargets() {
+    return [
+      TargetFocus(
+        identify: "fix_button",
+        keyTarget: fixButtonKey,
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom,
+            builder:
+                (context, controller) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "노래가 안 나오면 눌러보세요!",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      "문제가 있을 때 뚝딱 고쳐주는 마법 같은 버튼이에요.",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+          ),
+        ],
+      ),
+    ];
   }
 
   void _handleInvalidSession() async {
@@ -326,10 +384,8 @@ class SessionController extends GetxController {
       }
     });
 
-    logger.w("11111111111");
     if (current == null) return;
 
-    logger.w("2222222");
     final offset =
         now
             .difference(current.startAt)
@@ -342,13 +398,11 @@ class SessionController extends GetxController {
           ..sort((a, b) => a.startAt.compareTo(b.startAt));
 
     if (upcoming.length == 1) {
-      logger.w("3333333");
       await youtubeController.loadVideoById(
         videoId: current.videoId,
         startSeconds: offset,
       );
     } else {
-      logger.w("44444444");
       final ids = upcoming.map((e) => e.videoId).toList();
       final index = upcoming.indexOf(current);
 
@@ -360,14 +414,12 @@ class SessionController extends GetxController {
       );
     }
 
-    logger.w("5555555555");
     // 플레이 강제 재생
     Future.delayed(const Duration(seconds: 1), () async {
       final state = await youtubeController.playerState;
       logger.w(state);
       if (state != PlayerState.playing) {
         youtubeController.playVideo();
-        logger.w("66666666666");
       }
     });
   }
@@ -540,4 +592,6 @@ class SessionController extends GetxController {
             ? FirebaseAuth.instance.currentUser!.uid
             : participants.uid);
   }
+
+  final GlobalKey fixButtonKey = GlobalKey(); // 예: controller 파일에 정의
 }

@@ -26,10 +26,12 @@ class SessionView extends GetView<SessionController> {
       return Scaffold(
         appBar: SessionAppBar(
           title: controller.session.value!.name,
-          onSync: controller.sync,
+          // onSync: controller.sync,
+          onSync: controller.showFixTutorial,
           onAddTrack: controller.openTrackSearchSheet,
           onShowHistory: _onShowHistory,
           onShare: _shareSessionLink,
+          fixButtonKey: controller.fixButtonKey,
         ),
         body: Column(
           children: [

@@ -20,6 +20,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onAddTrack;
   final VoidCallback onShowHistory;
   final VoidCallback onShare;
+  final Key fixButtonKey;
 
   const SessionAppBar({
     super.key,
@@ -28,6 +29,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.onAddTrack,
     required this.onShowHistory,
     required this.onShare,
+    required this.fixButtonKey,
   });
 
   @override
@@ -35,9 +37,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: RichText(
         text: TextSpan(
-          style: DefaultTextStyle
-              .of(context)
-              .style, // 전체 기본 스타일
+          style: DefaultTextStyle.of(context).style, // 전체 기본 스타일
           children: [
             TextSpan(
               text: title,
@@ -59,12 +59,9 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         TextButton.icon(
+          key: fixButtonKey, // ✅ 여기에 부착
           onPressed: onSync,
-          icon: Image.asset(
-            'assets/images/ic_fix.png',
-            width: 35,
-            height: 35,
-          ),
+          icon: Image.asset('assets/images/ic_fix.png', width: 35, height: 35),
           label: const Text(
             "뚝딱 고치기",
             style: TextStyle(fontWeight: FontWeight.bold),
@@ -118,9 +115,9 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
             ListTile(
               leading: CircleAvatar(
                 backgroundImage:
-                user?.photoURL != null
-                    ? NetworkImage(user!.photoURL!)
-                    : null,
+                    user?.photoURL != null
+                        ? NetworkImage(user!.photoURL!)
+                        : null,
                 child: user?.photoURL == null ? const Icon(Icons.person) : null,
               ),
               title: Text(
@@ -133,16 +130,11 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
               trailing: Obx(() {
                 return IconButton(
                   icon: Icon(
-                    Get
-                        .find<ThemeController>()
-                        .isDarkMode
-                        .value
+                    Get.find<ThemeController>().isDarkMode.value
                         ? Icons.dark_mode
                         : Icons.light_mode,
                   ),
-                  onPressed: Get
-                      .find<ThemeController>()
-                      .toggleTheme,
+                  onPressed: Get.find<ThemeController>().toggleTheme,
                   tooltip: '테마 전환',
                 );
               }),
