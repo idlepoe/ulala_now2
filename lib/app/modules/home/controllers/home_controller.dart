@@ -77,9 +77,35 @@ class HomeController extends GetxController {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              '세션 만들기',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  '세션 만들기',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      final name = controller.text.trim();
+                      if (name.isEmpty) return;
+                      isLoading.value = true;
+                      Get.back();
+
+                      final session = await ApiService.createSession(
+                        name,
+                        isPrivate: isPrivate.value,
+                      );
+                      await joinSession(session.id);
+                    } catch (e) {
+                      logger.e(e);
+                    } finally {
+                      isLoading.value = false;
+                    }
+                  },
+                  child: const Text('세션 만들기'),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
 
@@ -126,28 +152,6 @@ class HomeController extends GetxController {
                       controlAffinity: ListTileControlAffinity.leading,
                     ),
                   ),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      final name = controller.text.trim();
-                      if (name.isEmpty) return;
-                      isLoading.value = true;
-                      Get.back();
-
-                      final session = await ApiService.createSession(
-                        name,
-                        isPrivate: isPrivate.value,
-                      );
-
-                      await joinSession(session.id);
-                    } catch (e) {
-                      logger.e(e);
-                    } finally {
-                      isLoading.value = false;
-                    }
-                  },
-                  child: const Text('세션 만들기'),
                 ),
               ],
             ),

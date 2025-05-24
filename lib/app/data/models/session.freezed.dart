@@ -17,7 +17,8 @@ T _$identity<T>(T value) => value;
 mixin _$Session {
 
  String get id; String get name;@JsonKey(fromJson: _toDateTime) DateTime get createdAt;@JsonKey(fromJson: _toDateTime) DateTime get updatedAt;@JsonKey(fromJson: _toTrackList) List<SessionTrack> get trackList;@JsonKey(fromJson: _toParticipantList) List<SessionParticipant> get participants;// ✅ 여기가 중요
- int get participantCount;
+ int get participantCount;// ✅ participantCount 추가, 기본값 0
+@JsonKey(defaultValue: SessionMode.general) SessionMode get mode;
 /// Create a copy of Session
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,16 +31,16 @@ $SessionCopyWith<Session> get copyWith => _$SessionCopyWithImpl<Session>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Session&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.trackList, trackList)&&const DeepCollectionEquality().equals(other.participants, participants)&&(identical(other.participantCount, participantCount) || other.participantCount == participantCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Session&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.trackList, trackList)&&const DeepCollectionEquality().equals(other.participants, participants)&&(identical(other.participantCount, participantCount) || other.participantCount == participantCount)&&(identical(other.mode, mode) || other.mode == mode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(trackList),const DeepCollectionEquality().hash(participants),participantCount);
+int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(trackList),const DeepCollectionEquality().hash(participants),participantCount,mode);
 
 @override
 String toString() {
-  return 'Session(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, trackList: $trackList, participants: $participants, participantCount: $participantCount)';
+  return 'Session(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, trackList: $trackList, participants: $participants, participantCount: $participantCount, mode: $mode)';
 }
 
 
@@ -50,7 +51,7 @@ abstract mixin class $SessionCopyWith<$Res>  {
   factory $SessionCopyWith(Session value, $Res Function(Session) _then) = _$SessionCopyWithImpl;
 @useResult
 $Res call({
- String id, String name,@JsonKey(fromJson: _toDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime) DateTime updatedAt,@JsonKey(fromJson: _toTrackList) List<SessionTrack> trackList,@JsonKey(fromJson: _toParticipantList) List<SessionParticipant> participants, int participantCount
+ String id, String name,@JsonKey(fromJson: _toDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime) DateTime updatedAt,@JsonKey(fromJson: _toTrackList) List<SessionTrack> trackList,@JsonKey(fromJson: _toParticipantList) List<SessionParticipant> participants, int participantCount,@JsonKey(defaultValue: SessionMode.general) SessionMode mode
 });
 
 
@@ -67,7 +68,7 @@ class _$SessionCopyWithImpl<$Res>
 
 /// Create a copy of Session
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? trackList = null,Object? participants = null,Object? participantCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? trackList = null,Object? participants = null,Object? participantCount = null,Object? mode = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -76,7 +77,8 @@ as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore
 as DateTime,trackList: null == trackList ? _self.trackList : trackList // ignore: cast_nullable_to_non_nullable
 as List<SessionTrack>,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
 as List<SessionParticipant>,participantCount: null == participantCount ? _self.participantCount : participantCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as SessionMode,
   ));
 }
 
@@ -87,7 +89,7 @@ as int,
 @JsonSerializable()
 
 class _Session implements Session {
-  const _Session({required this.id, required this.name, @JsonKey(fromJson: _toDateTime) required this.createdAt, @JsonKey(fromJson: _toDateTime) required this.updatedAt, @JsonKey(fromJson: _toTrackList) required final  List<SessionTrack> trackList, @JsonKey(fromJson: _toParticipantList) required final  List<SessionParticipant> participants, this.participantCount = 0}): _trackList = trackList,_participants = participants;
+  const _Session({required this.id, required this.name, @JsonKey(fromJson: _toDateTime) required this.createdAt, @JsonKey(fromJson: _toDateTime) required this.updatedAt, @JsonKey(fromJson: _toTrackList) required final  List<SessionTrack> trackList, @JsonKey(fromJson: _toParticipantList) required final  List<SessionParticipant> participants, this.participantCount = 0, @JsonKey(defaultValue: SessionMode.general) this.mode = SessionMode.general}): _trackList = trackList,_participants = participants;
   factory _Session.fromJson(Map<String, dynamic> json) => _$SessionFromJson(json);
 
 @override final  String id;
@@ -110,6 +112,8 @@ class _Session implements Session {
 
 // ✅ 여기가 중요
 @override@JsonKey() final  int participantCount;
+// ✅ participantCount 추가, 기본값 0
+@override@JsonKey(defaultValue: SessionMode.general) final  SessionMode mode;
 
 /// Create a copy of Session
 /// with the given fields replaced by the non-null parameter values.
@@ -124,16 +128,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Session&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._trackList, _trackList)&&const DeepCollectionEquality().equals(other._participants, _participants)&&(identical(other.participantCount, participantCount) || other.participantCount == participantCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Session&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._trackList, _trackList)&&const DeepCollectionEquality().equals(other._participants, _participants)&&(identical(other.participantCount, participantCount) || other.participantCount == participantCount)&&(identical(other.mode, mode) || other.mode == mode));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(_trackList),const DeepCollectionEquality().hash(_participants),participantCount);
+int get hashCode => Object.hash(runtimeType,id,name,createdAt,updatedAt,const DeepCollectionEquality().hash(_trackList),const DeepCollectionEquality().hash(_participants),participantCount,mode);
 
 @override
 String toString() {
-  return 'Session(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, trackList: $trackList, participants: $participants, participantCount: $participantCount)';
+  return 'Session(id: $id, name: $name, createdAt: $createdAt, updatedAt: $updatedAt, trackList: $trackList, participants: $participants, participantCount: $participantCount, mode: $mode)';
 }
 
 
@@ -144,7 +148,7 @@ abstract mixin class _$SessionCopyWith<$Res> implements $SessionCopyWith<$Res> {
   factory _$SessionCopyWith(_Session value, $Res Function(_Session) _then) = __$SessionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name,@JsonKey(fromJson: _toDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime) DateTime updatedAt,@JsonKey(fromJson: _toTrackList) List<SessionTrack> trackList,@JsonKey(fromJson: _toParticipantList) List<SessionParticipant> participants, int participantCount
+ String id, String name,@JsonKey(fromJson: _toDateTime) DateTime createdAt,@JsonKey(fromJson: _toDateTime) DateTime updatedAt,@JsonKey(fromJson: _toTrackList) List<SessionTrack> trackList,@JsonKey(fromJson: _toParticipantList) List<SessionParticipant> participants, int participantCount,@JsonKey(defaultValue: SessionMode.general) SessionMode mode
 });
 
 
@@ -161,7 +165,7 @@ class __$SessionCopyWithImpl<$Res>
 
 /// Create a copy of Session
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? trackList = null,Object? participants = null,Object? participantCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? createdAt = null,Object? updatedAt = null,Object? trackList = null,Object? participants = null,Object? participantCount = null,Object? mode = null,}) {
   return _then(_Session(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -170,7 +174,8 @@ as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore
 as DateTime,trackList: null == trackList ? _self._trackList : trackList // ignore: cast_nullable_to_non_nullable
 as List<SessionTrack>,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
 as List<SessionParticipant>,participantCount: null == participantCount ? _self.participantCount : participantCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as SessionMode,
   ));
 }
 

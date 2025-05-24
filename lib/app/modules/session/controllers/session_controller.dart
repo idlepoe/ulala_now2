@@ -311,14 +311,24 @@ class SessionController extends GetxController {
 
   Future<void> _syncWithYoutubePlayer(List<SessionTrack> tracks) async {
     logger.i("_syncWithYoutubePlayer");
+    logger.i(tracks);
     final now = DateTime.now();
     final current = tracks.firstWhereOrNull((track) {
-      final end = track.startAt.add(Duration(seconds: track.duration));
-      return now.isAfter(track.startAt) && now.isBefore(end);
+      final isStream = track.duration == 0 && track.startAt == track.endAt;
+
+      if (isStream) {
+        // stream 트랙은 startAt 이후면 항상 현재 재생 중으로 간주
+        return now.isAfter(track.startAt);
+      } else {
+        final end = track.startAt.add(Duration(seconds: track.duration));
+        return now.isAfter(track.startAt) && now.isBefore(end);
+      }
     });
 
+    logger.w("11111111111");
     if (current == null) return;
 
+    logger.w("2222222");
     final offset =
         now
             .difference(current.startAt)
@@ -326,16 +336,20 @@ class SessionController extends GetxController {
             .clamp(0, current.duration)
             .toDouble();
 
-    final upcoming =
-        tracks.where((t) => t.endAt.isAfter(now)).toList()
-          ..sort((a, b) => a.startAt.compareTo(b.startAt));
+    final upcoming = tracks
+        .where((t) => t.endAt.isAfter(now) || t == current)
+        .toList()
+      ..sort((a, b) => a.startAt.compareTo(b.startAt));
+
 
     if (upcoming.length == 1) {
+      logger.w("3333333");
       await youtubeController.loadVideoById(
         videoId: current.videoId,
         startSeconds: offset,
       );
     } else {
+      logger.w("44444444");
       final ids = upcoming.map((e) => e.videoId).toList();
       final index = upcoming.indexOf(current);
 
@@ -347,11 +361,14 @@ class SessionController extends GetxController {
       );
     }
 
+    logger.w("5555555555");
     // 플레이 강제 재생
     Future.delayed(const Duration(seconds: 1), () async {
       final state = await youtubeController.playerState;
+      logger.w(state);
       if (state != PlayerState.playing) {
         youtubeController.playVideo();
+        logger.w("66666666666");
       }
     });
   }
@@ -497,11 +514,11 @@ class SessionController extends GetxController {
   }
 
   final noTrackMessages = [
-    "지금은 무음 모드입니다. 첫 번째 트랙을 추가해보세요 🎶",
-    "우주가 고요합니다... 첫 음악을 울려 퍼지게 해주세요 🌌",
-    "스피커가 심심해하고 있어요. 들려줄 노래가 필요해요!",
+    // "지금은 무음 모드입니다. 첫 번째 트랙을 추가해보세요 🎶",
+    // "우주가 고요합니다... 첫 음악을 울려 퍼지게 해주세요 🌌",
+    // "스피커가 심심해하고 있어요. 들려줄 노래가 필요해요!",
     "별빛이 고요하네요... 누군가 음악을 틀어줄 시간이에요.",
-    "은하수에 음악이 비었어요. 첫 곡을 채워주세요 ⭐",
-    "지금은 정적 타임... 음악 한 곡 어때요?",
+    // "은하수에 음악이 비었어요. 첫 곡을 채워주세요 ⭐",
+    // "지금은 정적 타임... 음악 한 곡 어때요?",
   ];
 }

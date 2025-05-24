@@ -25,23 +25,40 @@ DateTime _toDateTime(dynamic value) {
       value.containsKey('_seconds') &&
       value.containsKey('_nanoseconds')) {
     return DateTime.fromMillisecondsSinceEpoch(
-        (value['_seconds'] as int) * 1000);
+      (value['_seconds'] as int) * 1000,
+    );
   }
   return DateTime.now();
 }
+
 List<SessionTrack> _toTrackList(dynamic json) {
   if (json is List) {
-    return json.map((e) => SessionTrack.fromJson(Map<String, dynamic>.from(e))).toList();
+    return json
+        .map((e) => SessionTrack.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
   }
   return [];
 }
 
 List<SessionParticipant> _toParticipantList(dynamic json) {
   if (json is List) {
-    return json.map((e) => SessionParticipant.fromJson(Map<String, dynamic>.from(e))).toList();
+    return json
+        .map((e) => SessionParticipant.fromJson(Map<String, dynamic>.from(e)))
+        .toList();
   }
   return [];
 }
+
+@JsonEnum(fieldRename: FieldRename.snake)
+enum SessionMode {
+  @JsonValue('general')
+  general,
+  @JsonValue('dj')
+  dj,
+  @JsonValue('shuffle')
+  shuffle,
+}
+
 @freezed
 abstract class Session with _$Session {
   const factory Session({
@@ -49,9 +66,13 @@ abstract class Session with _$Session {
     required String name,
     @JsonKey(fromJson: _toDateTime) required DateTime createdAt,
     @JsonKey(fromJson: _toDateTime) required DateTime updatedAt,
-    @JsonKey(fromJson: _toTrackList)required List<SessionTrack> trackList,
-    @JsonKey(fromJson: _toParticipantList)required List<SessionParticipant> participants, // ✅ 여기가 중요
+    @JsonKey(fromJson: _toTrackList) required List<SessionTrack> trackList,
+    @JsonKey(fromJson: _toParticipantList)
+    required List<SessionParticipant> participants, // ✅ 여기가 중요
     @Default(0) int participantCount, // ✅ participantCount 추가, 기본값 0
+    @JsonKey(defaultValue: SessionMode.general) // 👈 중요!
+    @Default(SessionMode.general)
+    SessionMode mode, // ✅ 모드 추가
   }) = _Session;
 
   factory Session.fromJson(Map<String, dynamic> json) =>

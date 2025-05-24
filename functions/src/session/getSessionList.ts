@@ -28,6 +28,7 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
     const list = await Promise.all(snapshot.docs.map(async (doc) => {
       const data = doc.data();
 
+      // 1. participants 불러오기
       const participantsSnap = await doc.ref.collection("participants").get();
       const allParticipants = participantsSnap.docs.map((d) => d.data());
 
@@ -41,9 +42,20 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
         return updatedAt >= twelveHoursAgo;
       });
 
+      // latest track 1건
+      const tracksSnap = await doc.ref
+        .collection("tracks")
+        .orderBy("createdAt", "desc")
+        .limit(1)
+        .get();
+
+      const latestTrackDoc = tracksSnap.docs[0];
+      const latestTrack = latestTrackDoc ? [latestTrackDoc.data()] : [];
+
       return {
         ...data,
-        participantCount: activeParticipants.length, // ✅ 여기 핵심
+        participantCount: activeParticipants.length,
+        trackList: latestTrack, // ✅ 1건만 리스트로 포함
       };
     }));
 

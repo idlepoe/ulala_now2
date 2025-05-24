@@ -14,6 +14,9 @@ _Session _$SessionFromJson(Map<String, dynamic> json) => _Session(
   trackList: _toTrackList(json['trackList']),
   participants: _toParticipantList(json['participants']),
   participantCount: (json['participantCount'] as num?)?.toInt() ?? 0,
+  mode:
+      $enumDecodeNullable(_$SessionModeEnumMap, json['mode']) ??
+      SessionMode.general,
 );
 
 Map<String, dynamic> _$SessionToJson(_Session instance) => <String, dynamic>{
@@ -24,4 +27,11 @@ Map<String, dynamic> _$SessionToJson(_Session instance) => <String, dynamic>{
   'trackList': instance.trackList,
   'participants': instance.participants,
   'participantCount': instance.participantCount,
+  'mode': _$SessionModeEnumMap[instance.mode]!,
+};
+
+const _$SessionModeEnumMap = {
+  SessionMode.general: 'general',
+  SessionMode.dj: 'dj',
+  SessionMode.shuffle: 'shuffle',
 };

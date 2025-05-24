@@ -112,11 +112,20 @@ class SessionPlayerView extends GetView<SessionController> {
 
   SessionTrack? _getCurrentTrack(List<SessionTrack> tracks) {
     final now = DateTime.now();
+
     return tracks.firstWhereOrNull((track) {
+      final isStream = track.startAt == track.endAt && track.duration == 0;
+
+      if (isStream) {
+        // 스트리밍 트랙은 시작 후면 항상 current
+        return now.isAfter(track.startAt);
+      }
+
       final end = track.startAt.add(Duration(seconds: track.duration));
       return now.isAfter(track.startAt) && now.isBefore(end);
     });
   }
+
 }
 
 class PlayerHeader extends StatelessWidget {
