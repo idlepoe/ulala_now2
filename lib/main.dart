@@ -8,14 +8,19 @@ import 'package:flutter_web_frame/flutter_web_frame.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:simple_pip_mode/simple_pip.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'app/data/constants/theme.dart';
 import 'app/data/controllers/theme_controller.dart';
+import 'app/data/utils/logger.dart';
+import 'app/modules/session/widgets/mini_player_view.dart';
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+
+late final SimplePip pip;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +47,6 @@ Future<void> main() async {
 
     windowManager.setPreventClose(true); // X 눌러도 닫히지 않게 설정
   }
-
   runApp(
     FlutterWebFrame(
       builder:

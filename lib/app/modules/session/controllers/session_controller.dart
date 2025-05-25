@@ -1,14 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_pip_mode/actions/pip_action.dart';
+import 'package:simple_pip_mode/simple_pip.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
+import '../../../../main.dart';
 import '../../../data/models/chat_message.dart';
 import '../../../data/models/session.dart';
 import '../../../data/models/session_participant.dart';
@@ -17,10 +22,11 @@ import '../../../data/models/youtube/youtube_item.dart';
 import '../../../data/utils/api_service.dart';
 import '../../../data/utils/logger.dart';
 import '../../../routes/app_pages.dart';
+import '../widgets/mini_player_view.dart';
 import '../widgets/track_search_bottom_sheet.dart';
 import 'chat_controller.dart';
 
-class SessionController extends GetxController {
+class SessionController extends GetxController with WidgetsBindingObserver {
   final session = Rxn<Session>();
   late final String sessionId;
 
@@ -65,6 +71,12 @@ class SessionController extends GetxController {
     });
 
     _subscribeToTracks();
+
+    // pip 모드 활성화
+    if (!kIsWeb && Platform.isAndroid) {
+      _initPipIfSupported();
+    }
+    WidgetsBinding.instance.addObserver(this); // ✅ lifecycle 감지
   }
 
   @override
@@ -428,6 +440,7 @@ class SessionController extends GetxController {
   void onClose() {
     _trackSub?.cancel();
     youtubeController.close();
+    WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
 
@@ -594,4 +607,18 @@ class SessionController extends GetxController {
   }
 
   final GlobalKey fixButtonKey = GlobalKey(); // 예: controller 파일에 정의
+
+  Future<void> _initPipIfSupported() async {
+    final isAvailable = await SimplePip.isPipAvailable;
+    if (!isAvailable) return;
+    pip = SimplePip();
+    await pip.setAutoPipMode();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _initPipIfSupported();
+    }
+  }
 }
