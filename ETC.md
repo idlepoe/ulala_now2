@@ -13,10 +13,10 @@ firebase deploy --only hosting
 flutter build appbundle --release
 
 
-get create page session_create
+get create page splash_web
 
 shorebird release android
 
 
 flutter pub get
-shorebird patch --platforms=android --release-version=1.0.0+1
+shorebird patch --platforms=android --release-version=1.0.1+3
