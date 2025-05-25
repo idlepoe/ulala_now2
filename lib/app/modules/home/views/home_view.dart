@@ -100,6 +100,7 @@ class HomeView extends GetView<HomeController> {
                               child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
+                                  strokeCap: StrokeCap.round,
                                 ),
                               ),
                             ),

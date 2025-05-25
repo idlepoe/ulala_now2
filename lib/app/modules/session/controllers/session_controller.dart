@@ -615,8 +615,11 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     await pip.setAutoPipMode();
   }
 
+  AppLifecycleState appLifecycleState = AppLifecycleState.resumed;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    appLifecycleState = state;
     if (state == AppLifecycleState.resumed) {
       _initPipIfSupported();
     }

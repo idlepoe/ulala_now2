@@ -13,6 +13,7 @@ import 'package:simple_pip_mode/simple_pip.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../../../../main.dart';
+import '../../../data/utils/logger.dart';
 import '../widgets/chat_and_participants_bar.dart';
 import '../widgets/mini_player_view.dart';
 import '../widgets/played_track_bottom_sheet.dart';
@@ -40,8 +41,12 @@ class SessionView extends GetView<SessionController> {
           controller.sync();
         },
         onPipExited: () {
-          Future.delayed(Duration(seconds: 2)).then((value) {
-            controller.sync();
+          Future.delayed(Duration(milliseconds: 1500)).then((value) {
+            if (controller.appLifecycleState == AppLifecycleState.resumed) {
+              controller.sync();
+            } else {
+              logger.d("앱이 아직 포그라운드 아님. sync() 생략됨.");
+            }
           });
         },
         onPipAction: (action) {

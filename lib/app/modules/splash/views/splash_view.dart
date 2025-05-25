@@ -46,7 +46,9 @@ class SplashView extends GetView<SplashController> {
             const SizedBox(height: 32),
 
             // 🔽 로딩 인디케이터
-            const CircularProgressIndicator(),
+            const CircularProgressIndicator(
+              strokeCap: StrokeCap.round,
+            ),
           ],
         )),
       ),
