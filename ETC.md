@@ -20,3 +20,9 @@ shorebird release android
 
 flutter pub get
 shorebird patch --platforms=android --release-version=1.0.1+3
+
+flutter clean
+flutter pub get
+flutter build windows
+flutter pub run msix:create
+

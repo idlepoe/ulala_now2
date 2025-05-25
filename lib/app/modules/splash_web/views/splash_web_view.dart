@@ -94,7 +94,7 @@ class _SplashWebViewState extends State<SplashWebView>
       await windowManager.focus();
     }
   }
-  
+
   @override
   void onTrayIconRightMouseDown() {
     logger.d("onTrayIconRightMouseDown");

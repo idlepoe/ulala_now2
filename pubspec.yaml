@@ -79,3 +79,17 @@ flutter_launcher_icons:
     image_path: "assets/icon/icon.png"
     background_color: "#FFFFFF"
     theme_color: "#FFFFFF"
+  windows:
+    generate: true
+    image_path: "assets/images/icon-removebg.ico"
+msix_config:
+  display_name: "울랄라"
+  publisher_display_name: "이제영"
+  identity_name: 8C13C29F.3073DF07C829
+  publisher: CN=E6E0CA64-5693-4B23-9A95-DF94678405F8
+  msix_version: 1.0.0.0
+  logo_path: assets/images/icon-removebg.ico
+  architecture: x64
+  capabilities: internetClient
+  certificate_path: certs/my_cert.pfx
+  certificate_password: 512608

@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.jylee" "\0"
-            VALUE "FileDescription", "ulala_now2" "\0"
+            VALUE "FileDescription", "울랄라" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "ulala_now2" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.jylee. All rights reserved." "\0"
             VALUE "OriginalFilename", "ulala_now2.exe" "\0"
-            VALUE "ProductName", "ulala_now2" "\0"
+            VALUE "ProductName", "울랄라: 음악 감상 커뮤니티" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
