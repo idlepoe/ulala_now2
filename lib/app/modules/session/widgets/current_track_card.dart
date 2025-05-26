@@ -13,6 +13,7 @@ class CurrentTrackCard extends StatelessWidget {
   final VoidCallback onFavoriteToggle;
   final VoidCallback onSkipTrack; // ✅ 스킵 콜백 추가
   final DateTime now;
+  final GlobalKey fixButtonKey;
 
   const CurrentTrackCard({
     super.key,
@@ -21,6 +22,7 @@ class CurrentTrackCard extends StatelessWidget {
     required this.onFavoriteToggle,
     required this.onSkipTrack, // ✅ 필수
     required this.now,
+    required this.fixButtonKey,
   });
 
   @override
@@ -139,6 +141,7 @@ class CurrentTrackCard extends StatelessWidget {
               ),
               Expanded(
                 child: TextButton.icon(
+                  key: fixButtonKey,
                   onPressed: Get.find<SessionController>().sync,
                   icon: Image.asset(
                     'assets/images/ic_fix.png',

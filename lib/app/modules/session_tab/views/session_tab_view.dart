@@ -129,6 +129,7 @@ class SessionTabView extends GetView<SessionController> {
                                 controller
                                     .sync(); // 또는 fetchSession() 등 갱신 로직 호출
                               },
+                              fixButtonKey: controller.fixButtonKey,
                             );
                           }),
                         ),

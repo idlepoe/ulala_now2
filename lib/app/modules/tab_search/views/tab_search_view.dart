@@ -91,9 +91,9 @@ class TabSearchView extends GetView<SessionController> {
 
                     final results = controller.youtubeSearchResults;
                     if (results.isEmpty) {
-                      return const SliverFillRemaining(
+                      return SliverFillRemaining(
                         child: Center(
-                          child: Column(
+                          child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.search_off, size: 48, color: Colors.grey),
