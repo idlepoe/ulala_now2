@@ -220,37 +220,26 @@ class HomeView extends GetView<HomeController> {
             child: Obx(
               () => FloatingActionButton(
                 heroTag: 'create_session',
-                onPressed:
-                    controller.isLoading.value
-                        ? null
-                        : () => controller.openCreateSessionSheet(context),
+                onPressed: controller.isLoading.value
+                    ? null
+                    : () => controller.openCreateSessionSheet(context),
                 elevation: 6,
-                backgroundColor:
-                    Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey.shade800
-                        : Colors.white,
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey.shade800
+                    : Colors.white,
                 shape: const CircleBorder(),
                 child: ClipOval(
-                  child: ColorFiltered(
-                    colorFilter:
-                        controller.isLoading.value
-                            ? const ColorFilter.mode(
-                              Colors.grey,
-                              BlendMode.saturation,
-                            )
-                            : const ColorFilter.mode(
-                              Colors.transparent,
-                              BlendMode.multiply,
-                            ),
-                    child: Image.asset(
-                      'assets/images/ic_session_make.png',
-                      width: 56,
-                      height: 56,
-                      fit: BoxFit.cover,
-                    ),
+                  child: Image.asset(
+                    controller.isLoading.value
+                        ? 'assets/images/ic_session_make_grey.png'
+                        : 'assets/images/ic_session_make.png',
+                    width: 56,
+                    height: 56,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
+              )
+              ,
             ),
           ),
           const SizedBox(height: 8),
