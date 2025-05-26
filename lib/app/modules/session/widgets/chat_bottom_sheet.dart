@@ -27,10 +27,6 @@ class ChatBottomSheet extends StatelessWidget {
         '알 수 없음';
     final sessionId = Get.find<SessionController>().sessionId;
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      chatController.focusNode.requestFocus();
-    });
-
     return SafeArea(
       child: Container(
         height: MediaQuery.of(context).size.height * 0.7,
@@ -142,7 +138,6 @@ class ChatBottomSheet extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: chatController.inputController,
-                    focusNode: chatController.focusNode,
                     decoration: const InputDecoration(
                       hintText: "메시지를 입력하세요...",
                     ),

@@ -62,7 +62,6 @@ class SessionView extends GetView<SessionController> {
           }
         },
         pipChild: const MiniPlayerView(),
-        // PiP용 UI
         child: Scaffold(
           appBar: SessionAppBar(
             title: controller.session.value!.name,

@@ -24,7 +24,7 @@ class YoutubeSearchInput extends StatelessWidget {
           controller: controller,
           enabled: enabled,
           decoration: InputDecoration(
-            hintText: "노래 제목 또는 아티스트 입력",
+            hintText: "Youtube에서 트랙 검색",
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {

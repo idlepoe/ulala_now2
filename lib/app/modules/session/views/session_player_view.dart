@@ -7,6 +7,7 @@ import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../data/utils/api_service.dart';
+import '../../tab_track/controllers/tab_track_controller.dart';
 import '../widgets/current_track_card.dart';
 
 class SessionPlayerView extends GetView<SessionController> {
@@ -14,133 +15,18 @@ class SessionPlayerView extends GetView<SessionController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      final tracks = controller.currentTracks;
-      final current = _getCurrentTrack(tracks);
+    return SafeArea(
+      child: Scaffold(
 
-      return Scaffold(
         body: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
-            // 상단 고정 영역
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _SliverPlayerDelegate(
-                minExtent: 170,
-                maxExtent: 170,
-                builder: (context, shrinkOffset, overlapsContent) {
-                  return Container(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  // 원하는 R 값
-                                  child: Stack(
-                                    children: [
-                                      YoutubePlayer(
-                                        key: const ValueKey(
-                                          'persistent-player',
-                                        ),
-                                        controller:
-                                            controller.youtubeController,
-                                        aspectRatio: 16 / 9,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          flex: 3,
-                          child: Obx(() {
-                            final current = _getCurrentTrack(
-                              controller.currentTracks,
-                            );
-                            if (current == null) {
-                              final message =
-                                  controller.noTrackMessages[DateTime.now()
-                                          .millisecond %
-                                      controller.noTrackMessages.length];
-                              return Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Text(
-                                    message,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-
-                            return CurrentTrackCard(
-                              track: current,
-                              isFavorite: controller.isFavorite(
-                                current.videoId,
-                              ),
-                              onFavoriteToggle:
-                                  () => controller.toggleFavorite(current),
-                              now: controller.currentTime.value,
-                              onSkipTrack: () async {
-                                await ApiService.skipTrack(
-                                  sessionId: controller.sessionId,
-                                  trackId: current.id,
-                                );
-                                await Future.delayed(Duration(seconds: 2));
-                                controller
-                                    .sync(); // 또는 fetchSession() 등 갱신 로직 호출
-                              },
-                            );
-                          }),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            if (current != null) const SliverToBoxAdapter(child: Divider()),
-
             // 앞으로 재생될 트랙 리스트
             SliverFillRemaining(child: UpcomingTrackList()),
           ],
         ),
-      );
-    });
-  }
-
-  SessionTrack? _getCurrentTrack(List<SessionTrack> tracks) {
-    final now = DateTime.now();
-
-    return tracks.firstWhereOrNull((track) {
-      final isStream = track.startAt == track.endAt && track.duration == 0;
-
-      if (isStream) {
-        // 스트리밍 트랙은 시작 후면 항상 current
-        return now.isAfter(track.startAt);
-      }
-
-      final end = track.startAt.add(Duration(seconds: track.duration));
-      return now.isAfter(track.startAt) && now.isBefore(end);
-    });
+      ),
+    );
   }
 }
 

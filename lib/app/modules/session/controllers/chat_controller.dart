@@ -9,7 +9,6 @@ import '../../../data/utils/logger.dart';
 
 class ChatController extends GetxController {
   final inputController = TextEditingController();
-  final focusNode = FocusNode(); // ✅ 추가
 
   Stream<List<ChatMessage>> getChatStream(String sessionId) {
     return FirebaseFirestore.instance
@@ -46,7 +45,7 @@ class ChatController extends GetxController {
     await FirebaseFirestore.instance
         .collection('sessions/$sessionId/chats')
         .add(message);
-    focusNode.requestFocus();
+    // focusNode.requestFocus();
   }
 
   final RxInt unreadCount = 0.obs;

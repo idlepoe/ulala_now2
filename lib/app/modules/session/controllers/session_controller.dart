@@ -27,10 +27,14 @@ import '../widgets/track_search_bottom_sheet.dart';
 import 'chat_controller.dart';
 
 class SessionController extends GetxController with WidgetsBindingObserver {
+  final RxInt currentIndex = 0.obs;
+  late final PageController pageController;
+
   final session = Rxn<Session>();
   late final String sessionId;
 
   late YoutubePlayerController youtubeController;
+
   StreamSubscription? _trackSub;
   final currentTracks = <SessionTrack>[].obs;
   final currentPlayerState = Rx<PlayerState>(PlayerState.unknown);
@@ -43,6 +47,13 @@ class SessionController extends GetxController with WidgetsBindingObserver {
 
   @override
   Future<void> onInit() async {
+    pageController = PageController(initialPage: currentIndex.value);
+    youtubeController = YoutubePlayerController(
+      params: const YoutubePlayerParams(
+        showControls: true,
+        showFullscreenButton: false,
+      ),
+    );
     super.onInit();
     sessionId = Get.parameters['sessionId']!;
     if (sessionId.isEmpty) {
@@ -55,13 +66,6 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     onSessionLoaded();
     _loadRecentKeywords();
     checkSearchCooldown();
-
-    youtubeController = YoutubePlayerController(
-      params: const YoutubePlayerParams(
-        showControls: true,
-        showFullscreenButton: false,
-      ),
-    );
 
     // 1초마다 상태 체크
     Timer.periodic(const Duration(seconds: 1), (_) async {
@@ -77,6 +81,16 @@ class SessionController extends GetxController with WidgetsBindingObserver {
       _initPipIfSupported();
     }
     WidgetsBinding.instance.addObserver(this); // ✅ lifecycle 감지
+  }
+
+  void changeTab(int index) {
+    currentIndex.value = index;
+    pageController.jumpToPage(index);
+  }
+
+  void onPageChanged(int index) {
+    FocusScope.of(Get.context!).unfocus();
+    currentIndex.value = index;
   }
 
   @override
@@ -440,6 +454,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
   void onClose() {
     _trackSub?.cancel();
     youtubeController.close();
+    pageController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }

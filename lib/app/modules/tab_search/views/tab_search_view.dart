@@ -1,28 +1,26 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
-import 'package:ulala_now2/app/modules/session/widgets/track_tile.dart';
-import 'package:ulala_now2/app/modules/session/widgets/youtube_search_input.dart';
 
-import 'favorite_track_carousel.dart';
+import '../../session/widgets/favorite_track_carousel.dart';
+import '../../session/widgets/track_tile.dart';
+import '../../session/widgets/youtube_search_input.dart';
+import '../controllers/tab_search_controller.dart';
 
-class TrackSearchBottomSheet extends StatelessWidget {
-  const TrackSearchBottomSheet({super.key});
+class TabSearchView extends GetView<SessionController> {
+  const TabSearchView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<SessionController>();
     final searchController = TextEditingController();
 
     return Container(
-      height: MediaQuery.of(context).size.height * (kIsWeb ? 0.6 : 0.8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // 상단 AppBar + 검색 입력창 포함
-          _buildSearchAppBar(context, controller, searchController),
+          _buildSearchAppBar(context, searchController),
 
           // 나머지 콘텐츠 스크롤 영역
           Expanded(
@@ -66,14 +64,6 @@ class TrackSearchBottomSheet extends StatelessWidget {
                     }),
                   ),
 
-                  // 즐겨찾기
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: FavoriteTrackCarousel(),
-                    ),
-                  ),
-
                   // 검색 결과 타이틀
                   const SliverToBoxAdapter(
                     child: Padding(
@@ -92,7 +82,11 @@ class TrackSearchBottomSheet extends StatelessWidget {
                   Obx(() {
                     if (controller.isSearching.value) {
                       return const SliverFillRemaining(
-                        child: Center(child: CircularProgressIndicator()),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            strokeCap: StrokeCap.round,
+                          ),
+                        ),
                       );
                     }
 
@@ -107,16 +101,16 @@ class TrackSearchBottomSheet extends StatelessWidget {
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final track = results[index];
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 2),
                           child: Obx(
                             () => TrackTile(
                               track: track,
-                              // isFavorite: controller.isFavorite(track.videoId),
-                              // onFavorite:
-                              //     () => controller.toggleFavorite(track),
-                              // onAdd: () {
-                              //   controller.attachDurationAndAddTrack(track);
-                              // },
+                              isFavorite: controller.isFavorite(track.videoId),
+                              onFavorite:
+                                  () => controller.toggleFavorite(track),
+                              onAdd: () {
+                                controller.attachDurationAndAddTrack(track);
+                              },
                               isDisabled: controller.isSearching.value,
                             ),
                           ),
@@ -135,10 +129,9 @@ class TrackSearchBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSearchAppBar(
-      BuildContext context,
-      SessionController controller,
-      TextEditingController searchController,
-      ) {
+    BuildContext context,
+    TextEditingController searchController,
+  ) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
@@ -148,33 +141,17 @@ class TrackSearchBottomSheet extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 타이틀 + 닫기 버튼
-          Row(
-            children: [
-              const Expanded(
-                child: Text(
-                  "YouTube에서 트랙 검색",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
           Obx(
-                () => YoutubeSearchInput(
+            () => YoutubeSearchInput(
               controller: searchController,
               enabled:
-              (!controller.isSearchCooldown.value &&
-                  !controller.isSearching.value),
+                  (!controller.isSearchCooldown.value &&
+                      !controller.isSearching.value),
               onSearch: (keyword) => controller.searchYoutube(keyword),
               cooldownMessage:
-              controller.isSearchCooldown.value
-                  ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
-                  : null,
+                  controller.isSearchCooldown.value
+                      ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
+                      : null,
             ),
           ),
         ],
