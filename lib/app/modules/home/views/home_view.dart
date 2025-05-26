@@ -212,46 +212,53 @@ class HomeView extends GetView<HomeController> {
           ),
         );
       }),
-      floatingActionButton: Builder(
-        builder: (context) {
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final bgColor = isDark ? Colors.grey.shade800 : Colors.white;
-          final shadowColor = isDark ? Colors.black45 : Colors.black26;
-          return Material(
-            color: Colors.transparent,
-            elevation: 6,
-            shadowColor: shadowColor,
-            shape: const CircleBorder(),
-            child: InkWell(
-              onTap:
-                  () =>
-                      controller.isLoading.value
-                          ? null
-                          : controller.openCreateSessionSheet(context),
-              customBorder: const CircleBorder(),
-              child: Ink(
-                decoration: BoxDecoration(
-                  color: bgColor,
-                  shape: BoxShape.circle,
-                ),
-                width: 56,
-                height: 56,
-                child: Center(
-                  child: Image.asset(
-                    'assets/images/ic_session_make.png',
-                    width: 56,
-                    height: 56,
-                    fit: BoxFit.contain,
-                    color:
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Tooltip(
+            message: '세션 만들기',
+            child: Obx(
+              () => FloatingActionButton(
+                heroTag: 'create_session',
+                onPressed:
+                    controller.isLoading.value
+                        ? null
+                        : () => controller.openCreateSessionSheet(context),
+                elevation: 6,
+                backgroundColor:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey.shade800
+                        : Colors.white,
+                shape: const CircleBorder(),
+                child: ClipOval(
+                  child: ColorFiltered(
+                    colorFilter:
                         controller.isLoading.value
-                            ? Colors.grey
-                            : null, // 필요 시 아이콘 색상 보정
+                            ? const ColorFilter.mode(
+                              Colors.grey,
+                              BlendMode.saturation,
+                            )
+                            : const ColorFilter.mode(
+                              Colors.transparent,
+                              BlendMode.multiply,
+                            ),
+                    child: Image.asset(
+                      'assets/images/ic_session_make.png',
+                      width: 56,
+                      height: 56,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
             ),
-          );
-        },
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '세션 만들기',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          ),
+        ],
       ),
     );
   }
