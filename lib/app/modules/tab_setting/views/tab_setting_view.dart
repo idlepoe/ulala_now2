@@ -10,7 +10,6 @@ import 'package:ulala_now2/app/modules/session/controllers/session_controller.da
 import '../../../data/controllers/theme_controller.dart';
 import '../../session/widgets/played_track_bottom_sheet.dart';
 import '../../session/widgets/profile_edit_dialog.dart';
-import '../controllers/tab_setting_controller.dart';
 
 class TabSettingView extends GetView<SessionController> {
   const TabSettingView({super.key});
@@ -66,7 +65,6 @@ class TabSettingView extends GetView<SessionController> {
           leading: const Icon(Icons.history),
           title: const Text('재생된 트랙 목록'),
           onTap: () {
-            Navigator.pop(context); // 먼저 BottomSheet 닫고
             _onShowHistory();
           },
         ),
@@ -74,7 +72,6 @@ class TabSettingView extends GetView<SessionController> {
           leading: const Icon(Icons.share),
           title: const Text('세션 공유하기'),
           onTap: () {
-            Navigator.pop(context);
             _shareSessionLink();
           },
         ),

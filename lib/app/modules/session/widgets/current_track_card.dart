@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../../../data/models/session_track.dart';
 
@@ -25,17 +28,11 @@ class CurrentTrackCard extends StatelessWidget {
     final isStream = track.startAt == track.endAt && track.duration == 0;
     final start = track.startAt;
     final end = track.endAt;
-    final total = end
-        .difference(start)
-        .inSeconds;
-    final elapsed = now
-        .difference(start)
-        .inSeconds
-        .clamp(0, total);
+    final total = end.difference(start).inSeconds;
+    final elapsed = now.difference(start).inSeconds.clamp(0, total);
 
     final endTimeFormatted = DateFormat('a h:mm', 'ko').format(end);
-    final durationFormatted =
-    isStream ? '스트리밍 중' : getFormattedDuration(total);
+    final durationFormatted = isStream ? '스트리밍 중' : getFormattedDuration(total);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -95,47 +92,90 @@ class CurrentTrackCard extends StatelessWidget {
 
           // 🎵 재생 시간
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.music_note, size: 14, color: Colors.grey),
-              const SizedBox(width: 4),
-              Text(
-                durationFormatted,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.music_note,
+                        size: 14,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        durationFormatted,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+
+                  // ⏰ 종료 예정 (스트림은 생략)
+                  if (!isStream)
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.schedule,
+                          size: 14,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '종료 예정: $endTimeFormatted',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+              Expanded(
+                child: TextButton.icon(
+                  onPressed: Get.find<SessionController>().sync,
+                  icon: Image.asset(
+                    'assets/images/ic_fix.png',
+                    width: 22,
+                    height: 22,
+                  ),
+                  label: const Text(
+                    "노래 안 나오면? 클릭!",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero, // ✅ 패딩 제거
+                    minimumSize: Size(0, 0), // ✅ 최소 크기 제한도 제거
+                    tapTargetSize:
+                        MaterialTapTargetSize.shrinkWrap, // ✅ 터치 영역 최소화
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 4),
-
-          // ⏰ 종료 예정 (스트림은 생략)
-          if (!isStream)
-            Row(
-              children: [
-                const Icon(Icons.schedule, size: 14, color: Colors.grey),
-                const SizedBox(width: 4),
-                Text(
-                  '종료 예정: $endTimeFormatted',
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
         ],
       ),
     );
   }
 }
 
+String getFormattedDuration(int seconds) {
+  final hours = seconds ~/ 3600;
+  final minutes = (seconds % 3600) ~/ 60;
+  final remainSeconds = seconds % 60;
 
-  String getFormattedDuration(int seconds) {
-    final hours = seconds ~/ 3600;
-    final minutes = (seconds % 3600) ~/ 60;
-    final remainSeconds = seconds % 60;
-
-    final parts = <String>[];
-    if (hours > 0) parts.add("$hours시간");
-    if (minutes > 0) parts.add("$minutes분");
-    if (remainSeconds > 0 || parts.isEmpty) {
-      parts.add("$remainSeconds초");
-    }
-
-    return parts.join(' ');
+  final parts = <String>[];
+  if (hours > 0) parts.add("$hours시간");
+  if (minutes > 0) parts.add("$minutes분");
+  if (remainSeconds > 0 || parts.isEmpty) {
+    parts.add("$remainSeconds초");
   }
+
+  return parts.join(' ');
+}

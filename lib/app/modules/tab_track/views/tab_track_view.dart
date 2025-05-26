@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import 'package:get/get.dart';
 
 import '../../session/controllers/session_controller.dart';
-import '../../session/views/session_app_bar.dart';
 import '../../session/views/session_player_view.dart';
-import '../../session/widgets/chat_and_participants_bar.dart';
 import '../../session/widgets/session_loading_view.dart';
-import '../controllers/tab_track_controller.dart';
 
 class TabTrackView extends GetView<SessionController> {
   const TabTrackView({super.key});

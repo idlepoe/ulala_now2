@@ -6,7 +6,6 @@ import 'package:ulala_now2/app/modules/session/controllers/session_controller.da
 import '../../session/widgets/favorite_track_carousel.dart';
 import '../../session/widgets/track_tile.dart';
 import '../../session/widgets/youtube_search_input.dart';
-import '../controllers/tab_search_controller.dart';
 
 class TabSearchView extends GetView<SessionController> {
   const TabSearchView({super.key});
@@ -93,7 +92,25 @@ class TabSearchView extends GetView<SessionController> {
                     final results = controller.youtubeSearchResults;
                     if (results.isEmpty) {
                       return const SliverFillRemaining(
-                        child: Center(child: Text("검색 결과가 없습니다.")),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.search_off, size: 48, color: Colors.grey),
+                              SizedBox(height: 16),
+                              Text(
+                                "노래를 못 찾았어요 🕵️‍♂️",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                "다시 한 번 검색어를 바꿔보실래요?\n가끔 음악도 숨을 때가 있거든요 🎵",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 13, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }
 

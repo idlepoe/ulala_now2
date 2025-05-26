@@ -85,15 +85,15 @@ class PlayedTrackBottomSheet extends StatelessWidget {
                             (track) => Obx(
                               () => TrackTile(
                                 track: track,
-                                // isFavorite: controller.isFavorite(
-                                //   track.videoId,
-                                // ),
-                                // onFavorite:
-                                //     () => controller.toggleFavorite(track),
-                                // onAdd:
-                                //     () => controller.attachDurationAndAddTrack(
-                                //       track,
-                                //     ),
+                                isFavorite: controller.isFavorite(
+                                  track.videoId,
+                                ),
+                                onFavorite:
+                                    () => controller.toggleFavorite(track),
+                                onAdd:
+                                    () => controller.attachDurationAndAddTrack(
+                                      track,
+                                    ),
                                 isDisabled: controller.isSearching.value,
                                 bottomWidget: _buildTrackInfoWidget(track),
                               ),

@@ -47,9 +47,9 @@ class AppThemes {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.mascotHairColor,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: AppColors.vividLavender,
+        backgroundColor: AppColors.cardBackground,
+        selectedItemColor: AppColors.vividLavender,
+        unselectedItemColor: AppColors.textSecondary,
         type: BottomNavigationBarType.fixed,
       ),
       textTheme: const TextTheme(

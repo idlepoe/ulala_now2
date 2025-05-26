@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:simple_pip_mode/actions/pip_action.dart';
 import 'package:simple_pip_mode/actions/pip_actions_layout.dart';
 import 'package:simple_pip_mode/pip_widget.dart';
-import 'package:ulala_now2/app/modules/tab_track/controllers/tab_track_controller.dart';
 import 'package:youtube_player_iframe/youtube_player_iframe.dart';
 
 import '../../../data/models/session_track.dart';
@@ -75,33 +74,12 @@ class SessionTabView extends GetView<SessionController> {
                                   borderRadius: BorderRadius.circular(16),
                                   // 원하는 R 값
                                   child: YoutubePlayer(
-                                    key: const ValueKey(
-                                      'persistent-player',
-                                    ),
-                                    controller:
-                                        controller.youtubeController,
+                                    key: const ValueKey('persistent-player'),
+                                    controller: controller.youtubeController,
                                     aspectRatio: 16 / 9,
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 5),
-                              Container(
-                                child: TextButton.icon(
-                                  onPressed: controller.sync,
-                                  icon: Image.asset(
-                                    'assets/images/ic_fix.png',
-                                    width: 22,
-                                    height: 22,
-                                  ),
-                                  label: const Text(
-                                    "노래 안 나오면? 클릭!",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                ),
-                              )
                             ],
                           ),
                         ),
@@ -114,9 +92,9 @@ class SessionTabView extends GetView<SessionController> {
                             );
                             if (current == null) {
                               final message =
-                              controller.noTrackMessages[DateTime.now()
-                                  .millisecond %
-                                  controller.noTrackMessages.length];
+                                  controller.noTrackMessages[DateTime.now()
+                                          .millisecond %
+                                      controller.noTrackMessages.length];
                               return Center(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -181,8 +159,6 @@ class SessionTabView extends GetView<SessionController> {
               currentIndex: controller.currentIndex.value,
               onTap: controller.changeTab,
               type: BottomNavigationBarType.fixed,
-              selectedItemColor: Colors.blue,
-              unselectedItemColor: Colors.grey,
               items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.music_note),
@@ -191,7 +167,10 @@ class SessionTabView extends GetView<SessionController> {
                 BottomNavigationBarItem(icon: Icon(Icons.search), label: '검색'),
                 BottomNavigationBarItem(icon: Icon(Icons.star), label: '즐겨찾기'),
                 BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
-                BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings),
+                  label: '설정',
+                ),
               ],
             ),
           ),

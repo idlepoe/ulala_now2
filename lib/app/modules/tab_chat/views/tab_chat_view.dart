@@ -7,7 +7,6 @@ import 'package:ulala_now2/app/modules/session/controllers/chat_controller.dart'
 
 import '../../../data/models/chat_message.dart';
 import '../../session/controllers/session_controller.dart';
-import '../controllers/tab_chat_controller.dart';
 
 class TabChatView extends GetView<ChatController> {
   const TabChatView({super.key});
@@ -29,13 +28,13 @@ class TabChatView extends GetView<ChatController> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       child: Column(
         children: [
-          Text(
-            '채팅',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
+          // Text(
+          //   '채팅',
+          //   style: theme.textTheme.titleMedium?.copyWith(
+          //     fontWeight: FontWeight.bold,
+          //   ),
+          // ),
+          // const SizedBox(height: 8),
 
           // 🔻 메시지 리스트
           Expanded(
@@ -50,14 +49,30 @@ class TabChatView extends GetView<ChatController> {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        '🪐 아직 아무도 말을 걸지 않았어요!\n\n첫 번째 메시지를 남겨보세요 🌟',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(
-                            0.6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.chat_bubble_outline, size: 48, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            '📭 아무 말도 없네요...',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '첫 번째 대화를 시작해보세요 ✍️\n음악보다 더 따뜻한 이야기가 기다리고 있어요 💬',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );

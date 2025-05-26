@@ -91,10 +91,9 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
               ),
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Text(
                   track.title,
                   style: const TextStyle(
@@ -117,7 +116,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
                   endFormatted,
                   style: const TextStyle(color: Colors.white54, fontSize: 12),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 4),
                 LinearProgressIndicator(
                   value: total > 0 ? elapsed / total : 0,
                   minHeight: 5,
@@ -125,7 +124,6 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(15),
                 ),
-                const SizedBox(height: 12),
               ],
             ),
           ),

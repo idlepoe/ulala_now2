@@ -85,7 +85,11 @@ class SessionController extends GetxController with WidgetsBindingObserver {
 
   void changeTab(int index) {
     currentIndex.value = index;
-    pageController.jumpToPage(index);
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   void onPageChanged(int index) {

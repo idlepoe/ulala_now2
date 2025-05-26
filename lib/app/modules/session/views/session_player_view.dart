@@ -1,14 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:ulala_now2/app/data/models/session_track.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 import 'package:ulala_now2/app/modules/session/widgets/upcoming_trak_list.dart';
-import 'package:youtube_player_iframe/youtube_player_iframe.dart';
-
-import '../../../data/utils/api_service.dart';
-import '../../tab_track/controllers/tab_track_controller.dart';
-import '../widgets/current_track_card.dart';
 
 class SessionPlayerView extends GetView<SessionController> {
   const SessionPlayerView({super.key});
@@ -17,7 +10,6 @@ class SessionPlayerView extends GetView<SessionController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         body: CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
