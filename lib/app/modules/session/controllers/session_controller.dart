@@ -567,14 +567,14 @@ class SessionController extends GetxController with WidgetsBindingObserver {
       builder:
           (context) => AlertDialog(
             title: Text('leave_session'.tr),
-            content: const Text('정말로 이 세션에서 나가시겠습니까?'),
+            content: Text('confirm_leave_session'.tr),
             actions: [
               TextButton(
-                child: const Text('취소'),
+                child: Text('cancel'.tr),
                 onPressed: () => Navigator.pop(context, false),
               ),
               TextButton(
-                child: const Text('나가기', style: TextStyle(color: Colors.red)),
+                child: Text('leave'.tr, style: TextStyle(color: Colors.red)),
                 onPressed: () => Navigator.pop(context, true),
               ),
             ],
@@ -591,7 +591,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
 
       Get.offAllNamed(Routes.SPLASH);
     } catch (e) {
-      Get.snackbar('오류', '세션 나가기 중 문제가 발생했습니다.');
+      Get.snackbar('error'.tr, 'leave_session_error'.tr);
     }
   }
 
@@ -599,7 +599,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     // "지금은 무음 모드입니다. 첫 번째 트랙을 추가해보세요 🎶",
     // "우주가 고요합니다... 첫 음악을 울려 퍼지게 해주세요 🌌",
     // "스피커가 심심해하고 있어요. 들려줄 노래가 필요해요!",
-    "별빛이 고요하네요... 누군가 음악을 틀어줄 시간이에요.",
+    'session_empty_placeholder'.tr,
     // "은하수에 음악이 비었어요. 첫 곡을 채워주세요 ⭐",
     // "지금은 정적 타임... 음악 한 곡 어때요?",
   ];

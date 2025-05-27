@@ -88,10 +88,8 @@ class AppTranslations extends Translations {
       'waking_up_server': '서버를 깨우는 중...',
       'anonymous': '익명',
       'display': '표시',
-      'chat_empty_alt1':
-      '📭 아무 말도 없네요...',
-      'chat_empty_alt2':
-          '첫 번째 대화를 시작해보세요 ✍️\n음악보다 더 따뜻한 이야기가 기다리고 있어요 💬',
+      'chat_empty_alt1': '📭 아무 말도 없네요...',
+      'chat_empty_alt2': '첫 번째 대화를 시작해보세요 ✍️\n음악보다 더 따뜻한 이야기가 기다리고 있어요 💬',
       'favorites_empty': '텅 비었네요 💔',
       'favorites_tip': '좋아하는 트랙에 하트를 눌러\n나만의 즐겨찾기를 만들어보세요!',
       'waiting_for_first_favorite': '첫 번째 ❤️ 를 기다리고 있어요',
@@ -101,7 +99,34 @@ class AppTranslations extends Translations {
       'stop': '정지',
       'start': '시작',
       'muted_message': '🔇 음소거 중입니다',
-      'resume_play': '재생하기',  },
+      'resume_play': '재생하기',
+      'session_name_1': '은하 라운지',
+      'session_name_2': '코스믹 스테이션',
+      'session_name_3': '별빛 오페라',
+      'session_name_4': '달빛 극장',
+      'session_name_5': '우주 주파수',
+      'session_name_6': '타임캡슐 채널',
+      'session_name_7': '별의 회랑',
+      'session_name_8': '드림 오케스트라',
+      'session_name_9': '성운 카페',
+      'session_name_10': '미드나잇 리듬',
+      'session_description':
+          '세션은 친구들과 함께 음악을 공유하고 감상할 수 있는 공간입니다.\n'
+          '- 유튜브에서 노래를 검색하고 추가할 수 있어요\n'
+          '- 즐겨찾기나 재생 이력을 통해 트랙을 쉽게 다시 들을 수 있어요\n'
+          '- 세션은 URL로 간단히 공유할 수 있어 친구를 초대하기 좋아요',
+      'session_example': '예: 별빛 오페라, 성운 라운지...',
+      'session_mode': '세션 모드',
+      'session_private': '비공개 세션',
+      'session_name_label': '세션 이름',
+      'session_mode_desc_general': '🎵 일반 모드: 모두가 트랙을 추가하고 스킵할 수 있어요.',
+      'session_mode_desc_dj': '🎧 DJ 모드: 호스트만 트랙을 추가하고 조작할 수 있어요.',
+      'session_private_hint': '비공개 세션은 조용히 열려 있어요. 링크를 가진 친구만 초대받을 수 있어요!',
+      'confirm_leave_session': '정말로 이 세션에서 나가시겠습니까?',
+      'leave': '나가기',
+      'leave_session_error': '세션 나가기 중 문제가 발생했습니다.',
+      'session_empty_placeholder': '별빛이 고요하네요... 누군가 음악을 틀어줄 시간이에요.',
+    },
 
     'en_US': {
       'app_name': 'Ulala',
@@ -192,7 +217,8 @@ class AppTranslations extends Translations {
       'anonymous': 'Anonymous',
       'display': 'Display',
       'chat_empty_alt1': '📭 No messages yet...',
-      'chat_empty_alt2': 'Start the first conversation ✍️\nA warmer story than music awaits 💬',
+      'chat_empty_alt2':
+          'Start the first conversation ✍️\nA warmer story than music awaits 💬',
       'favorites_empty': 'It’s empty 💔',
       'favorites_tip':
           'Tap the heart on your favorite tracks\nto create your own favorites!',
@@ -205,6 +231,36 @@ class AppTranslations extends Translations {
       'start': 'Start',
       'muted_message': '🔇 Muted',
       'resume_play': 'Resume',
+      'session_name_1': 'Galactic Lounge',
+      'session_name_2': 'Cosmic Station',
+      'session_name_3': 'Starlight Opera',
+      'session_name_4': 'Moonlight Theater',
+      'session_name_5': 'Space Frequency',
+      'session_name_6': 'Time Capsule Channel',
+      'session_name_7': 'Corridor of Stars',
+      'session_name_8': 'Dream Orchestra',
+      'session_name_9': 'Nebula Café',
+      'session_name_10': 'Midnight Rhythm',
+      'session_description':
+          'A session is a space to share and enjoy music with friends.\n'
+          '- Search and add songs from YouTube\n'
+          '- Revisit tracks through favorites and playback history\n'
+          '- Sessions are easy to share via URL and invite friends',
+      'session_example': 'e.g. Starlight Opera, Nebula Lounge...',
+      'session_mode': 'Session Mode',
+      'session_private': 'Private Session',
+      'session_name_label': 'Session Name',
+      'session_mode_desc_general':
+          '🎵 General Mode: Everyone can add and skip tracks.',
+      'session_mode_desc_dj':
+          '🎧 DJ Mode: Only the host can add and control tracks.',
+      'session_private_hint':
+          'Private sessions stay quiet — only friends with the link can join!',
+      'confirm_leave_session': 'Are you sure you want to leave this session?',
+      'leave': 'Leave',
+      'leave_session_error': 'There was a problem leaving the session.',
+      'session_empty_placeholder':
+          'The starlight is quiet... Maybe it’s time someone plays a song.',
     },
 
     'ja_JP': {
@@ -303,6 +359,33 @@ class AppTranslations extends Translations {
       'stop': '停止',
       'start': '開始',
       'muted_message': '🔇 ミュート中です',
-      'resume_play': '再生する',  },
+      'resume_play': '再生する',
+      'session_name_1': '銀河ラウンジ',
+      'session_name_2': 'コズミックステーション',
+      'session_name_3': '星光オペラ',
+      'session_name_4': '月光シアター',
+      'session_name_5': '宇宙周波数',
+      'session_name_6': 'タイムカプセルチャンネル',
+      'session_name_7': '星の回廊',
+      'session_name_8': 'ドリームオーケストラ',
+      'session_name_9': '星雲カフェ',
+      'session_name_10': 'ミッドナイトリズム',
+      'session_description':
+          'セッションは友達と音楽を共有して楽しむ空間です。\n'
+          '- YouTubeで音楽を検索して追加できます\n'
+          '- お気に入りや再生履歴から簡単に再視聴できます\n'
+          '- セッションはURLで簡単に共有でき、友達を招待しやすいです',
+      'session_example': '例：星光オペラ、星雲ラウンジ...',
+      'session_mode': 'セッションモード',
+      'session_private': '非公開セッション',
+      'session_name_label': 'セッション名',
+      'session_mode_desc_general': '🎵 一般モード：誰でもトラックを追加・スキップできます。',
+      'session_mode_desc_dj': '🎧 DJモード：ホストのみがトラックを追加・操作できます。',
+      'session_private_hint': '非公開セッションはひっそりオープン。リンクを持っている友達だけが参加できます！',
+      'confirm_leave_session': '本当にこのセッションから退出しますか？',
+      'leave': '退出',
+      'leave_session_error': 'セッションから退出中に問題が発生しました。',
+      'session_empty_placeholder': '星明かりが静かですね… 誰かが音楽を流す時間です。',
+    },
   };
 }

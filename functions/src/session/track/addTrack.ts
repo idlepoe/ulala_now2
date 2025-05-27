@@ -106,6 +106,11 @@ export const addTrack = onRequest({cors: true}, async (req, res: any) => {
 
     await batch.commit();
 
+    // ✅ 세션 문서의 updatedAt 필드도 갱신
+    await sessionRef.update({
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
     return res.status(200).json({
       success: true,
       message: "트랙 추가 및 재정렬 완료",

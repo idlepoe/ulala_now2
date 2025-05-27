@@ -37,7 +37,7 @@ class HomeController extends GetxController {
 
       Get.offAllNamed(Routes.SPLASH);
     } catch (e) {
-      Get.snackbar('오류', '세션 참가에 실패했습니다.');
+      Get.snackbar('error'.tr, 'session_join_failed'.tr);
     } finally {
       isLoading.value = false;
     }
@@ -48,16 +48,16 @@ class HomeController extends GetxController {
   void openCreateSessionSheet(BuildContext context) {
     final random = Random();
     final names = [
-      "은하 라운지",
-      "코스믹 스테이션",
-      "별빛 오페라",
-      "달빛 극장",
-      "우주 주파수",
-      "타임캡슐 채널",
-      "별의 회랑",
-      "드림 오케스트라",
-      "성운 카페",
-      "미드나잇 리듬",
+      'session_name_1'.tr,
+      'session_name_2'.tr,
+      'session_name_3'.tr,
+      'session_name_4'.tr,
+      'session_name_5'.tr,
+      'session_name_6'.tr,
+      'session_name_7'.tr,
+      'session_name_8'.tr,
+      'session_name_9'.tr,
+      'session_name_10'.tr,
     ];
     final name = names[random.nextInt(names.length)];
     final number = 100 + random.nextInt(900); // 100~999
@@ -81,7 +81,7 @@ class HomeController extends GetxController {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Text(
+                Text(
                   'create_session'.tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -105,7 +105,7 @@ class HomeController extends GetxController {
                       isLoading.value = false;
                     }
                   },
-                  child:  Text('create_session'.tr),
+                  child: Text('create_session'.tr),
                 ),
               ],
             ),
@@ -118,28 +118,31 @@ class HomeController extends GetxController {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
-                '세션은 친구들과 함께 음악을 공유하고 감상할 수 있는 공간입니다.\n'
-                '- 유튜브에서 노래를 검색하고 추가할 수 있어요\n'
-                '- 즐겨찾기나 재생 이력을 통해 트랙을 쉽게 다시 들을 수 있어요\n'
-                '- 세션은 URL로 간단히 공유할 수 있어 친구를 초대하기 좋아요',
+              child: Text(
+                'session_description'.tr,
                 style: TextStyle(fontSize: 13, color: Colors.black87),
               ),
             ),
 
             const SizedBox(height: 16),
 
-            const Text('세션 이름', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              'session_name_label'.tr,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             TextField(
               controller: controller,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: '예: 별빛 오페라, 성운 라운지...',
+                hintText: 'session_example'.tr,
               ),
             ),
             const SizedBox(height: 24),
-            const Text('세션 모드', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              'session_mode'.tr,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
             Obx(
               () => Row(
@@ -204,7 +207,7 @@ class HomeController extends GetxController {
                   child: Obx(
                     () => CheckboxListTile(
                       contentPadding: EdgeInsets.zero,
-                      title: const Text('비공개 세션'),
+                      title: Text('session_private'.tr),
                       value: isPrivate.value,
                       onChanged: (val) {
                         if (val != null) isPrivate.value = val;
@@ -214,6 +217,11 @@ class HomeController extends GetxController {
                   ),
                 ),
               ],
+            ),
+
+            Text(
+              'session_private_hint'.tr,
+              style: const TextStyle(fontSize: 15, color: Colors.grey),
             ),
           ],
         ),
@@ -225,9 +233,9 @@ class HomeController extends GetxController {
   String getSessionModeLabel(SessionMode mode) {
     switch (mode) {
       case SessionMode.general:
-        return "🎵 일반 모드: 모두가 트랙을 추가하고 스킵할 수 있어요.";
+        return 'session_mode_desc_general'.tr;
       case SessionMode.dj:
-        return "🎧 DJ 모드: 호스트만 트랙을 추가하고 조작할 수 있어요.";
+        return 'session_mode_desc_dj'.tr;
     }
   }
 }
