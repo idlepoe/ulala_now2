@@ -25,7 +25,7 @@ shorebird release android
 
 
 flutter pub get
-shorebird patch --platforms=android --release-version=1.0.5+7
+shorebird patch --platforms=android --release-version=1.0.7+8
 
 flutter clean
 flutter pub get

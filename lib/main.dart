@@ -26,8 +26,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   usePathUrlStrategy();
-  // await initializeDateLocale();
-  await initializeDateLocale(overrideLocale: 'ja');
+  await initializeDateLocale();
+  // await initializeDateLocale(overrideLocale: 'ja');
   // await initializeDateLocale(overrideLocale: 'en');
   final themeController = Get.put(ThemeController());
   await themeController.loadTheme();
@@ -57,10 +57,10 @@ Future<void> main() async {
           (context) => GetMaterialApp(
             title: 'app_name'.tr,
             translations: AppTranslations(),
-            // locale: Get.deviceLocale,
+            locale: Get.deviceLocale,
             // locale: const Locale('en', 'US'),
             // 🔒 영어로 고정
-            locale: const Locale('ja', 'JP'), // 🔒 영어로 고정
+            // locale: const Locale('ja', 'JP'), // 🔒 영어로 고정
             fallbackLocale: const Locale('en', 'US'),
             // 언어 없을 시 기본값
             scrollBehavior: const MaterialScrollBehavior().copyWith(
