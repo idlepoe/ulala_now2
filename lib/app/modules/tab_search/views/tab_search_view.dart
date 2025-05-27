@@ -64,14 +64,14 @@ class TabSearchView extends GetView<SessionController> {
                   ),
 
                   // 검색 결과 타이틀
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 4,
                       ),
                       child: Text(
-                        "검색결과",
+                        "search_results".tr,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -93,20 +93,30 @@ class TabSearchView extends GetView<SessionController> {
                     if (results.isEmpty) {
                       return SliverFillRemaining(
                         child: Center(
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.search_off, size: 48, color: Colors.grey),
+                              Icon(
+                                Icons.search_off,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
                               SizedBox(height: 16),
                               Text(
-                                "노래를 못 찾았어요 🕵️‍♂️",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                'no_song_found'.tr,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "다시 한 번 검색어를 바꿔보실래요?\n가끔 음악도 숨을 때가 있거든요 🎵",
+                                'search_retry_tip'.tr,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 13, color: Colors.grey),
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey,
+                                ),
                               ),
                             ],
                           ),
@@ -118,7 +128,10 @@ class TabSearchView extends GetView<SessionController> {
                       delegate: SliverChildBuilderDelegate((context, index) {
                         final track = results[index];
                         return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 2,
+                          ),
                           child: Obx(
                             () => TrackTile(
                               track: track,
@@ -167,7 +180,7 @@ class TabSearchView extends GetView<SessionController> {
               onSearch: (keyword) => controller.searchYoutube(keyword),
               cooldownMessage:
                   controller.isSearchCooldown.value
-                      ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
+                      ? '${'search_limit_notice'.tr}: ${_formatDuration(controller.remainingCooldown.value)}'
                       : null,
             ),
           ),

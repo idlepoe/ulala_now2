@@ -1,3 +1,4 @@
+import 'dart:ffi' as fi;
 import 'dart:io';
 import 'dart:ui';
 
@@ -10,8 +11,10 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:simple_pip_mode/simple_pip.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:win32/win32.dart' as win;
 import 'package:window_manager/window_manager.dart';
 
+import 'app/data/constants/app_translations.dart';
 import 'app/data/constants/theme.dart';
 import 'app/data/controllers/theme_controller.dart';
 import 'app/data/utils/logger.dart';
@@ -34,7 +37,7 @@ Future<void> main() async {
     await windowManager.ensureInitialized();
 
     // 초기 사이즈 지정
-    const initialSize = Size(475, 812);
+    var initialSize = Size(475, 812);
     await windowManager.setSize(initialSize);
     await windowManager.setMinimumSize(initialSize);
     await windowManager.setMaximumSize(initialSize);
@@ -46,12 +49,18 @@ Future<void> main() async {
     await windowManager.center();
 
     windowManager.setPreventClose(true); // X 눌러도 닫히지 않게 설정
+
+    win.CoInitializeEx(fi.nullptr, win.COINIT_APARTMENTTHREADED);
   }
   runApp(
     FlutterWebFrame(
       builder:
           (context) => GetMaterialApp(
-            title: "울랄라2",
+            title: 'app_name'.tr,
+            translations: AppTranslations(),
+            // locale: Get.deviceLocale, // 기본 언어 (디바이스 설정 기준)
+            locale: const Locale('ja', 'JP'), // 🔒 영어로 고정
+            fallbackLocale: const Locale('en', 'US'), // 언어 없을 시 기본값
             scrollBehavior: const MaterialScrollBehavior().copyWith(
               dragDevices: {
                 PointerDeviceKind.touch,

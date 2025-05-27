@@ -140,9 +140,11 @@ class ParticipantChip extends StatelessWidget {
 
   String _statusText(SessionParticipant p) {
     final duration = DateTime.now().difference(p.updatedAt);
-    if (duration.inMinutes < 5) return '방금 활동함';
-    if (duration.inMinutes < 60) return '${duration.inMinutes}분 전 활동';
-    if (duration.inHours < 24) return '${duration.inHours}시간 전 활동';
-    return '오래됨';
+    if (duration.inMinutes < 5) return 'active_just_now'.tr;
+    if (duration.inMinutes < 60)
+      return '${duration.inMinutes}${'active_minutes_ago'.tr}';
+    if (duration.inHours < 24)
+      return '${duration.inHours}${'active_hours_ago'.tr}';
+    return 'inactive'.tr;
   }
 }

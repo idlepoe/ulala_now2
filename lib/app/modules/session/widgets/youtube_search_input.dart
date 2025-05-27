@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'info_button_youtube_quota.dart';
 
@@ -24,7 +25,7 @@ class YoutubeSearchInput extends StatelessWidget {
           controller: controller,
           enabled: enabled,
           decoration: InputDecoration(
-            hintText: "Youtube에서 트랙 검색",
+            hintText: 'search_youtube'.tr,
             suffixIcon: IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {

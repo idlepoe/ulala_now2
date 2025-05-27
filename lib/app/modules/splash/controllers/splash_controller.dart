@@ -9,14 +9,15 @@ import '../../../routes/app_pages.dart';
 class SplashController extends GetxController {
   final RxString message = ''.obs;
   final messages = [
-    '세션에 몰래 들어가는 중...',
-    '참가자 수를 세고 있어요...',
-    'DJ가 준비 중입니다...',
-    '음악 케이블을 꽂는 중...',
-    '좋은 곡을 탐색 중...',
-    '리듬을 타고 있어요...',
-    '서버를 깨우는 중...',
+    'session_joining'.tr,
+    'counting_participants'.tr,
+    'dj_preparing'.tr,
+    'connecting_cable'.tr,
+    'exploring_tracks'.tr,
+    'feeling_rhythm'.tr,
+    'waking_up_server'.tr,
   ];
+
   @override
   void onInit() {
     super.onInit();
@@ -38,7 +39,7 @@ class SplashController extends GetxController {
       if (user != null &&
           (user.displayName == null || user.displayName!.isEmpty)) {
         final randomSuffix = (10000 + Random().nextInt(89999)).toString();
-        final nickname = '익명$randomSuffix';
+        final nickname = '${'anonymous'.tr}$randomSuffix';
 
         await user.updateDisplayName(nickname);
         await user.reload(); // 정보 갱신

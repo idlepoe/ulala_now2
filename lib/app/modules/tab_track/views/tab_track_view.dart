@@ -27,7 +27,7 @@ class TabTrackView extends GetView<SessionController> {
                 child: Center(
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.playlist_add),
-                    label: Text("재생할 음악 트랙 추가하기"),
+                    label: Text('add_track_to_play'.tr),
                     onPressed: () async {},
                   ),
                 ),

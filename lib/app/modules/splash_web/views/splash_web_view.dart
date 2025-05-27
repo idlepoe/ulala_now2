@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -20,6 +21,8 @@ class _SplashWebViewState extends State<SplashWebView>
   final WebUri _url = WebUri.uri(
     Uri.parse('https://ulala-now2.web.app/splash'),
   );
+  String _lastUrl = 'https://ulala-now2.web.app/splash';
+  bool _isMuted = false;
 
   @override
   void initState() {
@@ -33,7 +36,6 @@ class _SplashWebViewState extends State<SplashWebView>
       throw UnsupportedError('SplashWebView는 데스크탑 플랫폼에서만 지원됩니다.');
     }
 
-    // 트레이 및 윈도우 초기 설정
     _initWindowAndTray();
   }
 
@@ -44,16 +46,16 @@ class _SplashWebViewState extends State<SplashWebView>
       await trayManager.setContextMenu(
         Menu(
           items: [
-            MenuItem(key: 'show', label: '표시'),
-            MenuItem(key: 'exit', label: '닫기'),
+            MenuItem(key: 'play', label: 'play'.tr),
+            MenuItem(key: 'stop', label: 'stop'.tr),
+            MenuItem(key: 'show', label: 'display'.tr),
+            MenuItem(key: 'exit', label: 'close'.tr),
           ],
         ),
       );
 
-      await trayManager.setToolTip('울랄라 나우'); // 마우스 오버 텍스트
-      await trayManager.setIcon(
-        'assets/images/icon-removebg.ico', // 트레이 아이콘 경로
-      );
+      await trayManager.setToolTip('app_name'.tr);
+      await trayManager.setIcon('assets/images/icon-removebg.ico');
 
       trayManager.addListener(this);
     } catch (e) {
@@ -64,6 +66,12 @@ class _SplashWebViewState extends State<SplashWebView>
   @override
   void onTrayMenuItemClick(MenuItem menuItem) async {
     switch (menuItem.key) {
+      case 'play':
+        _unmute();
+        break;
+      case 'stop':
+        _mute();
+        break;
       case 'show':
         await windowManager.show();
         await windowManager.focus();
@@ -76,11 +84,23 @@ class _SplashWebViewState extends State<SplashWebView>
     }
   }
 
+  void _mute() {
+    setState(() {
+      _isMuted = true;
+    });
+  }
+
+  void _unmute() {
+    setState(() {
+      _isMuted = false;
+    });
+  }
+
   @override
   void onWindowClose() async {
     final isPrevented = await windowManager.isPreventClose();
     if (isPrevented) {
-      await windowManager.hide(); // 창 숨기기
+      await windowManager.hide();
     }
   }
 
@@ -112,12 +132,47 @@ class _SplashWebViewState extends State<SplashWebView>
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: InAppWebView(
-          initialUrlRequest: URLRequest(url: _url),
-
-          onWebViewCreated: (controller) {
-            _webViewController = controller;
-          },
+        child: Stack(
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child:
+                  _isMuted
+                      ? Center(
+                        key: const ValueKey('muted'),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'muted_message'.tr,
+                              style: TextStyle(fontSize: 24),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: _unmute,
+                              child: Text('resume_play'.tr),
+                            ),
+                          ],
+                        ),
+                      )
+                      : InAppWebView(
+                        key: const ValueKey('webview'),
+                        initialUrlRequest: URLRequest(url: _url),
+                        onWebViewCreated: (controller) {
+                          _webViewController = controller;
+                        },
+                      ),
+            ),
+            if (!_isMuted)
+              Positioned(
+                bottom: 90,
+                left: 16,
+                child: FloatingActionButton(
+                  onPressed: _mute,
+                  child: const Icon(Icons.volume_off),
+                ),
+              ),
+          ],
         ),
       ),
     );

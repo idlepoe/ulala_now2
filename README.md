@@ -1,39 +1,38 @@
-# 🎵 울랄라 (Ulala)
+# 🎵 Ulala
 
-> **지금 이 순간, 함께 듣는 음악의 즐거움**
+> **The joy of listening to music together, right now**
 
-**Ulala**는 친구들과 음악을 공유하고 실시간으로 감상할 수 있는  
-**세션 기반 음악 공유 플랫폼**입니다.  
-YouTube 트랙 추가, 실시간 동기화, 채팅 등 **음악 감상에 소셜을 더한 새로운 경험**을 제공합니다.
-
----
-
-## 🌐 울랄라 만나보기
-
-- 💻 [웹으로 접속하기](https://ulala-now2.web.app) – 설치 없이 브라우저에서 바로 사용
-- 📲 [Google Play에서 설치하기](https://play.google.com/store/apps/details?id=com.jylee.ulala_now2) – Android 앱
-- 🪟 [Microsoft Store에서 설치하기](https://apps.microsoft.com/detail/9NJT02F3GCWQ?hl=ko-kr&gl=US&ocid=pdpshare) – Windows 앱
+**Ulala** is a **session-based music sharing platform** where you can share music with friends and enjoy it in real time.  
+It offers a new experience by combining social features with music, including YouTube track addition, real-time sync, and chat.
 
 ---
 
-## 🚀 주요 기능
+## 🌐 Explore Ulala
 
-- **세션 공유** 🎶: 실시간 음악 감상 & 동기화
-- **YouTube 검색** 🔍: 원하는 곡을 손쉽게 추가
-- **실시간 채팅** 💬: 음악과 함께 소통
-- **즐겨찾기 기능** ⭐: 자주 듣는 곡을 따로 저장
-- **PIP 모드** 🎶: 다른 앱을 사용하면서도 음악을 계속 감상
+- 💻 [Open in Web](https://ulala-now2.web.app) – Use instantly in your browser without installation
+- 📲 [Install from Google Play](https://play.google.com/store/apps/details?id=com.jylee.ulala_now2) – Android App
+- 🪟 [Install from Microsoft Store](https://apps.microsoft.com/detail/9NJT02F3GCWQ?hl=ko-kr&gl=US&ocid=pdpshare) – Windows App
 
 ---
 
-## 🛠️ 사용 기술
+## 🚀 Key Features
 
-- 📱 **Flutter (Dart)** – 크로스 플랫폼 앱 개발
+- **Session Sharing** 🎶: Real-time music playback & sync
+- **YouTube Search** 🔍: Easily add your favorite tracks
+- **Real-time Chat** 💬: Communicate while listening
+- **Favorites** ⭐: Save frequently played tracks
+- **PIP Mode** 🎶: Listen while using other apps
+
+---
+
+## 🛠️ Tech Stack
+
+- 📱 **Flutter (Dart)** – Cross-platform app development
 - 🔥 **Firebase**
   - 🔐 Authentication
   - 🗃️ Firestore
   - ☁️ Cloud Functions
   - 💾 Storage
   - 🏠 Hosting
-- ⚙️ **GetX** – 상태관리 및 라우팅
-- 🚀 **Shorebird** – OTA 코드 푸시
+- ⚙️ **GetX** – State management and routing
+- 🚀 **Shorebird** – OTA (Over-the-Air) code push

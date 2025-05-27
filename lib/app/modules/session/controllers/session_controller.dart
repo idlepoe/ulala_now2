@@ -313,8 +313,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     logger.w(response);
 
     if (response != null) {
-      // 0.5초 후에 BottomSheet 닫기
-      Get.back(result: true);
+      Get.snackbar('성공', '트랙이 추가되었습니다.');
     } else {
       Get.snackbar('오류', '트랙 추가에 실패했습니다.');
     }
@@ -345,10 +344,10 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     final updated = Map<String, SessionTrack>.from(favorites);
     if (updated.containsKey(track.videoId)) {
       updated.remove(track.videoId);
-      if (!Get.isSnackbarOpen) Get.snackbar('즐겨찾기', '즐겨찾기에서 제거됨');
+      if (!Get.isSnackbarOpen) Get.snackbar('favorite'.tr, '즐겨찾기에서 제거됨');
     } else {
       updated[track.videoId] = track;
-      if (!Get.isSnackbarOpen) Get.snackbar('즐겨찾기', '즐겨찾기에 추가됨');
+      if (!Get.isSnackbarOpen) Get.snackbar('favorite'.tr, '즐겨찾기에 추가됨');
     }
 
     // 저장
@@ -567,7 +566,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
       context: Get.context!,
       builder:
           (context) => AlertDialog(
-            title: const Text('세션 나가기'),
+            title: Text('leave_session'.tr),
             content: const Text('정말로 이 세션에서 나가시겠습니까?'),
             actions: [
               TextButton(

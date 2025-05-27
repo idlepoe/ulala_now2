@@ -34,7 +34,7 @@ class ChatAndParticipantsBar extends StatelessWidget {
                   width: 32,
                   height: 32,
                 ),
-                tooltip: '채팅 열기',
+                tooltip: 'open_chat'.tr,
                 onPressed: () {
                   chatController.markAllAsRead();
                   Get.bottomSheet(const ChatBottomSheet());

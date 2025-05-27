@@ -160,17 +160,26 @@ class SessionTabView extends GetView<SessionController> {
               currentIndex: controller.currentIndex.value,
               onTap: controller.changeTab,
               type: BottomNavigationBarType.fixed,
-              items: const [
+              items: [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.music_note),
-                  label: '트랙',
+                  label: 'track'.tr,
                 ),
-                BottomNavigationBarItem(icon: Icon(Icons.search), label: '검색'),
-                BottomNavigationBarItem(icon: Icon(Icons.star), label: '즐겨찾기'),
-                BottomNavigationBarItem(icon: Icon(Icons.chat), label: '채팅'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'search'.tr,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.star),
+                  label: 'favorite'.tr,
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.chat),
+                  label: 'chat'.tr,
+                ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.settings),
-                  label: '설정',
+                  label: 'settings'.tr,
                 ),
               ],
             ),

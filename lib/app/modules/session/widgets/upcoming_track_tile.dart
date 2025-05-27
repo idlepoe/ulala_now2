@@ -29,10 +29,10 @@ class UpcomingTrackTile extends StatelessWidget {
 
     final parts = <String>[];
 
-    if (hours > 0) parts.add("$hours시간");
-    if (minutes > 0) parts.add("$minutes분");
+    if (hours > 0) parts.add("$hours${'hour'.tr}");
+    if (minutes > 0) parts.add("$minutes${'minute'.tr}");
     if (remainSeconds > 0 || parts.isEmpty) {
-      parts.add("$remainSeconds초"); // ✅ padLeft 제거
+      parts.add("$remainSeconds${'second'.tr}"); // ✅ padLeft 제거
     }
 
     return parts.join(' ');
@@ -44,7 +44,7 @@ class UpcomingTrackTile extends StatelessWidget {
 
     final start = track.startAt;
     final formattedTime =
-        "${start.hour}시 ${start.minute.toString().padLeft(2, '0')}분";
+        "${start.hour}${'hour'.tr} ${start.minute.toString().padLeft(2, '0')}${'minute'.tr}";
 
     final durationText = getFormattedDuration(track.duration);
 
@@ -128,7 +128,7 @@ class UpcomingTrackTile extends StatelessWidget {
                           color: isFavorite ? Colors.redAccent : Colors.grey,
                         ),
                         onPressed: onFavoriteToggle,
-                        tooltip: '즐겨찾기',
+                        tooltip: 'favorite'.tr,
                         visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
@@ -150,7 +150,7 @@ class UpcomingTrackTile extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            "시작: $formattedTime",
+                            '${'start'.tr}: $formattedTime',
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors.grey,

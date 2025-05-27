@@ -49,8 +49,8 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
 
       final endFormatted =
           isStream
-              ? '스트리밍 중'
-              : '종료 예정: ${DateFormat('a h:mm', 'ko').format(track.endAt)}';
+              ? 'streaming'.tr
+              : '${'ending_soon'.tr}: ${DateFormat('a h:mm', 'ko').format(track.endAt)}';
 
       return _buildMiniPlayerBody(
         track,

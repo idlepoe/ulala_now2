@@ -32,7 +32,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("프로필 편집"),
+      title: Text('edit_profile'.tr),
       content: Form(
         key: _formKey,
         child: Column(
@@ -53,13 +53,13 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
             const SizedBox(height: 12),
             TextFormField(
               controller: nicknameController,
-              decoration: const InputDecoration(
-                labelText: "닉네임",
+              decoration: InputDecoration(
+                labelText: 'nickname'.tr,
                 border: OutlineInputBorder(),
               ),
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
-                  return "닉네임은 필수입니다.";
+                  return 'nickname_required'.tr;
                 }
                 return null;
               },
@@ -70,7 +70,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
       actions: [
         TextButton(
           onPressed: isSaving ? null : () => Navigator.pop(context),
-          child: const Text("취소"),
+          child: Text('cancel'.tr),
         ),
         ElevatedButton(
           onPressed: isSaving ? null : _saveProfile,
@@ -81,7 +81,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
                     width: 16,
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
-                  : const Text("저장"),
+                  : Text('save'.tr),
         ),
       ],
     );
@@ -118,10 +118,10 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
 
       joinSession(Get.find<SessionController>().sessionId);
 
-      Get.snackbar('프로필 변경', '프로필이 성공적으로 업데이트되었습니다.');
+      Get.snackbar('edit_profile'.tr, 'profile_updated'.tr);
       Navigator.pop(context, true); // ✅ true 반환
     } catch (e) {
-      Get.snackbar('오류', '프로필 변경에 실패했습니다.');
+      Get.snackbar('오류', 'profile_update_failed'.tr);
     } finally {
       setState(() => isSaving = false);
     }
@@ -131,7 +131,7 @@ class _ProfileEditDialogState extends State<ProfileEditDialog> {
     try {
       await ApiService.joinSession(sessionId);
     } catch (e) {
-      Get.snackbar('오류', '세션 참가에 실패했습니다.');
+      Get.snackbar('error'.tr, 'session_join_failed'.tr);
     }
   }
 }

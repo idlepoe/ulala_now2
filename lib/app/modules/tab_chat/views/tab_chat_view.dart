@@ -22,7 +22,7 @@ class TabChatView extends GetView<ChatController> {
         Get.find<SessionController>().session.value?.participants
             .firstWhereOrNull((p) => p.uid == userId)
             ?.nickname ??
-        '알 수 없음';
+        'unknown'.tr;
     final sessionId = Get.find<SessionController>().sessionId;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -52,23 +52,29 @@ class TabChatView extends GetView<ChatController> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.chat_bubble_outline, size: 48, color: Colors.grey),
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
                           const SizedBox(height: 16),
                           Text(
-                            '📭 아무 말도 없네요...',
+                            'chat_empty_alt1'.tr,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.8),
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '첫 번째 대화를 시작해보세요 ✍️\n음악보다 더 따뜻한 이야기가 기다리고 있어요 💬',
+                            'chat_empty_alt2'.tr,
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.6),
                               fontSize: 13,
                             ),
                           ),
@@ -144,7 +150,7 @@ class TabChatView extends GetView<ChatController> {
               Expanded(
                 child: TextField(
                   controller: chatController.inputController,
-                  decoration: const InputDecoration(hintText: "메시지를 입력하세요..."),
+                  decoration: InputDecoration(hintText: 'enter_message'.tr),
                   onSubmitted: (value) async {
                     await chatController.sendMessage(sessionId, nickname);
                   },

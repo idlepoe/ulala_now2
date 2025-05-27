@@ -26,8 +26,8 @@ class FavoriteTrackCarousel extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "⭐ 즐겨찾기 트랙",
+          Text(
+            '⭐ ' + 'favorite_tracks'.tr,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
@@ -119,7 +119,7 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                             () => controller.toggleFavorite(
                                               track,
                                             ),
-                                        tooltip: "즐겨찾기",
+                                        tooltip: 'favorite'.tr,
                                       ),
                                       Stack(
                                         alignment: Alignment.center,
@@ -139,13 +139,13 @@ class FavoriteTrackCarousel extends StatelessWidget {
                                                         .attachDurationAndAddTrack(
                                                           track,
                                                         ),
-                                            tooltip: "세션추가",
+                                            tooltip: 'session_add'.tr,
                                           ),
                                           if (!controller.canControlTrack())
-                                            const Positioned(
+                                            Positioned(
                                               bottom: 4,
                                               child: Text(
-                                                'DJ만',
+                                                'dj_only'.tr,
                                                 style: TextStyle(
                                                   fontSize: 10,
                                                   color: Colors.red,

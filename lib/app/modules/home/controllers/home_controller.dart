@@ -81,8 +81,8 @@ class HomeController extends GetxController {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  '세션 만들기',
+                 Text(
+                  'create_session'.tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
@@ -105,7 +105,7 @@ class HomeController extends GetxController {
                       isLoading.value = false;
                     }
                   },
-                  child: const Text('세션 만들기'),
+                  child:  Text('create_session'.tr),
                 ),
               ],
             ),

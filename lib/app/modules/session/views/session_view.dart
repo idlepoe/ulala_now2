@@ -80,7 +80,7 @@ class SessionView extends GetView<SessionController> {
                   child: Center(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.playlist_add),
-                      label: Text("재생할 음악 트랙 추가하기"),
+                      label: Text('add_track_to_play'.tr),
                       onPressed: () async {
                         await controller.openTrackSearchSheet();
                       },
@@ -154,8 +154,8 @@ class SessionView extends GetView<SessionController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "세션 공유",
+              Text(
+                'share_session'.tr,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -174,18 +174,18 @@ class SessionView extends GetView<SessionController> {
                       Share.share(url);
                     },
                     icon: const Icon(Icons.share),
-                    label: const Text("링크 공유"),
+                    label: Text('link_share'.tr),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton.icon(
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: url));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('링크가 복사되었습니다')),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('link_copied'.tr)));
                     },
                     icon: const Icon(Icons.copy),
-                    label: const Text("복사"),
+                    label: Text('copy'.tr),
                   ),
                 ],
               ),

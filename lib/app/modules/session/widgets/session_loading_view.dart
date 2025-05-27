@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SessionLoadingView extends StatelessWidget {
   const SessionLoadingView({super.key});
@@ -17,8 +18,8 @@ class SessionLoadingView extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            const Text(
-              '세션 상태를 확인하는 중...',
+            Text(
+              'checking_session_state'.tr,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
 

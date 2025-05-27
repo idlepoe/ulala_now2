@@ -34,7 +34,8 @@ class CurrentTrackCard extends StatelessWidget {
     final elapsed = now.difference(start).inSeconds.clamp(0, total);
 
     final endTimeFormatted = DateFormat('a h:mm', 'ko').format(end);
-    final durationFormatted = isStream ? '스트리밍 중' : getFormattedDuration(total);
+    final durationFormatted =
+        isStream ? 'streaming'.tr : getFormattedDuration(total);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -61,12 +62,12 @@ class CurrentTrackCard extends StatelessWidget {
                   color: isFavorite ? Colors.red : Colors.grey,
                 ),
                 onPressed: onFavoriteToggle,
-                tooltip: '즐겨찾기',
+                tooltip: 'favorite'.tr,
               ),
               IconButton(
                 icon: const Icon(Icons.skip_next, color: Colors.grey),
                 onPressed: onSkipTrack,
-                tooltip: '현재 트랙 스킵',
+                tooltip: 'skip_current_track'.tr,
               ),
             ],
           ),
@@ -129,7 +130,7 @@ class CurrentTrackCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          '종료 예정: $endTimeFormatted',
+                          'ending_soon'.tr + ': $endTimeFormatted',
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey.shade600,
@@ -148,8 +149,8 @@ class CurrentTrackCard extends StatelessWidget {
                     width: 22,
                     height: 22,
                   ),
-                  label: const Text(
-                    "노래 안 나오면? 클릭!",
+                  label: Text(
+                    'no_sound_tip'.tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
                   ),
                   style: TextButton.styleFrom(
@@ -174,10 +175,10 @@ String getFormattedDuration(int seconds) {
   final remainSeconds = seconds % 60;
 
   final parts = <String>[];
-  if (hours > 0) parts.add("$hours시간");
-  if (minutes > 0) parts.add("$minutes분");
+  if (hours > 0) parts.add("$hours${'hour'.tr}");
+  if (minutes > 0) parts.add("$minutes${'minute'.tr}");
   if (remainSeconds > 0 || parts.isEmpty) {
-    parts.add("$remainSeconds초");
+    parts.add("$remainSeconds${'second'.tr}");
   }
 
   return parts.join(' ');

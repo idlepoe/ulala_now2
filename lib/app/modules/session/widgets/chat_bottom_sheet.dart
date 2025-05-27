@@ -24,7 +24,7 @@ class ChatBottomSheet extends StatelessWidget {
         Get.find<SessionController>().session.value?.participants
             .firstWhereOrNull((p) => p.uid == userId)
             ?.nickname ??
-        '알 수 없음';
+        'unknown'.tr;
     final sessionId = Get.find<SessionController>().sessionId;
 
     return SafeArea(
@@ -38,7 +38,7 @@ class ChatBottomSheet extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              '채팅',
+              'chat'.tr,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -59,7 +59,7 @@ class ChatBottomSheet extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          '🪐 아직 아무도 말을 걸지 않았어요!\n\n첫 번째 메시지를 남겨보세요 🌟',
+                          'chat_empty'.tr,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.textTheme.bodyMedium?.color
@@ -138,9 +138,7 @@ class ChatBottomSheet extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: chatController.inputController,
-                    decoration: const InputDecoration(
-                      hintText: "메시지를 입력하세요...",
-                    ),
+                    decoration: InputDecoration(hintText: 'enter_message'.tr),
                     onSubmitted: (value) async {
                       await chatController.sendMessage(sessionId, nickname);
                     },

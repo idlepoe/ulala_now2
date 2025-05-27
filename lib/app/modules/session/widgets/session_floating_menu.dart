@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:get/get.dart';
 
 class SessionFloatingMenu extends StatelessWidget {
   final VoidCallback onAddTrack;
@@ -33,21 +34,21 @@ class SessionFloatingMenu extends StatelessWidget {
           SpeedDialChild(
             child: Icon(Icons.playlist_add, color: iconColor),
             backgroundColor: Theme.of(context).colorScheme.surface,
-            label: '트랙 추가',
+            label: 'add_track'.tr,
             labelStyle: TextStyle(color: labelColor),
             onTap: onAddTrack,
           ),
           SpeedDialChild(
             child: Icon(Icons.history, color: iconColor),
             backgroundColor: Theme.of(context).colorScheme.surface,
-            label: '트랙 이력',
+            label: 'track_history'.tr,
             labelStyle: TextStyle(color: labelColor),
             onTap: onShowHistory,
           ),
           SpeedDialChild(
             child: Icon(Icons.share, color: iconColor),
             backgroundColor: Theme.of(context).colorScheme.surface,
-            label: '세션 공유',
+            label: 'share_session'.tr,
             labelStyle: TextStyle(color: labelColor),
             onTap: onShare,
           ),

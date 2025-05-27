@@ -47,7 +47,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
               ), // '세션' 강조
             ), // 기존 title
             TextSpan(
-              text: ' 세션',
+              text: ' ' + '세션',
               style: const TextStyle(), // '세션' 강조
             ),
           ],
@@ -62,8 +62,8 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
           key: fixButtonKey, // ✅ 여기에 부착
           onPressed: onSync,
           icon: Image.asset('assets/images/ic_fix.png', width: 35, height: 35),
-          label: const Text(
-            "뚝딱 고치기",
+          label: Text(
+            'fix_now'.tr,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -76,15 +76,15 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.playlist_add),
-                  tooltip: canControl ? "트랙 추가" : "DJ만",
+                  tooltip: canControl ? 'add_track'.tr : 'dj_only'.tr,
                   onPressed: (!canControl) ? null : onAddTrack,
                   color: canControl ? null : Colors.grey,
                 ),
                 if (!canControl)
-                  const Positioned(
+                  Positioned(
                     bottom: 4,
                     child: Text(
-                      'DJ만',
+                      'dj_only'.tr,
                       style: TextStyle(
                         fontSize: 10,
                         color: Colors.red,
@@ -121,7 +121,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: user?.photoURL == null ? const Icon(Icons.person) : null,
               ),
               title: Text(
-                user?.displayName ?? '익명 사용자',
+                user?.displayName ?? 'anonymous_user'.tr,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -135,13 +135,13 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
                         : Icons.light_mode,
                   ),
                   onPressed: Get.find<ThemeController>().toggleTheme,
-                  tooltip: '테마 전환',
+                  tooltip: 'toggle_theme'.tr,
                 );
               }),
             ),
             ListTile(
               leading: const Icon(Icons.person),
-              title: const Text('프로필 변경'),
+              title: Text('edit_profile'.tr),
               onTap: () async {
                 final result = await showDialog<bool>(
                   context: context,
@@ -156,7 +156,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             ListTile(
               leading: const Icon(Icons.history),
-              title: const Text('재생된 트랙 목록'),
+              title: Text('played_track_list'.tr),
               onTap: () {
                 Navigator.pop(context); // 먼저 BottomSheet 닫고
                 onShowHistory();
@@ -164,7 +164,7 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             ListTile(
               leading: const Icon(Icons.share),
-              title: const Text('세션 공유하기'),
+              title: Text('share_session'.tr),
               onTap: () {
                 Navigator.pop(context);
                 onShare();
@@ -174,7 +174,10 @@ class SessionAppBar extends StatelessWidget implements PreferredSizeWidget {
             // ❌ 세션 나가기
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('세션 나가기', style: TextStyle(color: Colors.red)),
+              title: Text(
+                'leave_session'.tr,
+                style: TextStyle(color: Colors.red),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 onLeaveSession();

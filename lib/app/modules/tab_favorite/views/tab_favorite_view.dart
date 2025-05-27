@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:ulala_now2/app/modules/session/controllers/session_controller.dart';
 
 import '../../session/widgets/track_tile.dart';
+import '../../session/widgets/upcoming_track_tile.dart';
 
 class TabFavoriteView extends GetView<SessionController> {
   const TabFavoriteView({super.key});
@@ -19,21 +20,25 @@ class TabFavoriteView extends GetView<SessionController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.favorite_border, size: 48, color: Colors.pink.shade200),
+                Icon(
+                  Icons.favorite_border,
+                  size: 48,
+                  color: Colors.pink.shade200,
+                ),
                 const SizedBox(height: 16),
-                const Text(
-                  "텅 비었네요 💔",
+                Text(
+                  'favorites_empty'.tr,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  "좋아하는 트랙에 하트를 눌러\n나만의 즐겨찾기를 만들어보세요!",
+                Text(
+                  'favorites_tip'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                  "첫 번째 ❤️ 를 기다리고 있어요",
+                Text(
+                  'waiting_for_first_favorite'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 13, color: Colors.blueGrey),
                 ),
@@ -48,34 +53,39 @@ class TabFavoriteView extends GetView<SessionController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "❤️ 즐겨찾기 트랙",
+            Text(
+              '❤️ ' + 'favorite_tracks'.tr,
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            ListView.separated(
-              itemCount: favs.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              separatorBuilder: (_, __) => const Divider(indent: 12, endIndent: 12),
-              itemBuilder: (context, index) {
-                final track = favs[index];
-                return TrackTile(
-                  track: track,
-                  isFavorite: true,
-                  onFavorite: () => controller.toggleFavorite(track),
-                  onAdd: controller.canControlTrack()
-                      ? () => controller.attachDurationAndAddTrack(track)
-                      : null,
-                  isDisabled: !controller.canControlTrack(),
-                  bottomWidget: null,
-                );
-              },
+            Expanded(
+              child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: favs.length,
+                padding: const EdgeInsets.only(bottom: 16),
+                itemBuilder: (context, index) {
+                  final track = favs[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                    child: TrackTile(
+                      track: track,
+                      isFavorite: true,
+                      onFavorite: () => controller.toggleFavorite(track),
+                      onAdd:
+                          controller.canControlTrack()
+                              ? () =>
+                                  controller.attachDurationAndAddTrack(track)
+                              : null,
+                      isDisabled: !controller.canControlTrack(),
+                      bottomWidget: null,
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ),
       );
     });
   }
-
 }

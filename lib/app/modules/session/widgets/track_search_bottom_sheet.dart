@@ -42,8 +42,8 @@ class TrackSearchBottomSheet extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "최근 검색어",
+                            Text(
+                              'recent_searches'.tr,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 6),
@@ -75,14 +75,14 @@ class TrackSearchBottomSheet extends StatelessWidget {
                   ),
 
                   // 검색 결과 타이틀
-                  const SliverToBoxAdapter(
+                  SliverToBoxAdapter(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 4,
                       ),
                       child: Text(
-                        "검색결과",
+                        'search_results'.tr,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -98,8 +98,8 @@ class TrackSearchBottomSheet extends StatelessWidget {
 
                     final results = controller.youtubeSearchResults;
                     if (results.isEmpty) {
-                      return const SliverFillRemaining(
-                        child: Center(child: Text("검색 결과가 없습니다.")),
+                      return SliverFillRemaining(
+                        child: Center(child: Text('no_search_result'.tr)),
                       );
                     }
 
@@ -135,10 +135,10 @@ class TrackSearchBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSearchAppBar(
-      BuildContext context,
-      SessionController controller,
-      TextEditingController searchController,
-      ) {
+    BuildContext context,
+    SessionController controller,
+    TextEditingController searchController,
+  ) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
@@ -151,9 +151,9 @@ class TrackSearchBottomSheet extends StatelessWidget {
           // 타이틀 + 닫기 버튼
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  "YouTube에서 트랙 검색",
+                  'search_youtube'.tr,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -165,16 +165,17 @@ class TrackSearchBottomSheet extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Obx(
-                () => YoutubeSearchInput(
+            () => YoutubeSearchInput(
               controller: searchController,
               enabled:
-              (!controller.isSearchCooldown.value &&
-                  !controller.isSearching.value),
+                  (!controller.isSearchCooldown.value &&
+                      !controller.isSearching.value),
               onSearch: (keyword) => controller.searchYoutube(keyword),
               cooldownMessage:
-              controller.isSearchCooldown.value
-                  ? '검색은 5분마다 1회만 가능해요\n남은 시간: ${_formatDuration(controller.remainingCooldown.value)}'
-                  : null,
+                  controller.isSearchCooldown.value
+                      ? 'search_limit_notice'.tr +
+                          ': ${_formatDuration(controller.remainingCooldown.value)}'
+                      : null,
             ),
           ),
         ],

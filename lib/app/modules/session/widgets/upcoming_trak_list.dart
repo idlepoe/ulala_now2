@@ -26,7 +26,8 @@ class UpcomingTrackList extends GetView<SessionController> {
       });
 
       // 다음 곡이 없거나 현재 곡 하나만 있을 경우
-      final isLastTrack = (current != null && upcoming.length <= 1) || upcoming.isEmpty;
+      final isLastTrack =
+          (current != null && upcoming.length <= 1) || upcoming.isEmpty;
 
       if (isLastTrack) {
         return Center(
@@ -37,13 +38,13 @@ class UpcomingTrackList extends GetView<SessionController> {
               children: [
                 Icon(Icons.queue_music, size: 48, color: Colors.grey.shade400),
                 const SizedBox(height: 16),
-                const Text(
-                  "다음 트랙이 없어요!",
+                Text(
+                  'no_next_track'.tr,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  "이 곡이 끝나면 모두 조용해져요.\n마음에 드는 곡을 추가해보세요 🎶",
+                Text(
+                  'add_track_tip'.tr,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 14, color: Colors.grey),
                 ),
@@ -53,7 +54,7 @@ class UpcomingTrackList extends GetView<SessionController> {
                     controller.changeTab(1);
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text("트랙 추가하기"),
+                  label: Text('add_track'.tr),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16,

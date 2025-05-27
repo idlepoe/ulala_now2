@@ -13,6 +13,7 @@ import '../../session/widgets/profile_edit_dialog.dart';
 
 class TabSettingView extends GetView<SessionController> {
   const TabSettingView({super.key});
+
   @override
   Widget build(BuildContext context) {
     var user = FirebaseAuth.instance.currentUser;
@@ -22,17 +23,12 @@ class TabSettingView extends GetView<SessionController> {
         ListTile(
           leading: CircleAvatar(
             backgroundImage:
-            user?.photoURL != null
-                ? NetworkImage(user!.photoURL!)
-                : null,
+                user?.photoURL != null ? NetworkImage(user!.photoURL!) : null,
             child: user?.photoURL == null ? const Icon(Icons.person) : null,
           ),
           title: Text(
-            user?.displayName ?? '익명 사용자',
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+            user?.displayName ?? 'anonymous_user'.tr,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           trailing: Obx(() {
             return IconButton(
@@ -42,13 +38,13 @@ class TabSettingView extends GetView<SessionController> {
                     : Icons.light_mode,
               ),
               onPressed: Get.find<ThemeController>().toggleTheme,
-              tooltip: '테마 전환',
+              tooltip: 'toggle_theme'.tr,
             );
           }),
         ),
         ListTile(
           leading: const Icon(Icons.person),
-          title: const Text('프로필 변경'),
+          title: Text('edit_profile'.tr),
           onTap: () async {
             final result = await showDialog<bool>(
               context: context,
@@ -63,14 +59,14 @@ class TabSettingView extends GetView<SessionController> {
         ),
         ListTile(
           leading: const Icon(Icons.history),
-          title: const Text('재생된 트랙 목록'),
+          title: Text('played_track_list'.tr),
           onTap: () {
             _onShowHistory();
           },
         ),
         ListTile(
           leading: const Icon(Icons.share),
-          title: const Text('세션 공유하기'),
+          title: Text('share_session'.tr),
           onTap: () {
             _shareSessionLink();
           },
@@ -79,7 +75,7 @@ class TabSettingView extends GetView<SessionController> {
         // ❌ 세션 나가기
         ListTile(
           leading: const Icon(Icons.logout, color: Colors.red),
-          title: const Text('세션 나가기', style: TextStyle(color: Colors.red)),
+          title: Text('leave_session'.tr, style: TextStyle(color: Colors.red)),
           onTap: () {
             _onLeaveSession();
           },
@@ -106,8 +102,8 @@ class TabSettingView extends GetView<SessionController> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "세션 공유",
+              Text(
+                'share_session'.tr,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
@@ -126,18 +122,18 @@ class TabSettingView extends GetView<SessionController> {
                       Share.share(url);
                     },
                     icon: const Icon(Icons.share),
-                    label: const Text("링크 공유"),
+                    label: Text('link_share'.tr),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton.icon(
                     onPressed: () {
                       Clipboard.setData(ClipboardData(text: url));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('링크가 복사되었습니다')),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('link_copied'.tr)));
                     },
                     icon: const Icon(Icons.copy),
-                    label: const Text("복사"),
+                    label: Text('copy'.tr),
                   ),
                 ],
               ),
@@ -159,7 +155,7 @@ class TabSettingView extends GetView<SessionController> {
         ),
         builder:
             (_) =>
-            PlayedTrackBottomSheet(sessionId: controller.session.value!.id),
+                PlayedTrackBottomSheet(sessionId: controller.session.value!.id),
       );
     });
   }

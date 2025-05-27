@@ -21,11 +21,11 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('울랄라'),
+        title: Text('app_name'.tr),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
-            tooltip: '앱 소개',
+            tooltip: 'app_intro_title'.tr,
             onPressed: () {
               showDialog(
                 context: context,
@@ -54,12 +54,12 @@ class HomeView extends GetView<HomeController> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text('참여 가능한 세션이 없습니다.'),
+                        Text('no_session_available'.tr),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed:
                               () => controller.openCreateSessionSheet(context),
-                          child: const Text('세션 만들기'),
+                          child: Text('create_session'.tr),
                         ),
                       ],
                     ),
@@ -216,17 +216,19 @@ class HomeView extends GetView<HomeController> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Tooltip(
-            message: '세션 만들기',
+            message: 'create_session'.tr,
             child: Obx(
               () => FloatingActionButton(
                 heroTag: 'create_session',
-                onPressed: controller.isLoading.value
-                    ? null
-                    : () => controller.openCreateSessionSheet(context),
+                onPressed:
+                    controller.isLoading.value
+                        ? null
+                        : () => controller.openCreateSessionSheet(context),
                 elevation: 6,
-                backgroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey.shade800
-                    : Colors.white,
+                backgroundColor:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Colors.grey.shade800
+                        : Colors.white,
                 shape: const CircleBorder(),
                 child: ClipOval(
                   child: Image.asset(
@@ -238,13 +240,12 @@ class HomeView extends GetView<HomeController> {
                     fit: BoxFit.cover,
                   ),
                 ),
-              )
-              ,
+              ),
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            '세션 만들기',
+          Text(
+            'create_session'.tr,
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
         ],
@@ -257,26 +258,15 @@ class HomeView extends GetView<HomeController> {
     final now = DateTime.now();
     final diff = expireAt.difference(now);
 
-    if (diff.isNegative) return '만료됨';
+    if (diff.isNegative) return 'expired'.tr;
 
     final hours = diff.inHours;
     final minutes = diff.inMinutes % 60;
 
     if (hours == 0) {
-      return '$minutes분';
+      return '$minutes${'minute'.tr}';
     } else {
-      return '${hours}시간 ${minutes}분';
-    }
-  }
-
-  String _modeLabel(SessionMode mode) {
-    switch (mode) {
-      case SessionMode.general:
-        return '일반 모드';
-      case SessionMode.dj:
-        return 'DJ 모드';
-      default:
-        return '';
+      return '${hours}${'hour'.tr} ${minutes}${'minute'.tr}';
     }
   }
 
@@ -286,27 +276,27 @@ class HomeView extends GetView<HomeController> {
 
     if (isStream) {
       if (now.isAfter(track.startAt)) {
-        return '🔴 스트리밍 중';
+        return '🔴 ' + 'streaming'.tr;
       } else {
         return '';
       }
     }
 
     if (now.isAfter(track.startAt) && now.isBefore(track.endAt)) {
-      return '🎶 재생 중';
+      return '🎶 ' + 'now_playing'.tr;
     } else if (now.isAfter(track.endAt)) {
       final diff = now.difference(track.endAt).inDays;
 
       if (diff == 0) {
         final endedAt = DateFormat('HH:mm').format(track.endAt);
-        return '🕒 종료됨: $endedAt';
+        return '🕒 ' + 'ended'.tr + ': $endedAt';
       } else if (diff == 1) {
-        return '🕒 종료됨: 어제';
+        return '🕒 ' + 'ended'.tr + ': ' + 'yesterday'.tr;
       } else if (diff == 2) {
-        return '🕒 종료됨: 2일 전';
+        return '🕒 ' + 'ended'.tr + ': ' + 'two_days_ago'.tr;
       } else {
         final formatted = DateFormat('M/d HH:mm').format(track.endAt);
-        return '🕒 종료됨: $formatted';
+        return '🕒 ' + 'ended'.tr + ': $formatted';
       }
     }
 

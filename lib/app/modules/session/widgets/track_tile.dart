@@ -77,15 +77,16 @@ class TrackTile extends StatelessWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.playlist_add),
-                    tooltip: canControl ? "트랙 추가" : "DJ만 트랙을 추가할 수 있어요",
+                    tooltip:
+                        canControl ? 'add_track'.tr : 'dj_only_track_add'.tr,
                     onPressed: (!canControl || isDisabled) ? null : onAdd,
                     color: canControl ? null : Colors.grey,
                   ),
                   if (!canControl)
-                    const Positioned(
+                    Positioned(
                       bottom: 4,
                       child: Text(
-                        'DJ만',
+                        'dj_only'.tr,
                         style: TextStyle(
                           fontSize: 10,
                           color: Colors.red,

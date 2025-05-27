@@ -27,9 +27,9 @@ class PlayedTrackBottomSheet extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '재생된 트랙 목록',
+                    'played_track_list'.tr,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -54,7 +54,7 @@ class PlayedTrackBottomSheet extends StatelessWidget {
 
                 final tracks = snapshot.data!;
                 if (tracks.isEmpty) {
-                  return const Center(child: Text('재생된 트랙이 없습니다.'));
+                  return Center(child: Text('no_played_tracks'.tr));
                 }
 
                 // 날짜별 그룹화
@@ -117,8 +117,8 @@ class PlayedTrackBottomSheet extends StatelessWidget {
       'yyyy.MM.dd',
     ).format(now.subtract(const Duration(days: 1)));
 
-    if (dateKey == today) return '오늘';
-    if (dateKey == yesterday) return '어제';
+    if (dateKey == today) return 'today'.tr;
+    if (dateKey == yesterday) return 'yesterday'.tr;
     return dateKey;
   }
 
@@ -131,9 +131,9 @@ class PlayedTrackBottomSheet extends StatelessWidget {
     final seconds = duration.inSeconds % 60;
 
     final parts = <String>[];
-    if (hours > 0) parts.add('$hours시간');
-    if (minutes > 0) parts.add('$minutes분');
-    if (seconds > 0 || parts.isEmpty) parts.add('$seconds초');
+    if (hours > 0) parts.add('$hours${'hour'.tr}');
+    if (minutes > 0) parts.add('$minutes${'minute'.tr}');
+    if (seconds > 0 || parts.isEmpty) parts.add('$seconds${'second'.tr}');
 
     final formattedDuration = parts.join(' ');
 
@@ -155,5 +155,4 @@ class PlayedTrackBottomSheet extends StatelessWidget {
       ],
     );
   }
-
 }
