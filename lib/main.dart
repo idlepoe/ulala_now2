@@ -39,7 +39,7 @@ Future<void> main() async {
     await windowManager.setMinimumSize(initialSize);
     await windowManager.setMaximumSize(initialSize);
     await windowManager.setResizable(false);
-    await windowManager.setTitle("app_name".tr);
+    await windowManager.setTitle("ULALA");
     await windowManager.setIcon('assets/images/icon-removebg.ico');
 
     // 창 가운데로 이동
