@@ -114,7 +114,7 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     if (ctx != null) {
       TutorialCoachMark(
         targets: getFixTutorialTargets(),
-        textSkip: "건너뛰기",
+        textSkip: 'skip'.tr,
         onFinish: () => print("뚝딱 튜토리얼 종료"),
       ).show(context: ctx);
       await prefs.setBool('fix_tutorial_shown', true); // ✅ 플래그 저장
@@ -313,9 +313,9 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     logger.w(response);
 
     if (response != null) {
-      Get.snackbar('성공', '트랙이 추가되었습니다.');
+      Get.snackbar('success'.tr, 'track_add_success'.tr);
     } else {
-      Get.snackbar('오류', '트랙 추가에 실패했습니다.');
+      Get.snackbar('error'.tr, 'track_add_failed'.tr);
     }
   }
 

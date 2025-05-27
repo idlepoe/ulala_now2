@@ -126,6 +126,10 @@ class AppTranslations extends Translations {
       'leave': '나가기',
       'leave_session_error': '세션 나가기 중 문제가 발생했습니다.',
       'session_empty_placeholder': '별빛이 고요하네요... 누군가 음악을 틀어줄 시간이에요.',
+      'success': '성공',
+      'track_add_success': '트랙이 추가되었습니다.',
+      'track_add_failed': '트랙 추가에 실패했습니다.',
+      'skip': '건너뛰기',
     },
 
     'en_US': {
@@ -261,6 +265,10 @@ class AppTranslations extends Translations {
       'leave_session_error': 'There was a problem leaving the session.',
       'session_empty_placeholder':
           'The starlight is quiet... Maybe it’s time someone plays a song.',
+      'success': 'Success',
+      'track_add_success': 'Track has been added.',
+      'track_add_failed': 'Failed to add track.',
+      'skip': 'Skip',
     },
 
     'ja_JP': {
@@ -386,6 +394,10 @@ class AppTranslations extends Translations {
       'leave': '退出',
       'leave_session_error': 'セッションから退出中に問題が発生しました。',
       'session_empty_placeholder': '星明かりが静かですね… 誰かが音楽を流す時間です。',
+      'success': '成功',
+      'track_add_success': 'トラックが追加されました。',
+      'track_add_failed': 'トラックの追加に失敗しました。',
+      'skip': 'スキップ',
     },
   };
 }

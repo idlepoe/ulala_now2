@@ -28,7 +28,9 @@ class TabTrackView extends GetView<SessionController> {
                   child: ElevatedButton.icon(
                     icon: const Icon(Icons.playlist_add),
                     label: Text('add_track_to_play'.tr),
-                    onPressed: () async {},
+                    onPressed: () async {
+                      controller.changeTab(1);
+                    },
                   ),
                 ),
               )

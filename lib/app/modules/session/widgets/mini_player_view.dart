@@ -50,7 +50,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
       final endFormatted =
           isStream
               ? 'streaming'.tr
-              : '${'ending_soon'.tr}: ${DateFormat('a h:mm', 'ko').format(track.endAt)}';
+              : '${'ending_soon'.tr}: ${DateFormat('a h:mm').format(track.endAt)}';
 
       return _buildMiniPlayerBody(
         track,
@@ -82,7 +82,7 @@ class _MiniPlayerViewState extends State<MiniPlayerView> {
           // 🔹 하단 정보 + 진행 바
           Container(
             alignment: Alignment.bottomLeft,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [Colors.transparent, Colors.black54, Colors.black87],

@@ -33,7 +33,7 @@ class CurrentTrackCard extends StatelessWidget {
     final total = end.difference(start).inSeconds;
     final elapsed = now.difference(start).inSeconds.clamp(0, total);
 
-    final endTimeFormatted = DateFormat('a h:mm', 'ko').format(end);
+    final endTimeFormatted = DateFormat('a h:mm').format(end);
     final durationFormatted =
         isStream ? 'streaming'.tr : getFormattedDuration(total);
 
@@ -151,7 +151,7 @@ class CurrentTrackCard extends StatelessWidget {
                   ),
                   label: Text(
                     'no_sound_tip'.tr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 8),
                   ),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero, // ✅ 패딩 제거

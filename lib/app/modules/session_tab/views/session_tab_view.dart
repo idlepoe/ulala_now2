@@ -58,7 +58,7 @@ class SessionTabView extends GetView<SessionController> {
               Stack(
                 children: [
                   Container(
-                    height: 175,
+                    height: 180,
                     color: Theme.of(context).scaffoldBackgroundColor,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
