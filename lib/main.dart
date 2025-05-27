@@ -1,4 +1,3 @@
-import 'dart:ffi' as fi;
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'dart:ui';
@@ -11,7 +10,6 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:simple_pip_mode/simple_pip.dart';
-import 'package:win32/win32.dart' as win;
 import 'package:window_manager/window_manager.dart';
 
 import 'app/data/constants/app_translations.dart';
@@ -48,9 +46,8 @@ Future<void> main() async {
     await windowManager.center();
 
     windowManager.setPreventClose(true); // X 눌러도 닫히지 않게 설정
-
-    win.CoInitializeEx(fi.nullptr, win.COINIT_APARTMENTTHREADED);
   }
+
   runApp(
     FlutterWebFrame(
       builder:
