@@ -51,7 +51,7 @@ class ApiService {
           "q": search,
           "part": "snippet",
           "maxResults": "50",
-          "key": "AIzaSyCcg9OqAlSvJBBMLbodE1guFSzex51aRzI",
+          "key": "AIzaSyAeJOrIdbWb7Gg78f56tBBnJN-snpH2CIg",
           "order": "relevance",
         },
       );
@@ -144,7 +144,7 @@ class ApiService {
           "part": "contentDetails",
           "id": videoId,
           "fields": "items(contentDetails(duration))",
-          "key": "AIzaSyCcg9OqAlSvJBBMLbodE1guFSzex51aRzI",
+          "key": "AIzaSyAeJOrIdbWb7Gg78f56tBBnJN-snpH2CIg",
         },
       );
 

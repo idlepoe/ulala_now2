@@ -28,14 +28,6 @@ class TabChatView extends GetView<ChatController> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       child: Column(
         children: [
-          // Text(
-          //   '채팅',
-          //   style: theme.textTheme.titleMedium?.copyWith(
-          //     fontWeight: FontWeight.bold,
-          //   ),
-          // ),
-          // const SizedBox(height: 8),
-
           // 🔻 메시지 리스트
           Expanded(
             child: StreamBuilder<List<ChatMessage>>(
@@ -85,56 +77,74 @@ class TabChatView extends GetView<ChatController> {
                 }
 
                 return ListView.builder(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   reverse: true,
                   itemCount: messages.length,
                   itemBuilder: (_, index) {
                     final msg = messages[messages.length - 1 - index];
                     final isMine = msg.senderId == userId;
+                    final bubbleColor = isMine
+                        ? (isDark ? Colors.blue[300] : Colors.blue[100])
+                        : (isDark ? Colors.grey[700] : Colors.grey[200]);
 
-                    final bubbleColor =
-                        isMine
-                            ? (isDark ? Colors.blue[300] : Colors.blue[100])
-                            : (isDark ? Colors.grey[700] : Colors.grey[200]);
+                    // 날짜 구분이 필요한지 판단
+                    final currentDate = DateFormat('yyyy-MM-dd').format(msg.createdAt);
+                    final prevDate = index < messages.length - 1
+                        ? DateFormat('yyyy-MM-dd').format(
+                        messages[messages.length - index - 2].createdAt)
+                        : null;
 
-                    return Align(
-                      alignment:
-                          isMine ? Alignment.centerRight : Alignment.centerLeft,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: bubbleColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (!isMine)
-                              Text(
-                                msg.senderName,
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            Text(
-                              msg.message,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              DateFormat.Hm().format(msg.createdAt),
+                    final needsDateSeparator = currentDate != prevDate;
+
+                    return Column(
+                      children: [
+                        if (needsDateSeparator)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              DateFormat.yMMMMEEEEd('ko_KR').format(msg.createdAt), // 예: 2024년 5월 31일 금요일
                               style: theme.textTheme.labelSmall?.copyWith(
-                                color: theme.textTheme.labelSmall?.color
-                                    ?.withOpacity(0.6),
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],
+                          ),
+                        Align(
+                          alignment:
+                          isMine ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: bubbleColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (!isMine)
+                                  Text(
+                                    msg.senderName,
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                Text(
+                                  msg.message,
+                                  style: theme.textTheme.bodyMedium,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  DateFormat.Hm().format(msg.createdAt),
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: theme.textTheme.labelSmall?.color?.withOpacity(0.6),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     );
                   },
                 );

@@ -64,7 +64,13 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     await fetchSession();
     loadFavorites();
     onSessionLoaded();
-    _loadRecentKeywords();
+    _loadRecentKeywords().then((value) async {
+      // 🔽 최근 검색어가 있다면 마지막 검색어로 검색 결과 로드
+      if (recentKeywords.isNotEmpty) {
+        final lastKeyword = recentKeywords.first;
+        await searchYoutube(lastKeyword);
+      }
+    });
     checkSearchCooldown();
 
     // 1초마다 상태 체크
