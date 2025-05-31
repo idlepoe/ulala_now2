@@ -1,23 +1,13 @@
 import * as admin from "firebase-admin";
 import {onRequest} from "firebase-functions/https";
 
-export const getPlayedTracks = onRequest({cors: true}, async (req, res: any) => {
+export const getPlayedTracks = onRequest({
+  cors: true, memory: "1GiB", // ✅ 또는 "1GB"
+  region: "asia-northeast3",
+}, async (req, res: any) => {
   try {
     const sessionId = req.query.sessionId as string;
     const limit = parseInt(req.query.limit as string) || 20;
-    const lastEndAt = req.query.lastEndAt;
-
-    let lastEndAtDate: Date | null = null;
-
-    if (typeof lastEndAt === "string") {
-      lastEndAtDate = new Date(lastEndAt);
-      if (isNaN(lastEndAtDate.getTime())) {
-        return res.status(200).json({
-          success: false,
-          message: "잘못된 lastEndAt 값입니다.",
-        });
-      }
-    }
 
     if (!sessionId) {
       return res.status(200).json({
@@ -37,10 +27,6 @@ export const getPlayedTracks = onRequest({cors: true}, async (req, res: any) => 
       .where("endAt", "<=", now)
       .orderBy("endAt", "desc")
       .limit(limit);
-
-    if (lastEndAtDate) {
-      query = query.startAfter(lastEndAtDate);
-    }
 
     const snapshot = await query.get();
 

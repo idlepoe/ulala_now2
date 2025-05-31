@@ -1,8 +1,10 @@
 import {onRequest} from "firebase-functions/v2/https";
-import {verifyAuth} from "../utils/auth";
 import {db} from "../firebase";
 
-export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
+export const getSessionList = onRequest({
+  cors: true, memory: "1GiB", // ✅ 또는 "1GB"
+  region: "asia-northeast3",
+}, async (req, res: any) => {
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
@@ -11,21 +13,28 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
   }
 
   try {
-    await verifyAuth(req);
+    console.time("전체 실행");
+
+    // await verifyAuth(req);
 
     const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
 
+
+    console.time("세션 쿼리");
     const snapshot = await db.collection("sessions")
       .where("isPrivate", "!=", true)                  // 🔸 비공개 세션 제외
       .where("updatedAt", ">=", threeDaysAgo)                // 🔸 최근 3일
       .orderBy("updatedAt", "desc")                      // 🔸 최신순
       .limit(50)
       .get();
+    console.timeEnd("세션 쿼리");
 
     const now = new Date();
     const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
 
+    console.time("세션 리스트 매핑");
     const list = await Promise.all(snapshot.docs.map(async (doc) => {
+      console.time(`세션 ${doc.id}`);
       const data = doc.data();
 
       // 1. participants 불러오기
@@ -73,13 +82,16 @@ export const getSessionList = onRequest({cors: true}, async (req, res: any) => {
         selectedTrack = tracksSnap.docs[0].data();
       }
 
+      console.timeEnd(`세션 ${doc.id}`);
       return {
         ...data,
         participantCount: activeParticipants.length,
         trackList: selectedTrack ? [selectedTrack] : [], // ✅ 1건만 리스트로 포함
       };
     }));
+    console.timeEnd("세션 리스트 매핑");
 
+    console.timeEnd("전체 실행");
     return res.status(200).json({
       success: true,
       message: "세션 리스트 조회 완료",

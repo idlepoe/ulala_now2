@@ -52,7 +52,7 @@ Future<void> main() async {
     FlutterWebFrame(
       builder:
           (context) => GetMaterialApp(
-            title: 'app_name'.tr,
+            title: 'ulala'.tr,
             translations: AppTranslations(),
             locale: Get.deviceLocale,
             // locale: const Locale('en', 'US'),

@@ -88,7 +88,7 @@ class HomeView extends GetView<HomeController> {
                         imageUrl:
                             session.trackList.isNotEmpty
                                 ? session.trackList.first.thumbnail
-                                : 'https://via.placeholder.com/85',
+                                : "",
                         width: 85,
                         height: 85,
                         fit: BoxFit.cover,

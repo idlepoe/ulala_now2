@@ -3,7 +3,10 @@ import {onRequest} from "firebase-functions/v2/https";
 import {verifyAuth} from "../../utils/auth";
 import {db} from "../../firebase";
 
-export const addTrack = onRequest({cors: true}, async (req, res: any) => {
+export const addTrack = onRequest({
+  cors: true, memory: "1GiB", // ✅ 또는 "1GB"
+  region: "asia-northeast3",
+}, async (req, res: any) => {
   if (req.method !== "POST") {
     return res.status(200).json({
       success: false,

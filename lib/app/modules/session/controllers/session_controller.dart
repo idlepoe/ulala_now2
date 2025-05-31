@@ -398,8 +398,8 @@ class SessionController extends GetxController with WidgetsBindingObserver {
   }
 
   Future<void> _syncWithYoutubePlayer(List<SessionTrack> tracks) async {
-    logger.i("_syncWithYoutubePlayer");
-    logger.i(tracks);
+    // logger.i("_syncWithYoutubePlayer");
+    // logger.i(tracks);
     final now = DateTime.now();
     final current = tracks.firstWhereOrNull((track) {
       final isStream = track.duration == 0 && track.startAt == track.endAt;

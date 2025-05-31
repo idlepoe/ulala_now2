@@ -12,24 +12,24 @@ class AppInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    logger.i("🚀 [REQUEST] ${options.method} ${options.uri}");
-    // logger.d("Headers: ${options.headers}");
+    // logger.i("🚀 [REQUEST] ${options.method} ${options.uri}");
+
+    // ✅ 요청 시작 시간 기록
+    options.extra['startTime'] = DateTime.now();
+
     if (options.data != null) logger.d("Data: ${options.data}");
 
     try {
       final user = FirebaseAuth.instance.currentUser;
-
       if (user != null) {
         final idToken = await user.getIdToken(true);
-
         if (idToken!.isNotEmpty) {
           options.headers['Authorization'] = 'Bearer $idToken';
-          // logger.i('Bearer $idToken');
         } else {
           logger.w("⚠️ Firebase ID Token is empty");
         }
 
-        handler.next(options); // 유저 + 토큰 정상 → 계속 진행
+        handler.next(options);
       } else {
         logger.w("❌ 로그인 안 된 사용자 요청 차단");
         _redirectToLogin();
@@ -54,40 +54,66 @@ class AppInterceptor extends Interceptor {
     }
   }
 
-  void _redirectToLogin() {
-    // 기존 라우트 모두 제거하고 로그인 화면으로 이동
-    if (g.Get.currentRoute != Routes.SPLASH) {
-      g.Get.offAllNamed(Routes.SPLASH);
-    }
-  }
-
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    logger.i(
-      "✅ [RESPONSE] ${response.statusCode} ${response.requestOptions.uri}",
-    );
-    logger.d("Response Data: ${response.data}");
+    final request = response.requestOptions;
+    final startTime = request.extra['startTime'] as DateTime?;
+    final duration = startTime != null
+        ? DateTime.now().difference(startTime).inMilliseconds
+        : null;
+
+    final method = request.method;
+    final uri = request.uri.toString();
+
+    // 🔍 쿼리 파라미터나 body를 같이 표시
+    final params = request.queryParameters.isNotEmpty
+        ? 'query: ${request.queryParameters}'
+        : (request.data != null ? 'body: ${request.data}' : '');
+
+    // 🪵 통합 로깅
+    // 🔍 응답 데이터 요약
+    String shortResponse = '';
+    try {
+      final raw = response.data.toString();
+      shortResponse = raw.length > 500 ? '${raw.substring(0, 500)}...' : raw;
+    } catch (_) {
+      shortResponse = 'Non-printable response';
+    }
+
+    logger.i("✅ [$method] $uri ($duration ms) \n$params\n↩️ $shortResponse");
+
+    // logger.d("Response Data: ${response.data}");
     super.onResponse(response, handler);
   }
 
   @override
   Future<void> onError(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    logger.e("❌ [ERROR] ${err.response?.statusCode} ${err.requestOptions.uri}");
+      DioException err,
+      ErrorInterceptorHandler handler,
+      ) async {
+    final request = err.requestOptions;
+    final startTime = request.extra['startTime'] as DateTime?;
+    final duration = startTime != null
+        ? DateTime.now().difference(startTime).inMilliseconds
+        : null;
+
+    final method = request.method;
+    final uri = request.uri.toString();
+
+    final params = request.queryParameters.isNotEmpty
+        ? 'query: ${request.queryParameters}'
+        : (request.data != null ? 'body: ${request.data}' : '');
+
+    logger.e("❌ [$method] $uri (${err.response?.statusCode ?? 'ERR'}) ($duration ms) $params");
     logger.e("Message: ${err.message}");
     logger.e("Error Data: ${err.response?.data}");
 
-    // 🔥 401 Unauthorized 에러 처리 추가
-    if (err.response?.statusCode == 401) {
-      logger.w("⚠️ Unauthorized! Signing out...");
-      // await FirebaseAuth.instance.signOut();
-      // if (g.Get.currentRoute != Routes.LOGIN) {
-      //   g.Get.offAllNamed(Routes.LOGIN); // 로그인 화면으로 보내기 (라우트는 네 앱에 맞게 수정)
-      // }
-    }
-
     super.onError(err, handler);
+  }
+
+  void _redirectToLogin() {
+    if (g.Get.currentRoute != Routes.SPLASH) {
+      g.Get.offAllNamed(Routes.SPLASH);
+    }
   }
 }

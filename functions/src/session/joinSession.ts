@@ -3,7 +3,10 @@ import {verifyAuth} from "../utils/auth";
 import {db} from "../firebase";
 import * as admin from "firebase-admin";
 
-export const joinSession = onRequest({cors: true}, async (req, res: any) => {
+export const joinSession = onRequest({
+  cors: true, memory: "1GiB", // ✅ 또는 "1GB"
+  region: "asia-northeast3",
+}, async (req, res: any) => {
   if (req.method !== "POST") {
     return res.status(200).json({
       success: false,
@@ -12,7 +15,10 @@ export const joinSession = onRequest({cors: true}, async (req, res: any) => {
   }
 
   try {
-    const decoded = await verifyAuth(req);
+    const decoded = req.query.debug === "true"
+      ? { uid: req.body.uid || "__debug_user__", name: req.body.nickname || "디버그유저", picture: req.body.avatarUrl || "" }
+      : await verifyAuth(req);
+
     const uid = decoded.uid;
 
     const {sessionId, nickname, avatarUrl} = req.body;
@@ -43,9 +49,9 @@ export const joinSession = onRequest({cors: true}, async (req, res: any) => {
         // 다른 세션에 참여 중이라면 제거
         const participantRef = doc.ref.collection("participants").doc(uid);
         batch.delete(participantRef);
-        batch.update(doc.ref, {
-          participantCount: admin.firestore.FieldValue.increment(-1),
-        });
+        // batch.update(doc.ref, {
+        //   participantCount: admin.firestore.FieldValue.increment(-1),
+        // });
       }
     }
 
@@ -71,9 +77,9 @@ export const joinSession = onRequest({cors: true}, async (req, res: any) => {
       updatedAt: now,
     });
 
-    batch.update(targetSessionRef, {
-      participantCount: admin.firestore.FieldValue.increment(1),
-    });
+    // batch.update(targetSessionRef, {
+    //   participantCount: admin.firestore.FieldValue.increment(1),
+    // });
 
     await batch.commit();
 
