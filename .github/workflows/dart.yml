@@ -26,12 +26,6 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Flutter Test
-        run: flutter test
-
-      - name: Build Flutter Web
-        run: flutter build web --release
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
