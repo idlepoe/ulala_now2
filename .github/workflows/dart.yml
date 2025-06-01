@@ -26,5 +26,5 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Build APK (debug)
-        run: flutter build apk --debug
+      - name: Build WEB (debug)
+        run: flutter build web
