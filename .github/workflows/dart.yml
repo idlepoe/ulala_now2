@@ -26,17 +26,5 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
-      - name: Install Cloud Functions dependencies
-        run: |
-          cd functions
-          npm ci
-
-      - name: Build Cloud Functions
-        run: |
-          cd functions
-          npm run build
+      - name: Build APK (debug)
+        run: flutter build apk --debug
