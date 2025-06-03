@@ -61,34 +61,3 @@ class PlayerHeader extends StatelessWidget {
     );
   }
 }
-
-class _SliverPlayerDelegate extends SliverPersistentHeaderDelegate {
-  final double minExtent;
-  final double maxExtent;
-  final Widget Function(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  )
-  builder;
-
-  _SliverPlayerDelegate({
-    required this.minExtent,
-    required this.maxExtent,
-    required this.builder,
-  });
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return builder(context, shrinkOffset, overlapsContent);
-  }
-
-  @override
-  bool shouldRebuild(covariant _SliverPlayerDelegate oldDelegate) {
-    return true;
-  }
-}
