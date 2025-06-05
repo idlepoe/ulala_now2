@@ -27,13 +27,13 @@ import '../widgets/track_search_bottom_sheet.dart';
 import 'chat_controller.dart';
 
 class SessionController extends GetxController with WidgetsBindingObserver {
+  late YoutubePlayerController youtubeController;
+
   final RxInt currentIndex = 0.obs;
   late final PageController pageController;
 
   final session = Rxn<Session>();
   late final String sessionId;
-
-  late YoutubePlayerController youtubeController;
 
   StreamSubscription? _trackSub;
   final currentTracks = <SessionTrack>[].obs;
@@ -41,12 +41,13 @@ class SessionController extends GetxController with WidgetsBindingObserver {
 
   final currentTime = DateTime.now().obs;
 
-  void onSessionLoaded() {
-    Get.find<ChatController>().startListening(sessionId);
-  }
+  final isLoading = false.obs;
+
+  final GlobalKey qrKey = GlobalKey();
 
   @override
   Future<void> onInit() async {
+    super.onInit();
     pageController = PageController(initialPage: currentIndex.value);
     youtubeController = YoutubePlayerController(
       params: const YoutubePlayerParams(
@@ -54,16 +55,22 @@ class SessionController extends GetxController with WidgetsBindingObserver {
         showFullscreenButton: false,
       ),
     );
-    super.onInit();
     sessionId = Get.parameters['sessionId']!;
     if (sessionId.isEmpty) {
       _handleInvalidSession();
       return;
     }
 
+    // 세션 정보 취득
     await fetchSession();
+
+    // 즐겨찾기 취득
     loadFavorites();
+
+    // 채팅 정보 취득
     onSessionLoaded();
+
+    // 최근 검색어 취득
     _loadRecentKeywords().then((value) async {
       // 🔽 최근 검색어가 있다면 마지막 검색어로 검색 결과 로드
       if (recentKeywords.isNotEmpty) {
@@ -71,6 +78,8 @@ class SessionController extends GetxController with WidgetsBindingObserver {
         await searchYoutube(lastKeyword);
       }
     });
+
+    // 검색 쿨타임 체크
     checkSearchCooldown();
 
     // 1초마다 상태 체크
@@ -80,13 +89,22 @@ class SessionController extends GetxController with WidgetsBindingObserver {
       currentTime.value = DateTime.now(); // 매초 갱신
     });
 
+    // 트랙 구독
     _subscribeToTracks();
 
     // pip 모드 활성화
     if (!kIsWeb && Platform.isAndroid) {
       _initPipIfSupported();
     }
-    WidgetsBinding.instance.addObserver(this); // ✅ lifecycle 감지
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showFixTutorial();
+    });
   }
 
   void changeTab(int index) {
@@ -103,12 +121,8 @@ class SessionController extends GetxController with WidgetsBindingObserver {
     currentIndex.value = index;
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showFixTutorial();
-    });
+  void onSessionLoaded() {
+    Get.find<ChatController>().startListening(sessionId);
   }
 
   void showFixTutorial() async {
@@ -282,33 +296,41 @@ class SessionController extends GetxController with WidgetsBindingObserver {
   static const _durationCacheKey = 'youtube_duration_cache';
 
   Future<void> attachDurationAndAddTrack(SessionTrack track) async {
-    if (track.duration > 0) {
-      await addTrack(track);
-      return;
-    }
+    try {
+      isLoading.value = true;
 
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_durationCacheKey);
-    final Map<String, dynamic> cache = raw != null ? json.decode(raw) : {};
-
-    int? duration = cache[track.videoId];
-
-    if (duration == null) {
-      // 📡 YouTube API 호출
-      duration = await ApiService.getYoutubeLength(videoId: track.videoId);
-
-      if (duration == null) {
-        Get.snackbar('오류', '영상 길이 조회에 실패했습니다.');
+      if (track.duration > 0) {
+        await addTrack(track);
         return;
       }
 
-      // 🧠 SharedPreferences에 저장
-      cache[track.videoId] = duration;
-      await prefs.setString(_durationCacheKey, json.encode(cache));
-    }
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_durationCacheKey);
+      final Map<String, dynamic> cache = raw != null ? json.decode(raw) : {};
 
-    final fullTrack = track.copyWith(duration: duration);
-    await addTrack(fullTrack);
+      int? duration = cache[track.videoId];
+
+      if (duration == null) {
+        // 📡 YouTube API 호출
+        duration = await ApiService.getYoutubeLength(videoId: track.videoId);
+
+        if (duration == null) {
+          Get.snackbar('오류', '영상 길이 조회에 실패했습니다.');
+          return;
+        }
+
+        // 🧠 SharedPreferences에 저장
+        cache[track.videoId] = duration;
+        await prefs.setString(_durationCacheKey, json.encode(cache));
+      }
+
+      final fullTrack = track.copyWith(duration: duration);
+      await addTrack(fullTrack);
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   Future<void> addTrack(SessionTrack track) async {
@@ -635,8 +657,9 @@ class SessionController extends GetxController with WidgetsBindingObserver {
   Future<void> _initPipIfSupported() async {
     final isAvailable = await SimplePip.isPipAvailable;
     if (!isAvailable) return;
-    pip = SimplePip();
-    await pip.setAutoPipMode();
+
+    pip ??= SimplePip(); // 이미 있으면 재할당하지 않음
+    await pip!.setAutoPipMode();
   }
 
   AppLifecycleState appLifecycleState = AppLifecycleState.resumed;

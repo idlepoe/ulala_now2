@@ -18,7 +18,7 @@ import 'app/data/controllers/theme_controller.dart';
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
-late final SimplePip pip;
+SimplePip? pip;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

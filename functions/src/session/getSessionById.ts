@@ -6,10 +6,13 @@ import {verifyAuth} from "../utils/auth";
 export const getSessionById = onRequest({
   cors: true,
   memory: "1GiB",
-  region: "asia-northeast3",
+  region: "asia-northeast3", minInstances: 1,
 }, async (req, res: any) => {
   if (req.method !== "GET") {
-    return res.status(405).json({ success: false, message: "Method Not Allowed" });
+    return res.status(405).json({
+      success: false,
+      message: "Method Not Allowed",
+    });
   }
 
   try {
@@ -22,7 +25,10 @@ export const getSessionById = onRequest({
       : (await verifyAuth(req)).uid;
 
     if (!sessionId) {
-      return res.status(400).json({ success: false, message: "sessionId는 필수입니다." });
+      return res.status(400).json({
+        success: false,
+        message: "sessionId는 필수입니다.",
+      });
     }
 
     const sessionRef = db.collection("sessions").doc(sessionId);
@@ -33,7 +39,7 @@ export const getSessionById = onRequest({
       const participantRef = sessionRef.collection("participants").doc(uid);
       const participantSnap = await participantRef.get();
       if (participantSnap.exists) {
-        await participantRef.update({ updatedAt: admin.firestore.FieldValue.serverTimestamp() });
+        await participantRef.update({updatedAt: admin.firestore.FieldValue.serverTimestamp()});
       } else {
         await participantRef.set({
           uid,
@@ -41,14 +47,14 @@ export const getSessionById = onRequest({
           avatarUrl: "",
           updatedAt: admin.firestore.FieldValue.serverTimestamp(),
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        }, { merge: true });
+        }, {merge: true});
       }
       console.timeEnd("유저 활동 시간 갱신");
     }
 
     const sessionSnap = await sessionRef.get();
     if (!sessionSnap.exists) {
-      return res.status(404).json({ success: false, message: "세션이 존재하지 않습니다." });
+      return res.status(404).json({success: false, message: "세션이 존재하지 않습니다."});
     }
 
     const now = new Date();
@@ -74,6 +80,6 @@ export const getSessionById = onRequest({
 
   } catch (error) {
     console.error("❌ 세션 상세 조회 실패:", error);
-    return res.status(500).json({ success: false, message: "서버 오류" });
+    return res.status(500).json({success: false, message: "서버 오류"});
   }
 });

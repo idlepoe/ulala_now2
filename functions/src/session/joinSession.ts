@@ -5,7 +5,7 @@ import * as admin from "firebase-admin";
 
 export const joinSession = onRequest({
   cors: true, memory: "1GiB", // ✅ 또는 "1GB"
-  region: "asia-northeast3",
+  region: "asia-northeast3", minInstances: 1,
 }, async (req, res: any) => {
   if (req.method !== "POST") {
     return res.status(200).json({
@@ -16,7 +16,11 @@ export const joinSession = onRequest({
 
   try {
     const decoded = req.query.debug === "true"
-      ? { uid: req.body.uid || "__debug_user__", name: req.body.nickname || "디버그유저", picture: req.body.avatarUrl || "" }
+      ? {
+        uid: req.body.uid || "__debug_user__",
+        name: req.body.nickname || "디버그유저",
+        picture: req.body.avatarUrl || "",
+      }
       : await verifyAuth(req);
 
     const uid = decoded.uid;

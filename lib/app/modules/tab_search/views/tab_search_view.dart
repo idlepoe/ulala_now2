@@ -138,9 +138,14 @@ class TabSearchView extends GetView<SessionController> {
                               isFavorite: controller.isFavorite(track.videoId),
                               onFavorite:
                                   () => controller.toggleFavorite(track),
-                              onAdd: () {
-                                controller.attachDurationAndAddTrack(track);
-                              },
+                              onAdd:
+                                  controller.isLoading.value
+                                      ? null
+                                      : () {
+                                        controller.attachDurationAndAddTrack(
+                                          track,
+                                        );
+                                      },
                               isDisabled: controller.isSearching.value,
                             ),
                           ),

@@ -5,7 +5,7 @@ import {db} from "../../firebase";
 
 export const addTrack = onRequest({
   cors: true, memory: "1GiB", // ✅ 또는 "1GB"
-  region: "asia-northeast3",
+  region: "asia-northeast3", minInstances: 1,
 }, async (req, res: any) => {
   if (req.method !== "POST") {
     return res.status(200).json({

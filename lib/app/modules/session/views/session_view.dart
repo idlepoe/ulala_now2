@@ -216,10 +216,10 @@ class SessionView extends GetView<SessionController> {
     final isPipActivated = await SimplePip.isPipActivated;
     final isAvailable = await SimplePip.isPipAvailable;
 
-    // 진입 시점에서 PiP가 꺼져 있다면 수동으로 진입
     if (isAvailable && !isPipActivated) {
-      await pip.enterPipMode();
-      await pip.setAutoPipMode();
+      pip ??= SimplePip(); // pip이 없으면 생성
+      await pip!.enterPipMode();
+      await pip!.setAutoPipMode();
     }
   }
 }

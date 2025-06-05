@@ -67,17 +67,24 @@ class TabFavoriteView extends GetView<SessionController> {
                   final track = favs[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: TrackTile(
-                      track: track,
-                      isFavorite: true,
-                      onFavorite: () => controller.toggleFavorite(track),
-                      onAdd:
-                          controller.canControlTrack()
-                              ? () =>
-                                  controller.attachDurationAndAddTrack(track)
-                              : null,
-                      isDisabled: !controller.canControlTrack(),
-                      bottomWidget: null,
+                    child: Obx(
+                      () => TrackTile(
+                        track: track,
+                        isFavorite: true,
+                        onFavorite:
+                            () =>
+                                controller.isLoading.value
+                                    ? null
+                                    : controller.toggleFavorite(track),
+                        onAdd:
+                            controller.canControlTrack() &&
+                                    !controller.isLoading.value
+                                ? () =>
+                                    controller.attachDurationAndAddTrack(track)
+                                : null,
+                        isDisabled: !controller.canControlTrack(),
+                        bottomWidget: null,
+                      ),
                     ),
                   );
                 },

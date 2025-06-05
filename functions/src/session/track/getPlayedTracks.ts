@@ -3,7 +3,7 @@ import {onRequest} from "firebase-functions/https";
 
 export const getPlayedTracks = onRequest({
   cors: true, memory: "1GiB", // ✅ 또는 "1GB"
-  region: "asia-northeast3",
+  region: "asia-northeast3", minInstances: 1,
 }, async (req, res: any) => {
   try {
     const sessionId = req.query.sessionId as string;

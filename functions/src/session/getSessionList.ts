@@ -2,8 +2,9 @@ import {onRequest} from "firebase-functions/v2/https";
 import {db} from "../firebase";
 
 export const getSessionList = onRequest({
-  cors: true, memory: "1GiB", // ✅ 또는 "1GB"
+  cors: true, memory: "1GiB",
   region: "asia-northeast3",
+  minInstances: 1,
 }, async (req, res: any) => {
   if (req.method !== "GET") {
     return res.status(405).json({
